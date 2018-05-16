@@ -1,0 +1,21 @@
+project4:
+total 210
+-rw-------   1 scott       6692 May  3 15:09 List.c
+-rw-------   1 scott        978 May  3 15:09 List.h
+-rw-------   1 scott       2251 May  3 15:12 Makefile
+-rw-------   1 scott       1042 May  3 15:36 README
+-rw-------   1 scott       1065 May  3 15:10 command.c
+-rw-------   1 scott        176 May  3 15:10 command.h
+-rw-------   1 scott        611 May  3 15:10 data.h
+-rw-------   1 scott        129 May  3 15:10 expr.h
+-rw-------   1 scott       1151 May  3 15:10 main.c
+-rw-------   1 scott        268 May  3 15:10 main.h
+-rw-------   1 scott          0 May  3 15:36 rec6447
+-rw-------   1 scott      12962 May  3 13:58 symtab.c
+-rw-------   1 scott       1090 May  3 11:47 symtab.h
+-rw-------   1 scott       1775 May  3 15:10 trans.c
+-rw-------   1 scott        919 May  3 15:10 trans.h
+-rw-------   1 scott        842 May  3 15:10 type.h
+-rw-------   1 scott       4171 May  3 15:10 ucc.l
+-rw-------   1 scott        178 May  3 15:10 ucc.l.h
+-rw-------   1 scott      59515 May  3 15:10 ucc.y

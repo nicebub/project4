@@ -1,0 +1,32 @@
+Scott Lorberbaum
+
+Very easy
+
+to compile:
+	run make
+
+if u want to clean the directory:
+	make clean
+		gets rid of *.asm files and *.o files and all executables that were created
+
+to run:
+	./ucc <filename>
+				where <filename> is a a file with .c on the end and the file is a correct micro-c language file, it contains only micro-c code
+
+to run the assembly:
+	ugavac <filename>.asm
+				where <filename>.asm is the above filename used with ./ucc without the .c on the end and instead having .asm on the end
+				if the prompt is just waiting it means that the ugavac or program is waiting for input, please input a number!
+
+thats it
+
+
+ROB SPRINGER PLEASE READ BELOW
+
+	you told me you could change my grade for the last project if i fixed those errors, i didn't have time to resubmit but i did fix those errors for this program, that i know of..
+	you can use this program and run the tests from the previous program on it and will get the same results, plus the *.asm file which isn't needed for the last program
+
+Thanks a lot
+		Scott Lorberbaum
+
+
