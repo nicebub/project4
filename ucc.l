@@ -9,6 +9,7 @@
 #define YYSTYPE data
 #include "ucc.tab.h"
 #include "ucc.l.h"
+#include "main.h"
 int Line_Number = 1;
 %}
 
@@ -37,9 +38,9 @@ ADOF	"&"
 
 %%
 <comment>{
-[^*\n]* 	
-[^*\n]*\n 	++Line_Number; 
-\*+[^*/\n]* 
+[^*\n]*
+[^*\n]*\n 	++Line_Number;
+\*+[^*/\n]*
 \*+[^*/\n]*\n 	++Line_Number;
 {ENDCOM} {
 		BEGIN(INITIAL);}
@@ -73,13 +74,13 @@ ADOF	"&"
 		register int c;
 		BEGIN(INITIAL);
 		error("illegal character:%s in string",yytext);
-		while(c = input() != '\"' && c != EOF) ;
+		while(((c = input()) != '\"') && (c != EOF));
 		if(c == EOF) error("eof terminated string","");
 		}
 
 ((\\\\{SPACE}+)*|[&@$\%^/,.+'-\[\]{}();~`|=#\!:<>]*|{LETTER}|{DIGIT}|{PERCENT}|{SPACE}|{BEGCOM}|{ENDCOM}|{QUESTION})* {
 	char *yptr = yytext;
-	while((*yptr != NULL) && *yptr) 
+	while((*yptr != (int)NULL) && *yptr)
 		*string_buf_ptr++ = *yptr++;
 	}
 

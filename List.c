@@ -4,8 +4,11 @@
 #include "List.h"
 #include "type.h"
 #include <stdio.h>
-int warning(char*,char*);
-int error(char*,char*);
+#include <stdlib.h>
+#include <string.h>
+#include "ucc.l.h"
+//extern int warning(char*,char*);
+//extern int error(char*,char*);
 
 List * mklist(char * inVal){
 	List* temp;
@@ -18,14 +21,14 @@ List * mklist(char * inVal){
 		return temp;
 	}
 	error("Value isn't correct, could not make List","");
-
+    return NULL;
 }
 
 List * appendList(List * inList, char * inVal){
-	List * tempL;
+	//List * tempL;
 	listnode * tempN;
 	listnode * tempN2;
-	char * tempC;
+	//char * tempC;
 
 	if(inList != NULL){
 		if(inList->list !=NULL){
@@ -34,11 +37,16 @@ List * appendList(List * inList, char * inVal){
 			tempN2 = (listnode*) malloc(sizeof(listnode));
 			tempN2->val = (char*) strdup(inVal);
 			tempN2->nextnode = NULL;
-			(listnode*)(tempN->nextnode) = (listnode*)tempN2;
+			//(listnode*)(tempN->nextnode) = (listnode*)tempN2;
+            //listnode * tNodeLL = (listnode *) tempN->nextnode;
+			listnode * tNodeLL = NULL;
+			tNodeLL = (listnode*)tempN2;
+            tempN->nextnode = tNodeLL;
 			inList->listsize += 1;
 			return inList;
 		}
 	}
+    return NULL;
 }
 
 
@@ -112,10 +120,12 @@ void deleteListP(ListP * inList){
 
 
 ListP * appendListP(ListP * inList, char * inVal, type inType){
-	ListP * tempL;
+	//ListP * tempL;
 	listnodeP * tempN;
+    tempN = NULL;
 	listnodeP * tempN2;
-	char * tempC;
+    tempN2 = NULL;
+	//char * tempC;
 
 	if(inList != NULL){
 		if(inList->list !=NULL){
@@ -125,18 +135,25 @@ ListP * appendListP(ListP * inList, char * inVal, type inType){
 			tempN2->val = (char*) strdup(inVal);
 			tempN2->nextnode = NULL;
 			tempN2->ttype = inType;
-			(listnodeP*)(tempN->nextnode) = (listnodeP*) tempN2;
+			listnodeP * tNodeLL = (listnodeP *) tempN->nextnode;
+			//(listnodeP*)(tempN->nextnode) = (listnodeP*) tempN2;
+			tNodeLL = (listnodeP*) tempN2;
+            tempN->nextnode = tNodeLL;
 			inList->listsize += 1;
 			return inList;
 		}
 	}
+    return NULL;
 }
 
 ListP * mklistP(char * inVal, type inType){
 	ListP* temp;
-	if(inVal != NULL){
+    temp = NULL;
+    if(inVal != NULL){
 		temp = (ListP*) malloc(sizeof(ListP));
+        temp->list=NULL;
 		temp->list = (listnodeP*) malloc(sizeof(listnodeP));
+        
 		temp->listsize=1;
 		temp->list->val = (char*) strdup(inVal);
 		temp->list->ttype = inType;
@@ -146,7 +163,7 @@ ListP * mklistP(char * inVal, type inType){
 	else {error("Value isn't correct, could not make List","");
 		return NULL;
 		}
-	
+
 }
 
 void deleteListE(ListE* inList){
@@ -181,18 +198,20 @@ void deleteListE(ListE* inList){
                                 temp2=NULL;
 				exprtemp= temp->expr;
                                 inList->listsize -= 1;
-                        }  
+                        }
                         free(inList);
                         inList=NULL;
                 }
         }
-	
+
 }
 
 ListE * mklistE(exprtype* inVal){
         ListE* temp;
+    temp = NULL;
         if(inVal != NULL){
                 temp = (ListE*) malloc(sizeof(ListE));
+            temp->list = NULL;
                 temp->list = (listnodeE*) malloc(sizeof(listnodeE));
                 temp->listsize=1;
 		#ifdef DEBUG
@@ -212,10 +231,10 @@ ListE * mklistE(exprtype* inVal){
 }
 
 ListE * appendListE(ListE * inList, exprtype * inexpr){
-        ListE * tempL;
+        //ListE * tempL;
         listnodeE * tempN;
         listnodeE * tempN2;
-        char * tempC;
+        //char * tempC;
 
         if(inList != NULL){
                 if(inList->list !=NULL){
@@ -227,10 +246,13 @@ ListE * appendListE(ListE * inList, exprtype * inexpr){
 			fprintf(stderr,"in appendlistE inexpr has type :%d\n tempN2 has type :%d\n",inexpr->type, tempN2->expr->type);
 			#endif
                         tempN2->nextnode = NULL;
-                        (listnodeE*)(tempN->nextnode) = (listnodeE*)tempN2;
+						listnodeE * tNodeLL = NULL;
+                        //(listnodeE*)(tempN->nextnode) = (listnodeE*)tempN2;
+                        tNodeLL = (listnodeE*)tempN2;
+                    tempN->nextnode = tNodeLL;
                         inList->listsize += 1;
                         return inList;
                 }
         }
-
+    return NULL;
 }

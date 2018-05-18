@@ -1,6 +1,10 @@
+#ifdef DEBUGON
+#define DEBUG
+#endif
 #include "command.h"
 #include <stdio.h>
-
+#include <stdlib.h>
+#include <string.h>
 
 int checkargs(int argc, char** argv){
 	if(argc >1){

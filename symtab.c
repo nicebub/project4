@@ -6,7 +6,12 @@
 #include "List.h"
 #include "data.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <search.h>
+#include "ucc.l.h"
+#include <string.h>
+
+//extern int error(char*,char*);
 
 void openscope(Symtab *symtab){
 	if(symtab->actualStacksize == symtab->Stacksize)
@@ -16,7 +21,7 @@ void openscope(Symtab *symtab){
 		fprintf(stderr, "\nOpening new Scope\n\n");
 		#endif
 	 	symtab->actualStacksize += 1;
-		
+
 		offset_counter=5;
 	}
 }
@@ -44,6 +49,7 @@ void closescope(Symtab *symtab){
 
 void * lookup(const char * name, Symtab *symtab){
 	Entry ** found;
+    found = NULL;
 	Entry *temp;
 	int a;
 	if(name != NULL){
@@ -82,8 +88,8 @@ void * lookup(const char * name, Symtab *symtab){
 void install(Entry * temp,Symtab *symtab){
 	Entry ** found;
 	found = (Entry**) tsearch((void*) temp, (void**) &((symtab->Stack[symtab->actualStacksize-1])),Ecmp);
-	
-	if(*found !=temp) 
+
+	if(*found !=temp)
 		error("symbol already declared in current scope","");
 }
 
@@ -104,13 +110,28 @@ void Swalk(const void *node, VISIT myorder, int level){
 		temp = (*(Entry**) node);
 		tempb = ((Funcb*)(temp->binding));
 		switch(temp->self){
-		
+
 		case(FUNC):		fprintf(stderr,"Name: %s\nReturn Type: ", temp->name);
 					switch(tempb->returntype){
 						case(INT):	fprintf(stderr,"INT\n"); break;
 						case(FLOAT):	fprintf(stderr, "FLOAT\n"); break;
 						case(VOID):	fprintf(stderr, "VOID\n"); break;
-					}
+                        case CHAR:
+                            
+                            break;
+                        case STR:
+                            
+                            break;
+                        case REFINT:
+                            
+                            break;
+                        case REFFLOAT:
+                            
+                            break;
+                        case REFSTR:
+                            
+                            break;
+                    }
 					fprintf(stderr, "Body Defined: %d\n", tempb->bodydef);
 					fprintf(stderr, "Number Parameters: %d\n",tempb->num_param);
 					if(tempb->num_param >0){
@@ -124,7 +145,10 @@ void Swalk(const void *node, VISIT myorder, int level){
 								case(REFSTR):	fprintf(stderr, "REFSTR "); break;
 								case(STR):	fprintf(stderr, "STR "); break;
 								case(VOID):	fprintf(stderr, "VOID "); break;
-							}
+                                case CHAR:
+                                    
+                                    break;
+                            }
 						}
 					}
 					if(tempb->num_param == -1){
@@ -137,7 +161,10 @@ void Swalk(const void *node, VISIT myorder, int level){
                                                                 case(REFSTR):   fprintf(stderr, "REFSTR "); break;
                                                                 case(STR):      fprintf(stderr, "STR "); break;
                                                                 case(VOID):     fprintf(stderr, "VOID "); break;
-                                                        }
+                            case CHAR:
+                                
+                                break;
+                        }
 						fprintf(stderr,"...");
 
 					}
@@ -148,13 +175,19 @@ void Swalk(const void *node, VISIT myorder, int level){
 					switch( ((Paramb*)(temp->binding))->type){
 						case(INT):	fprintf(stderr, "INT\n"); break;
 						case(FLOAT):	fprintf(stderr, "FLOAT\n"); break;
-						case(STR):	fprintf(stderr, "STR\n"); break;
+                        case VOID:
+                            
+                            break;
+                        case CHAR:
+                            
+                            break;
+                        case(STR):	fprintf(stderr, "STR\n"); break;
 						case(REFINT):	fprintf(stderr, "REFINT\n"); break;
 						case(REFFLOAT):	fprintf(stderr, "REFFLOAT\n"); break;
 						case(REFSTR):	fprintf(stderr, "REFSTR\n"); break;
 					}
 					fprintf(stderr,"Offset: %d\n\n", ((Paramb*)(temp->binding))->offset);
-					
+
 					break;
 		case(VAR):		fprintf(stderr,"Name: %s\nType: ", temp->name);
 					switch(((Varb*)(temp->binding))->type){
@@ -162,11 +195,29 @@ void Swalk(const void *node, VISIT myorder, int level){
 								break;
 						case(FLOAT):	fprintf(stderr, "FLOAT\n");
 
-					}
+                        case VOID:
+                            
+                            break;
+                        case CHAR:
+                            
+                            break;
+                        case STR:
+                            
+                            break;
+                        case REFINT:
+                            
+                            break;
+                        case REFFLOAT:
+                            
+                            break;
+                        case REFSTR:
+                            
+                            break;
+                    }
 					fprintf(stderr, "Offset: %d\n\n", ((Varb*)(temp->binding))->offset);
 
 					break;
-		
+
 		}
 	}
 }
@@ -184,19 +235,19 @@ Symtab * createTree(int Stacksize){
 
 void deleteTree(Symtab *symtab){
 	Entry * temp;
-	Entry ** found;
+	//Entry ** found;
 	if(symtab != NULL){
 	   #ifdef DEBUG
 	   fprintf(stderr, "Deleting Tree: \n");
 	   #endif
-	    while(symtab->actualStacksize != 1) 
+	    while(symtab->actualStacksize != 1)
 		closescope(symtab);
 	    if((symtab->Stack[symtab->actualStacksize-1]) !=NULL){
                         while(symtab->Stack[symtab->actualStacksize-1] != NULL){
                                 temp = *((Entry**)(symtab->Stack[symtab->actualStacksize-1] ));
                                 tdelete((void*)temp,(void **) &(symtab->Stack[symtab->actualStacksize-1]), Ecmp);
                                 deleteEntry(temp);
-                 
+
                         }
                         symtab->Stack[symtab->actualStacksize-1]=NULL;
             }
@@ -208,14 +259,14 @@ void deleteTree(Symtab *symtab){
 	    fprintf(stderr, "Deleting Symbol Table\n");
 	    #endif
 	    free(symtab);
-	    symtab=NULL;	
+	    symtab=NULL;
 	}
 }
 void deleteEntry(Entry * temp){
 	if(temp != NULL){
 		switch(temp->self){
-			
-			case(FUNC):		
+
+			case(FUNC):
 						#ifdef DEBUG
 						fprintf(stderr,"Deleting Function %s\n", temp->name);
 						#endif
@@ -226,7 +277,7 @@ void deleteEntry(Entry * temp){
 						free(temp);
 						temp=NULL;
 						break;
-			case(VAR):		
+			case(VAR):
 						#ifdef DEBUG
 						fprintf(stderr, "Deleting variable %s\n", temp->name);
 						#endif
@@ -235,7 +286,7 @@ void deleteEntry(Entry * temp){
 						free(temp);
 						temp=NULL;
 						break;
-			case(PARAM):		
+			case(PARAM):
 						#ifdef DEBUG
 						fprintf(stderr, "Deleteing Parameter %s\n", temp->name);
 						#endif
@@ -260,25 +311,38 @@ Entry *createFunc(char * name, type returntype, ListP* paramlist){
 	if(name !=NULL){
 		temp->name = (char*)strdup(((const char*)name));
 		temp->self = FUNC;
-		((Funcb*)(temp->binding)) = (Funcb*) malloc(sizeof(Funcb));
-		((Funcb*)(temp->binding))->returntype = returntype;
+		//Funcb * tBinding = (Funcb*)temp->binding;
+        Funcb * tBinding = NULL;
+		//((Funcb*)(temp->binding)) = (Funcb*) malloc(sizeof(Funcb));
+		//((Funcb*)(temp->binding))->returntype = returntype;
+		tBinding = (Funcb*) malloc(sizeof(Funcb));
+		tBinding->returntype = returntype;
+        temp->binding = tBinding;
 
-		if(paramlist!=NULL )
-			((Funcb*)(temp->binding))->num_param = paramlist->listsize; 
-		else 
+        if(paramlist!=NULL ){
+            #ifdef DEBUG
+            fprintf(stderr,"in Function install- temp->binding->num_param is: %d\n", ((Funcb*)(temp->binding))->num_param);
+            #endif
+            Funcb * extraBind = (Funcb*)(temp->binding);
+            #ifdef DEBUG
+            fprintf(stderr,"in Function install- extraBind->num_param is: %d\n", extraBind->num_param);
+            #endif
+			((Funcb*)(temp->binding))->num_param = paramlist->listsize;
+        }
+		else
 			((Funcb*)(temp->binding))->num_param=0;
 
 		if(((Funcb*)(temp->binding))->num_param >0){
 			((Funcb*)(temp->binding))->param_type = (type*)malloc((sizeof(type) * paramlist->listsize));
 			tempP = paramlist->list;
-			for(a=0;a<paramlist->listsize;a++){
+			for(a=1;a<=paramlist->listsize;a++){
 				((Funcb*)(temp->binding))->param_type[a] = tempP->ttype;
 				#ifdef DEBUG
 				fprintf(stderr,"in Function install type is %d\n",tempP->ttype);
 				#endif
-				if( strcmp("...", tempP->val)==0) 
-					elip = TRUE; 
-				else 
+				if( strcmp("...", tempP->val)==0)
+					elip = TRUE;
+				else
 					elip=FALSE;
 
 				tempP = (listnodeP*) tempP->nextnode;
@@ -287,16 +351,16 @@ Entry *createFunc(char * name, type returntype, ListP* paramlist){
 			if(elip == TRUE) {
 				((Funcb*)(temp->binding))->actual_num= ((Funcb*)(temp->binding))->num_param;
 				((Funcb*)(temp->binding))->num_param = -1;
-			}	
+			}
 		}
-		else 
+		else
 			((Funcb*)(temp->binding))->param_type = NULL;
 		((Funcb*)(temp->binding))->bodydef = FALSE;
 		((Funcb*)(temp->binding))->label=0;
 		return temp;
 	}
-	else{ 
-		error("name not found\n",""); 
+	else{
+		error("name not found\n","");
 		return NULL;
 	}
 }
@@ -306,13 +370,19 @@ Entry *createVar(char * name, type t_type, int offset){
 	temp = (Entry*) malloc(sizeof(Entry));
 	temp->name = (char*)strdup(((const char *)name));
 	temp->self = VAR;
-	((Varb*)(temp->binding)) = (Varb*) malloc(sizeof(Varb));
+	//Varb * tBindingV = (Varb *)temp->binding;
+    Varb * tBindingV = NULL;
+	//((Varb*)(temp->binding)) = (Varb*) malloc(sizeof(Varb));
+	tBindingV = (Varb*) malloc(sizeof(Varb));
+    tBindingV->type = t_type;
 
-	((Varb*)(temp->binding))->type = t_type;
+	//((Varb*)(temp->binding))->type = t_type;
 	#ifdef DEBUG
 	fprintf(stderr,"in Var install type is :%d\n",t_type);
 	#endif
-	((Varb*)(temp->binding))->offset = offset;
+    //((Varb*)(temp->binding))->offset = offset;
+	tBindingV->offset = offset;
+    temp->binding = tBindingV;
 	return temp;
 }
 
@@ -321,12 +391,17 @@ Entry *createParam(char * name, type t_type, int offset){
 	temp = (Entry*) malloc(sizeof(Entry));
 	temp->name = (char*)strdup(((const char*)name));
 	temp->self = PARAM;
-	((Paramb*)(temp->binding)) = (Paramb*) malloc(sizeof(Varb));
-	((Paramb*)(temp->binding))->type = t_type;
+	Paramb * tBindingP = (Paramb *)temp->binding;
+	//((Paramb*)(temp->binding)) = (Paramb*) malloc(sizeof(Varb));
+	//((Paramb*)(temp->binding))->type = t_type;
+	tBindingP = (Paramb*) malloc(sizeof(Varb));
+	tBindingP->type = t_type;
+    tBindingP->offset = offset;
+    temp->binding = tBindingP;
 	#ifdef DEBUG
 	fprintf(stderr,"in Param install type is :%d\n",t_type);
 	#endif
-	((Paramb*)(temp->binding))->offset = offset;
+	//((Paramb*)(temp->binding))->offset = offset;
 	return temp;
 }
 
@@ -336,8 +411,8 @@ void addtosymtab(Symtab *mysymtab, type mytype, List * myList){
 	Entry * temp;
 	if(mysymtab !=NULL){
 		if(myList !=NULL){
-			tempN = myList->list;
-			for(a=0;a<myList->listsize;a++){
+			tempN = (listnode*)(myList->list);
+			for(a=1;a<=myList->listsize;a++){
 				temp= createVar(tempN->val, mytype, offset_counter);
 				offset_counter++;
 				if((mysymtab->actualStacksize-1) == 0){
@@ -355,6 +430,7 @@ void addtosymtab(Symtab *mysymtab, type mytype, List * myList){
 
 Entry * lookupB(const char * name, Symtab *symtab){
 	Entry ** found;
+    found = NULL;
 	Entry *temp;
 	int a;
 	if(name != NULL){
@@ -384,12 +460,13 @@ Entry * lookupB(const char * name, Symtab *symtab){
 		}
 
 	}
+    return NULL;
 }
 
 bool inCscope(const char *name, Symtab *symtab){
         Entry ** found;
         Entry *temp;
-        int a;   
+        int a;
         if(name != NULL){
                 temp = (Entry*) malloc(sizeof(Entry));
                 temp->name = (char *)name;
@@ -411,13 +488,14 @@ bool inCscope(const char *name, Symtab *symtab){
                         free(temp);
                         return FALSE;
                 }
-                
-        }               
-	
+
+        }
+    return FALSE;
 }
 
 int getleveldif(char *name, Symtab *symtab){
 	        Entry ** found;
+            found = NULL;
 	        Entry *temp;
 	        int a;
 	if(name !=NULL && symtab!=NULL){
@@ -427,7 +505,7 @@ int getleveldif(char *name, Symtab *symtab){
 	                for(a=symtab->actualStacksize-1;a>=0;a--){
 	                        found = (Entry**) tfind((void*) temp, (void**) &(symtab->Stack[a]),Ecmp);
 	                        if(found != NULL){
-	                                if(*found !=NULL) break; 
+	                                if(*found !=NULL) break;
 	                        }
 	                }
 	                if(found != NULL){
@@ -447,9 +525,10 @@ int getleveldif(char *name, Symtab *symtab){
 	                        free(temp);
 	                        return -1;
 	                }
-		                
+
 	        }
-			
+
 	}
 	else return -1;
+    return -1;
 }

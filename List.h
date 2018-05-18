@@ -1,7 +1,7 @@
-#include "type.h"
-#include "expr.h"
 #ifndef _MYLISTH
 #define _MYLISTH
+#include "type.h"
+#include "expr.h"
 
 typedef struct {
 	exprtype* expr;

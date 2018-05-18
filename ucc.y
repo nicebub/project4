@@ -1,7 +1,7 @@
 /*scott lorberbaum
    compilers spring 2004
 	This file is the specification file for bison for the uC language.  This is only the minimal amount need to create the ucc.tab.h file which specifies the tokens
-and their values.  Then that file is included in the flex spec file to have identical tokens.  Also there is a declartion of a union, the Line_Number which helps keep 
+and their values.  Then that file is included in the flex spec file to have identical tokens.  Also there is a declartion of a union, the Line_Number which helps keep
 track of the line number, and some of the operators have their precedence specifed.
 */
 %{
@@ -17,8 +17,11 @@ track of the line number, and some of the operators have their precedence specif
 #define YYDEBUG 1
 #define YYERROR_VERBOSE 1
 #define YYSTYPE data
+#include "ucc.l.h"
+#include "main.h"
+#include <string.h>
 extern int Line_Number;
-extern bool founderror;
+bool founderror=FALSE;
 extern int globalcount;
 extern int mainlocal;
 extern int othercounter;
@@ -27,8 +30,8 @@ extern int offset_counter;
 extern Symtab* mysymtab;
 int mainlabel;
 Funcb* currentFunc;
-int warning(char*,char*);
-int error(char*,char*);
+extern int warning(char*,char*);
+extern int error(char*,char*);
 %}
 %expect 1
 
@@ -59,9 +62,9 @@ int error(char*,char*);
 %token lesst
 %token greatt
 %token equal
-%token plus 
+%token plus
 %token minus
-%token divide 
+%token divide
 %token star
 %token uminus
 //%token uplus
@@ -95,7 +98,7 @@ int error(char*,char*);
 %type <value.ivalue> uminus
 %type <value.lstpvalue> paramdeflist
 %type <value.funcheadervalue> funcheader
-//%type <value.lstevalue> exprlist 
+//%type <value.lstevalue> exprlist
 %type <value.exprvalue> expr
 //%type <value.exprvalue>simpleexpr relexpr equalexpr
 //%type <value.pairvalue> stmt
@@ -104,7 +107,7 @@ int error(char*,char*);
 %start starter
 %%
 
-starter: translation_unit { 
+starter: translation_unit {
 			if(founderror == FALSE){
 				gen_label("main");
 				gen_instr_I("enter",0);
@@ -112,7 +115,7 @@ starter: translation_unit {
 				gen_instr_I("enter",0);
 				gen_call(genlabelw("main",mainlabel),0);
 				gen_instr("return");
-							
+
 			}
 	}
 ;
@@ -132,6 +135,7 @@ func: funcheader {
 					Funcb* found;
 					int a;
 					ListP* templist;
+                    templist= NULL;
 					type tempparam;
 					listnodeP* tempnode;
 					#ifdef DEBUG
@@ -139,14 +143,18 @@ func: funcheader {
 					#endif
 					bool stop=FALSE;
 					bool alreadyopen=FALSE;
+                    tempnode = NULL;
 					if(strcmp("main", (char*)($1->name)) ==0){
+                        #ifndef DEBUG
+                        fprintf(stderr,"hello from inside");
+                        #endif
 						templist = (ListP*)$1->paramlist;
 	//main function
-						if($1->returntype != INT) 
+						if($1->returntype != INT)
 							error("Main function has to have int as return type","");
-						if(templist != NULL && templist->listsize != 1) 
+						if(templist != NULL && templist->listsize != 1)
 							error("Main function only has one parameter","");
-						else if($1->ttype != VOID) 
+						else if($1->ttype != VOID)
 							error("Main function has to have one parameter of void","");
 						openscope(mysymtab); alreadyopen=TRUE;
 						if(founderror==FALSE){
@@ -155,7 +163,7 @@ func: funcheader {
 						}
 					}
 					else{
-						if((tempb=(Funcb*)lookup((char*)($1->name), mysymtab)) ==NULL) 
+						if((tempb=(Funcb*)lookup((char*)($1->name), mysymtab)) ==NULL)
 							error("Function name not in symbol table","");
 						else{
 							Entry *tempEn; Entry * tempEn2;
@@ -164,11 +172,11 @@ func: funcheader {
 							tempEn = lookupB((char*)($1->name),mysymtab);
 							//tempEn = *(Entry**)tfind((void*)tempEn2, (void**) &(mysymtab->Stack[mysymtab->actualStacksize -1]),Ecmp);
 							if(tempEn!=NULL && tempEn->self == FUNC){
-								if(tempb->returntype != $<value.funcheadervalue>1->returntype) 
+								if(tempb->returntype != $<value.funcheadervalue>1->returntype)
 									error("Function declared with different return type","");
 								else{
 									templist= (ListP*)$<value.funcheadervalue>1->paramlist;
-									if(tempb->num_param == -1) 
+									if(tempb->num_param == -1)
 										error("Function cannot have those parameters","");
 									else if( templist!=NULL && (templist->listsize) != tempb->num_param)
 										error("Function has different number of parameters","");
@@ -214,14 +222,14 @@ func: funcheader {
 											}
 										}
 										else error("Stopped","");
-											
+
 									}
 								}
-							} 
-							else 
+							}
+							else
 								error("Not a function", "");
 							if(tempEn2!=NULL){ free(tempEn2); tempEn2=NULL;}
-						currentFunc=tempb; //fprintf(stderr,"createFunc: return type %d\ntempb: return type %d\n",currentFunc->returntype, tempb->returntype); 
+						currentFunc=tempb; //fprintf(stderr,"createFunc: return type %d\ntempb: return type %d\n",currentFunc->returntype, tempb->returntype);
 						}
 						if(alreadyopen==FALSE) openscope(mysymtab);
 					}
@@ -232,8 +240,8 @@ func: funcheader {
 			}
 			closescope(mysymtab);
 	}
-	| funcheader semi{ 
-			   Entry * temp; Funcb* found; int a; 
+	| funcheader semi{
+			   Entry * temp; Funcb* found; int a;
 			   #ifdef DEBUG
 				printTree(mysymtab);
 			   #endif
@@ -241,19 +249,19 @@ func: funcheader {
 			   if($1->paramlist !=NULL) deleteListP((ListP*)($1->paramlist));
 			   if($1 !=NULL) free($1);
 			   if( strcmp("main", (char*)temp->name)==0){
-					if( ((Funcb*)(temp->binding))->returntype != INT) 
+					if( ((Funcb*)(temp->binding))->returntype != INT)
 						error("Main function needs return type of int","");
-					if( ((Funcb*)(temp->binding))->num_param != 1) 
+					if( ((Funcb*)(temp->binding))->num_param != 1)
 						error("Main function only takes 1 parameter","");
-					if( ((Funcb*)(temp->binding))->param_type[0] != VOID) 
+					if( ((Funcb*)(temp->binding))->param_type[0] != VOID)
 						error("Main function parameter has to be void","");
 					deleteEntry(temp);
 			   }
-			   else{		
+			   else{
 				   found = lookup((char*)temp->name, mysymtab);
 				   if(found == NULL){ install(temp, mysymtab); /*printTree(mysymtab)*/;}
 				   else{
-					if(((Funcb*)(temp->binding))->returntype != found->returntype) 
+					if(((Funcb*)(temp->binding))->returntype != found->returntype)
 						error("Function already declared with different return type","");
 					if(((Funcb*)(temp->binding))->num_param == -1 || found->num_param == -1){
 						if(((Funcb*)(temp->binding))->param_type[0] != found->param_type[0])
@@ -261,7 +269,7 @@ func: funcheader {
 							fprintf(stderr,"argument 0 is of different type than in previous declaration\n");
 					}
 					else{
-						if(((Funcb*)(temp->binding))->num_param != found->num_param) 
+						if(((Funcb*)(temp->binding))->num_param != found->num_param)
 							error("Function already decleared with different number of parameters","");
 						if( ((Funcb*)(temp->binding))->num_param > 0 && found->num_param >0){
 							for(a=0;a<((Funcb*)(temp->binding))->num_param && a<found->num_param ;a++){
@@ -269,7 +277,7 @@ func: funcheader {
 									error("In Function %s ", $1->name);
 									fprintf(stderr, "argument %d is of different type than in previous declaration\n", a);
 								}
-								
+
 							}
 						}
 					}
@@ -277,7 +285,7 @@ func: funcheader {
 				   }
 			   }
 			}
-	| funcheader error semi { yyerrok; 
+	| funcheader error semi { yyerrok;
 					error("(unexpected token before semi in function)","");
 					if($1 !=NULL) if($1->paramlist !=NULL) deleteListP((ListP*)($1->paramlist));
 					if($1 !=NULL) free($1); $1 = NULL;
@@ -286,64 +294,86 @@ func: funcheader {
 
 
 funcheader: voidt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof(funcheadertype));
-						$$->returntype = VOID; 
-						$$->name = $2; 
-						(ListP*)($$->paramlist) = $<value.lstpvalue>4;
+						$$->returntype = VOID;
+						$$->name = $2;
+						//(ListP*)($$->paramlist) = $<value.lstpvalue>4;
+						ListP * tempLP = (ListP *)$$->paramlist;
+						tempLP = $<value.lstpvalue>4;
 						}
 	| intt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof(funcheadertype));
-						$$->returntype = INT; 
-						$$->name = $2; 
+						$$->returntype = INT;
+						$$->name = $2;
+                        $$->paramlist = NULL;
 						if($4.ttype == VOID) $$->ttype = VOID;
-						(ListP*)($$->paramlist) = $<value.lstpvalue>4;
+						//(ListP*)($$->paramlist) = $<value.lstpvalue>4;
+						ListP * tempLP = (ListP *)$$->paramlist;
+						tempLP = $<value.lstpvalue>4;
+                        $$->paramlist = tempLP;
 						}
 	| floatt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof(funcheadertype));
-						$$->returntype = FLOAT; 
-						$$->name = $2; 
-						(ListP*)($$->paramlist) = $<value.lstpvalue>4;
+						$$->returntype = FLOAT;
+						$$->name = $2;
+						//(ListP*)($$->paramlist) = $<value.lstpvalue>4;
+						ListP * tempLP = (ListP *)$$->paramlist;
+						tempLP = $<value.lstpvalue>4;
 						}
 	| voidt error rpar { ListP* tempP; yyerrok;
 				$$ =(funcheadertype*) malloc(sizeof(funcheadertype));
 				$$->name ="";
 				$$->returntype=VOID;
-				(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
+				//(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
+				ListP * tempLP = (ListP *)$$->paramlist;
+				tempLP = (ListP*) malloc(sizeof(ListP));
 				tempP= (ListP*)($$->paramlist);
 				tempP->listsize = 0;
 				error("(expecting lpar before rpar in function)","");
 			}
-	| intt error rpar { ListP* tempP; yyerrok; 
+	| intt error rpar { ListP* tempP; yyerrok;
 				$$ =(funcheadertype*) malloc(sizeof(funcheadertype));
 				$$->name ="";
 				$$->returntype=INT;
-				(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
+				//(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
+				ListP * tempLP = (ListP *)$$->paramlist;
+				tempLP = (ListP*) malloc(sizeof(ListP));
 				tempP= (ListP*)($$->paramlist);
 				tempP->listsize = 0;
 				error("(expecting lpar before rpar in function)","");
 			}
-	| floatt error rpar { ListP* tempP; yyerrok; 
+	| floatt error rpar { ListP* tempP; yyerrok;
 				$$ =(funcheadertype*) malloc(sizeof(funcheadertype));
 				$$->name ="";
 				$$->returntype=FLOAT;
-				(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
+				//(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
+				ListP * tempLP = (ListP *)$$->paramlist;
+				tempLP = (ListP*) malloc(sizeof(ListP));
 				tempP= (ListP*)($$->paramlist);
 				tempP->listsize = 0;
 				error("(expecting lpar before rpar in function)","");
 			}
-	| voidt Ident lpar error rpar  {ListP* tempP; yyerrok; 
+	| voidt Ident lpar error rpar  {ListP* tempP; yyerrok;
 				$$ =(funcheadertype*) malloc(sizeof(funcheadertype));
 				$$->name =$2;
 				$$->returntype=VOID;
-				(ListP*)($$->paramlist) = NULL; 
-				(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
+				//(ListP*)($$->paramlist) = NULL;
+				ListP * tempLP1 = (ListP *)$$->paramlist;
+				tempLP1 = NULL;
+				//(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
+				ListP * tempLP = (ListP *)$$->paramlist;
+				tempLP = (ListP*) malloc(sizeof(ListP));
 				tempP= (ListP*)($$->paramlist);
 				tempP->listsize = 0;
 				error("(unexpected token after lpar and before rpar in function)","");
 			}
-	| floatt Ident lpar error rpar { ListP* tempP; yyerrok; 
+	| floatt Ident lpar error rpar { ListP* tempP; yyerrok;
 				$$ =(funcheadertype*) malloc(sizeof(funcheadertype));
 				$$->name =$2;
 				$$->returntype=FLOAT;
-				(ListP*)($$->paramlist) = NULL; 
-				(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
+				//(ListP*)($$->paramlist) = NULL;
+				ListP * tempLP1 = (ListP *)$$->paramlist;
+				tempLP1 = NULL;
+				//(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
+				ListP * tempLP = (ListP *)$$->paramlist;
+				tempLP = (ListP*) malloc(sizeof(ListP));
 				tempP= (ListP*)($$->paramlist);
 				tempP->listsize = 0;
 				error("(unexpected token after lpar and before rpar in function)","");
@@ -352,8 +382,12 @@ funcheader: voidt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof
 				$$ = (funcheadertype*)  malloc(sizeof(funcheadertype));
 				$$->name=$2;
 				$$->returntype=INT;
-				(ListP*)($$->paramlist) = NULL; 
-				(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
+				//(ListP*)($$->paramlist) = NULL;
+				ListP * tempLP1 = (ListP *)$$->paramlist;
+				tempLP1 = NULL;
+				//(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
+				ListP * tempLP = (ListP *)$$->paramlist;
+				tempLP = (ListP*) malloc(sizeof(ListP));
 				tempP= (ListP*)($$->paramlist);
 				tempP->listsize = 0;
 				error("(unexpected token after lpar and before rpar in function)","");
@@ -367,75 +401,75 @@ paramdef: paramdeflist {$<value.lstpvalue>$= $1;
 				$<value.lstpvalue>$ = appendListP($1, "...", VOID);
 				}
 	| voidt {$<value.lstpvalue>$ = NULL; $$.ttype = VOID;}
-	| paramdeflist error rpar { yyerrok; 
+	| paramdeflist error rpar { yyerrok;
 					error("(unexpected token before rpar in parameter definition)","");
 					deleteListP($1);
 						}
-	| paramdeflist comma error rpar { yyerrok; 
+	| paramdeflist comma error rpar { yyerrok;
 					error("(unexpected token before rpar in parameter definition)","");
 					deleteListP($1);
 					}
 ;
 
-paramdeflist: intt Ident  {	
+paramdeflist: intt Ident  {
 				$$ = mklistP((char*)strdup($2), INT);
 				}
 		| floatt Ident  {
 				$$ = mklistP((char*)strdup($2), FLOAT);
 				}
-		| chart star Ident { 
+		| chart star Ident {
 				$$ = mklistP((char*)strdup($3), STR);
 				}
-	| paramdeflist comma intt Ident { 
+	| paramdeflist comma intt Ident {
 				$$ = appendListP($1, (char*)strdup($4),INT);
 				}
-	| paramdeflist comma floatt Ident { 
+	| paramdeflist comma floatt Ident {
 				$$ = appendListP($1, (char*)strdup($4), FLOAT);
 				}
-	| paramdeflist comma chart star Ident { 
+	| paramdeflist comma chart star Ident {
 				$$ = appendListP($1, (char*)strdup($5), STR);
 				}
 ;
 
 
-funcbody: lcbra 
+funcbody: lcbra
 	decls {
 			if(founderror==FALSE){
 				mainlocal=offset_counter-5;
-				if(currentFunc==NULL) 
+				if(currentFunc==NULL)
 					gen_instr_I("alloc", mainlocal);
-				else{ 
+				else{
 					currentFunc->localcount=offset_counter-5-currentFunc->num_param;
-					gen_instr_I("alloc",currentFunc->localcount); 
+					gen_instr_I("alloc",currentFunc->localcount);
 				}
 			}
 		}
-	stmtlist 
+	stmtlist
 	rcbra {
 					#ifdef DEBUG
 					printTree(mysymtab);
 					#endif
 					}
-//	| lcbra decls stmtlist error rcbra 
-//		{ yyerrok; 
+//	| lcbra decls stmtlist error rcbra
+//		{ yyerrok;
 //			error("(unexpected token before rcbra in function)","");
 //		}
 ;
 
 
-decls:  /*empty*/ 
+decls:  /*empty*/
 	| decls variabledecl { //$<value.lstvalue>$ = $<value.lstvalue>2;
 				}
 	| decls func {}
 ;
 
 
-variabledecl: intt identlist semi { if($<value.lstvalue>2 !=NULL) addtosymtab(mysymtab, INT, $<value.lstvalue>2); 
+variabledecl: intt identlist semi { if($<value.lstvalue>2 !=NULL) addtosymtab(mysymtab, INT, $<value.lstvalue>2);
 					#ifdef DEBUG
 						printTree(mysymtab);
 					#endif
 					}
-	| floatt identlist semi { if($<value.lstvalue>2 !=NULL) addtosymtab(mysymtab, FLOAT, $<value.lstvalue>2); 
+	| floatt identlist semi { if($<value.lstvalue>2 !=NULL) addtosymtab(mysymtab, FLOAT, $<value.lstvalue>2);
 					#ifdef DEBUG
 					printTree(mysymtab);
 					#endif
@@ -453,10 +487,10 @@ stmt: expr semi {
 			gen_instr_I("popI",4);
 	}
 	| returnt semi {
-					if(currentFunc ==NULL) 
+					if(currentFunc ==NULL)
 						error("main function has to return a value","");
 					else{
-						if(currentFunc->returntype != VOID) 
+						if(currentFunc->returntype != VOID)
 							error("Function has return type that is not void","");
 						else{
 							if(founderror==FALSE){
@@ -465,55 +499,59 @@ stmt: expr semi {
 						}
 					}
 			}
-	| returnt expr semi {		if($2->numeric != TRUE) 
+	| returnt expr semi {		if($2->numeric != TRUE)
 						error("non numeric expression in return statement or return type is void", "");
-					else{ 
+					else{
 						if(currentFunc ==NULL){
-							if($2->type != INT) 
+							if($2->type != INT)
 								warning("main function has int return type","");
-							
+
 								if(founderror==FALSE){
 									if($2->lval==TRUE){
 										switch($2->type){
 											case INT:	gen_instr("fetchI"); break;
 											case FLOAT:	gen_instr("fetchR"); break;
+                                            //case default:
 										}
 									}
 									if($2->type != INT) gen_instr("int");
 									gen_instr("setrvI");
 								}
-							
+
 						}
-						else{	
+						else{
 							#ifdef DEBUG
 							printf("type and returntype : %d: %d\n",$2->type,currentFunc->returntype);
 							#endif
-							if($2->type != currentFunc->returntype) 
+							if($2->type != currentFunc->returntype)
 								warning("function has different returntype","");
-							
+
 								if(founderror==FALSE){
                                                                         if($2->lval==TRUE){
                                                                                 switch($2->type){
                                                                                         case INT:       gen_instr("fetchI"); break;
                                                                                         case FLOAT:     gen_instr("fetchR"); break;
+                                                                                        //default:
                                                                                 }
                                                                         }
 									switch(currentFunc->returntype){
 										case INT:	switch($2->type){
 													case FLOAT:	gen_instr("int");
 													case INT:	gen_instr("setrvI"); break;
+                                                    //default:
 												}
 												break;
 										case FLOAT:	switch($2->type){
 													case INT:	gen_instr("flt");
 													case FLOAT:	gen_instr("setrvR"); break;
+                                                    //default:
 												}
 												break;
 									}
 									gen_instr("returnf");
                                                                 }
 
-							
+
 
 						}
 					}
@@ -527,9 +565,9 @@ stmt: expr semi {
 			othercounter++;
 			gen_label(genlabelw("",$$.one));
 		}
-	} 
+	}
 	lpar
-	expr 
+	expr
 	rpar {
 		if(founderror==FALSE){
 			if($4->numeric==TRUE){
@@ -537,15 +575,16 @@ stmt: expr semi {
 					switch($4->type){
 						case INT:	gen_instr("fetchI"); break;
 						case FLOAT:	gen_instr("fetchR"); gen_instr("int"); break;
+                        //default:
 					}
 				}
 			}
 			gen_instr_S("jumpz", genlabelw("",$2.two));
-			
+
 		}
 	}
-	stmt { 
-				if($4->numeric !=TRUE) 
+	stmt {
+				if($4->numeric !=TRUE)
 					error("non numeric expression in while statement","");
 				else{
 						if($4->type !=INT)
@@ -567,7 +606,7 @@ stmt: expr semi {
 	}
 
 	stmt {
-				if($1.numeric !=TRUE) 
+				if($1.numeric !=TRUE)
 						error("non numeric expression in if statement","");
 					else{
 						if($1.ttype !=INT)
@@ -581,13 +620,13 @@ stmt: expr semi {
 	}
 
 	| ifexprstmt{
-					if($1.numeric !=TRUE) 
+					if($1.numeric !=TRUE)
 						error("non numeric expression in if statement","");
 					else{
 						if($1.ttype !=INT)
 							error("expression in if statement is not an integer","");
 						else{
-							
+
 							if(founderror==FALSE) gen_label(genlabelw("",$1.one));
 						}
 					}
@@ -601,16 +640,16 @@ stmt: expr semi {
 	//| whilet lpar expr error stmt { yyerrok; error("(unexpected token between expr and stmt in while stmt)","");}
 	| ift error stmt { yyerrok; error("(unexpected token before stmt in if stmt)","");}
 	//| ift lpar expr error stmt { yyerrok; error("(unexpected token before stmt in if stmt)","");}
-	| lcbra stmtlist error rcbra { yyerrok; 
+	| lcbra stmtlist error rcbra { yyerrok;
 					error("(unexpected token before rcbra in stmt)","");
 					//closescope(mysymtab);
 				}
 ;
 
 ifexprstmt:
-	ift 
-	lpar 
-	expr 
+	ift
+	lpar
+	expr
 	{
 		$$.one=othercounter;
 		othercounter++;
@@ -621,30 +660,32 @@ ifexprstmt:
 				switch($3->type){
 					case INT:	gen_instr("fetchI"); break;
 					case FLOAT:	gen_instr("fetchR"); gen_instr("int"); break;
+                    //default:
 				}
 			}
 			gen_instr_S("jumpz", genlabelw("",$$.one));
 		}
 	}
 	rpar
-	stmt { 
-		$$.lval=$3->lval; $$.numeric=$3->numeric; $$.ttype = $3->type; $$.one = $4.one; $$.two=$4.two; 
+	stmt {
+		$$.lval=$3->lval; $$.numeric=$3->numeric; $$.ttype = $3->type; $$.one = $4.one; $$.two=$4.two;
 	}
 ;
 
 expr: equalexpr equal equalexpr {
-					if($1.lval !=TRUE){ 
-						error("Cannot make assignment. Left hand side is not a correct lval",""); 
+					if($1.lval !=TRUE){
+						error("Cannot make assignment. Left hand side is not a correct lval","");
 					}
 					else if($3.numeric !=TRUE){
 						error("Cannot make assignment, Right hand side is not numeric.","");
-					}					
+					}
 					else {
 						if(founderror==FALSE){
 							if($3.lval==TRUE){
 								switch($3.ttype){
 									case INT:	gen_instr("fetchI"); break;
 									case FLOAT:	gen_instr("fetchR"); break;
+                                    //default:
 								}
 							}
 						}
@@ -654,14 +695,15 @@ expr: equalexpr equal equalexpr {
 								switch($1.ttype){
 									case(INT): $$->type=INT; gen_instr("storeI"); break;
 									case(FLOAT): $$->type=FLOAT; gen_instr("storeR"); break;
+                                    //default:
 								}
 							}
 							$$->lval = TRUE;
 							$$->numeric =TRUE;
 
 						}
-						else if($1.ttype ==INT && $3.ttype==FLOAT){ 
-							warning("expressons are of different type, data may be lost",""); 
+						else if($1.ttype ==INT && $3.ttype==FLOAT){
+							warning("expressons are of different type, data may be lost","");
 							$$ = (exprtype*) malloc(sizeof(exprtype));
 							$$->type = INT;
 							$$->lval=TRUE;
@@ -671,8 +713,8 @@ expr: equalexpr equal equalexpr {
 								gen_instr("storeI");
 							}
 						}
-						else if($1.ttype ==FLOAT && $3.ttype ==INT) { 
-							warning("expression are of different type, data may be lost",""); 
+						else if($1.ttype ==FLOAT && $3.ttype ==INT) {
+							warning("expression are of different type, data may be lost","");
 							$$ = (exprtype*) malloc(sizeof(exprtype));
 							$$->type=FLOAT;
 							$$->numeric=TRUE;
@@ -682,23 +724,24 @@ expr: equalexpr equal equalexpr {
 								gen_instr("storeR");
 							}
 						}
-						
-					}					
+
+					}
 				}
-	| equalexpr { 
+	| equalexpr {
 			$$ = (exprtype*) malloc(sizeof(exprtype));
 			$$->lval = $1.lval; $$->numeric = $1.numeric; $$->type =$1.ttype;
 			}
 	| equalexpr equal error { yyerrok; error("(unexpected token after equal operator in expr)","");}
 ;
 
-equalexpr: relexpr 
+equalexpr: relexpr
 	eqop {
 		if(founderror==FALSE){
 			if($1.numeric==TRUE){
 				switch($1.ttype){
 					case INT:	if($1.lval==TRUE) gen_instr("fetchI"); break;
 					case FLOAT:	if($1.lval==TRUE) gen_instr("fetchR"); break;
+                   // default:
 				}
 			}
 		}
@@ -709,6 +752,7 @@ equalexpr: relexpr
 				switch($4.ttype){
 					case INT:	if($4.lval==TRUE) gen_instr("fetchI"); break;
 					case FLOAT:	if($4.lval==TRUE) gen_instr("fetchR"); break;
+                   // default:
 				}
 			}
 		}
@@ -725,12 +769,13 @@ equalexpr: relexpr
                                                                                 case EQEQ:      if($1.ttype==INT) gen_instr("eqI");
                                                                                                 else if($1.ttype==FLOAT) gen_instr("eqR");
                                                                                                 break;
+                                                                                //default:
                                                                         }
                                                         }
 
 						}
-						else if($1.ttype ==INT && $4.ttype==FLOAT){ 
-							warning("expressons are of different type, data may be lost",""); 
+						else if($1.ttype ==INT && $4.ttype==FLOAT){
+							warning("expressons are of different type, data may be lost","");
 							$$.ttype = INT;
 								if(founderror==FALSE){
                                                                         switch($<value.relopvalue>2){
@@ -740,12 +785,13 @@ equalexpr: relexpr
                                                                                 case EQEQ:       gen_instr("fltb");
                                                                                                 gen_instr("eqR");
                                                                                                 break;
+                                                                                //default:
                                                                         }
                                                                 }
-							
+
 						}
 						else if($1.ttype ==FLOAT && $4.ttype ==INT) {
-							 warning("expression are of different type, data may be lost",""); 
+							 warning("expression are of different type, data may be lost","");
 							$$.ttype=INT;
 							if(founderror==FALSE){
                                                                         switch($<value.relopvalue>2){
@@ -765,7 +811,7 @@ equalexpr: relexpr
 	| relexpr eqop error { yyerrok; error("(unexpected token after equality operator in expr)","");}
 ;
 
-relexpr: simpleexpr 
+relexpr: simpleexpr
 	relop {
 		if(founderror==FALSE){
 			if($1.numeric==TRUE){
@@ -775,7 +821,7 @@ relexpr: simpleexpr
 				}
 			}
 		}
-	} 
+	}
 	simpleexpr  {
 			if(founderror==FALSE){
 				if($4.numeric==TRUE){
@@ -804,12 +850,12 @@ relexpr: simpleexpr
 										case GEQ:	if($1.ttype==INT) gen_instr("geI");
 												else if($1.ttype==FLOAT) gen_instr("geR");
 												break;
-                                                                        }									
+                                                                        }
 								}
 
 							}
-							else if($1.ttype ==INT && $4.ttype==FLOAT){ 
-								warning("expressons are of different type, data may be lost",""); 
+							else if($1.ttype ==INT && $4.ttype==FLOAT){
+								warning("expressons are of different type, data may be lost","");
 								$$.ttype = INT;
 								if(founderror==FALSE){
                                                                         switch($<value.relopvalue>2){
@@ -828,8 +874,8 @@ relexpr: simpleexpr
                                                                         }
                                                                 }
 							}
-							else if($1.ttype ==FLOAT && $4.ttype ==INT) { 
-								warning("expression are of different type, data may be lost",""); 
+							else if($1.ttype ==FLOAT && $4.ttype ==INT) {
+								warning("expression are of different type, data may be lost","");
 								$$.ttype = INT;
 								if(founderror==FALSE){
                                                                         switch($<value.relopvalue>2){
@@ -850,16 +896,16 @@ relexpr: simpleexpr
 							}
 
 						}
-						else{ 
-							error("non numeric in operation",""); 
-							$$.numeric=FALSE; 
+						else{
+							error("non numeric in operation","");
+							$$.numeric=FALSE;
 						}
 					}
 	| simpleexpr { $$.lval = $1.lval; $$.ttype = $1.ttype; $$.numeric=$1.numeric;}
 	| simpleexpr relop error { yyerrok; error("(unexpected token after relational operator","");}
 ;
 
-simpleexpr: simpleexpr 
+simpleexpr: simpleexpr
 	addop {
 		if(founderror==FALSE){
                         if($1.numeric==TRUE){
@@ -896,7 +942,7 @@ simpleexpr: simpleexpr
                            	                       		      	}
 	                                	            	}
 							}
-							else if($1.ttype ==INT && $4.ttype==FLOAT){ warning("expressons are of different type, data may be lost",""); 
+							else if($1.ttype ==INT && $4.ttype==FLOAT){ warning("expressons are of different type, data may be lost","");
 								$$.ttype = FLOAT;
 		                                                if(founderror==FALSE){
 		                                                        switch($<value.addopvalue>2){
@@ -909,7 +955,7 @@ simpleexpr: simpleexpr
 		                                                        }
 		                                                }
 							}
-							else if($1.ttype ==FLOAT && $4.ttype ==INT) { warning("expression are of different type, data may be lost",""); 
+							else if($1.ttype ==FLOAT && $4.ttype ==INT) { warning("expression are of different type, data may be lost","");
 								$$.ttype = FLOAT;
                         		                        if(founderror==FALSE){
                         		                                switch($<value.addopvalue>2){
@@ -923,8 +969,8 @@ simpleexpr: simpleexpr
 		                                                }
 							}
 						}
-						else{ 
-							error("non numeric in operation",""); 
+						else{
+							error("non numeric in operation","");
 							$$.numeric=FALSE;
 						}
 
@@ -933,7 +979,7 @@ simpleexpr: simpleexpr
 	| simpleexpr addop error { yyerrok; error("(unexpected token after additive operator)","");}
 ;
 
-term: term mulop { 
+term: term mulop {
 		if(founderror==FALSE){
 			if($1.numeric==TRUE){
 				switch($1.ttype){
@@ -967,13 +1013,13 @@ term: term mulop {
 							}
 						}
 					}
-					else if($1.ttype ==INT && $4.ttype==FLOAT){ 
-						warning("expressons are of different type, data may be lost",""); 
+					else if($1.ttype ==INT && $4.ttype==FLOAT){
+						warning("expressons are of different type, data may be lost","");
 						$$.ttype = FLOAT;
 						if(founderror==FALSE){
 							switch($<value.multopvalue>2){
         	                                                case DIV:       gen_instr("fltb");
-										gen_instr("divR");     
+										gen_instr("divR");
                         	                                                break;
                                 	                        case MULT:      gen_instr("fltb");
 										gen_instr("mulR");
@@ -981,7 +1027,7 @@ term: term mulop {
 	                                                }
 						}
 					}
-					else if($1.ttype ==FLOAT && $4.ttype ==INT) { 
+					else if($1.ttype ==FLOAT && $4.ttype ==INT) {
 						warning("expression are of different type, data may be lost","");
 						$$.ttype = FLOAT;
 						if(founderror==FALSE){
@@ -997,8 +1043,8 @@ term: term mulop {
 					}
 
 				}
-				else{ 
-					error("non numeric in operation",""); 
+				else{
+					error("non numeric in operation","");
 					$$.numeric =FALSE;
 				}
 			}
@@ -1023,13 +1069,13 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
 	}
 	| Ident { Entry *tempE, *tempE2; $<value.svalue>$ = $1;
 				if(strcmp((char*)$<value.svalue>1, "main")!=0){
-					if(lookup((char*)$<value.svalue>1, mysymtab) == NULL) 
+					if(lookup((char*)$<value.svalue>1, mysymtab) == NULL)
 						error("variable undeclared, please declare variables before using them","");
 					else{
 						tempE2 = (Entry*) malloc(sizeof(Entry));
 						tempE2->name =(char*) $<value.svalue>1;
 						if((tempE=lookupB((char*)$<value.svalue>1,mysymtab)) !=NULL){
-							
+
 							if(tempE->self ==VAR || tempE->self == PARAM){
 								switch(tempE->self){
 									case VAR:
@@ -1045,7 +1091,7 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
 											else{
 												gen_instr_tI("pushga",getleveldif($<value.svalue>1,mysymtab),((Varb*)(tempE->binding))->offset);
 												//do something else
-												
+
 											}
 										}
 										break;
@@ -1066,9 +1112,9 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
 										}
 										break;
 
-								}	
+								}
 							}
-							else 
+							else
 								error("Variable is unkown or undelcared","");
 						}
 						else{
@@ -1083,11 +1129,11 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
 					error("Main is not a variable name","");
 						//tempE2 = (Entry*) malloc(sizeof(Entry));
 						//tempE2->name = (char*) $<value.svalue>1;
-						
+
 				}
 		}
 	| lpar expr rpar { $$.lval = $2->lval; $$.ttype = $2->type; $$.numeric= $2->numeric;
-					
+
 				}
 	| addop factor %prec uminus {
 				if(founderror==FALSE){
@@ -1120,16 +1166,16 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
 						else
 							error("cannot change sign of non numeric expression","");
 					}
-	| adof Ident { 
+	| adof Ident {
 				Entry *tempE, *tempE2; $<value.svalue>$ = $2;
                                 if(strcmp((char*)$<value.svalue>2, "main")!=0){
-                                        if(lookup((char*)$<value.svalue>2, mysymtab) == NULL) 
+                                        if(lookup((char*)$<value.svalue>2, mysymtab) == NULL)
 						error("variable undeclared, please declare variables before using them","");
                                         else{
                                                 tempE2 = (Entry*) malloc(sizeof(Entry));
                                                 tempE2->name =(char*) $<value.svalue>2;
                                                 if((tempE=lookupB((char*)$<value.svalue>2,mysymtab)) !=NULL){
-                                                        
+
                                                         if(tempE->self ==VAR || tempE->self == PARAM){
                                                                 switch(tempE->self){
                                                                         case VAR:
@@ -1145,7 +1191,7 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
                                                                                         else{
                                                                                                 gen_instr_tI("pushga",getleveldif($<value.svalue>2,mysymtab),((Varb*)(tempE->binding))->offset);
                                                                                                 //do something else
-                                                 
+
                                                                                         }
                                                                                 }
                                                                                 break;
@@ -1163,11 +1209,11 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
                                                                                         else{
                                                                                                 //do something else
                                                                                         }
-                                                                                }                                                
-                                                 
+                                                                                }
+
                                                                 }
                                                         }
-                                                        else 
+                                                        else
 								error("Variable is unkown or undelcared", "");
                                                 }
                                                 else{
@@ -1182,32 +1228,32 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
                                         error("Main is not a variable name", "");
                                                 //tempE2 = (Entry*) malloc(sizeof(Entry));
                                                 //tempE2->name = (char*) $<value.svalue>1;
-                                                                        
+
                                 }
 			}
 	| function_call { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=$1.numeric; }
-	
+
 	| addop error { yyerrok; error("(unexpected token after unary additive operator)","");
-					
+
 					}
-//	| Ident lpar exprlist error { yyerrok; error("(unexpected token token before rpar)","");					
+//	| Ident lpar exprlist error { yyerrok; error("(unexpected token token before rpar)","");
 //					}
 	| lpar expr error rpar { yyerrok; error("(unexpected token before rpar)","");
-					
+
 					}
-	
+
 ;
 
 function_call: Ident lpar rpar {$$.lval = FALSE; Funcb* tempb; Entry* tempE; Entry *tempE2;
                                 if((tempb=lookup((char*)$<value.svalue>1,mysymtab)) == NULL){
                                         error("function undeclared, please declare functions before using them","");
 				}
-                                else{                   
+                                else{
                                         tempE2 = (Entry*) malloc(sizeof(Entry));
                                         tempE2->name = (char*)$<value.svalue>1;
                                         if((tempE=lookupB((char*)$<value.svalue>1,mysymtab))!=NULL){
                                                 if(tempE->self ==FUNC){
-							if(tempb->returntype !=VOID) $$.lval =TRUE; else $$.lval=FALSE; 
+							if(tempb->returntype !=VOID) $$.lval =TRUE; else $$.lval=FALSE;
                                                         if(tempb->num_param != 0)
                                                                 error("Function call without correct number of parameters if any","");
                                                         $$.ttype = tempb->returntype;
@@ -1242,7 +1288,7 @@ func_call_with_params: name_and_params rpar{$$.numeric =$1.numeric; $$.lval = FA
 							}
 							else{
 								if( ((Funcb*)($1.funcent->binding))->label==0) ((Funcb*)($1.funcent->binding))->label=getlabel();
-								gen_call( genlabelw($1.funcent->name,((Funcb*)($1.funcent->binding))->label), 
+								gen_call( genlabelw($1.funcent->name,((Funcb*)($1.funcent->binding))->label),
 									((Funcb*)($1.funcent->binding))->num_param);
 							}
 						}
@@ -1250,11 +1296,11 @@ func_call_with_params: name_and_params rpar{$$.numeric =$1.numeric; $$.lval = FA
 			}
 ;
 
-name_and_params: 
-       Ident 
+name_and_params:
+       Ident
 	lpar
-	{ 
-		$$.funcent =NULL; 
+	{
+		$$.funcent =NULL;
 		$$.funcent = lookupB((char*)$<value.svalue>1,mysymtab);
 		#ifdef DEBUG
 		printTree(mysymtab);
@@ -1265,7 +1311,7 @@ name_and_params:
 		if(founderror==FALSE) gen_instr_I("enter",1);
 	}
 	expr { Entry *tempE, *tempE2; $$.lval = FALSE; listnodeE* tempexprN; ListE * tempLE; int a; Funcb* tempB;
-				
+
                                 if((tempB=lookup((char*)$<value.svalue>1,mysymtab)) ==NULL){
                                         error("function undelcared, please declare functions before using them","");
 					error("1","");
@@ -1285,10 +1331,13 @@ name_and_params:
                                                         if(tempB->num_param ==0){
 								error("Paramter given for a function that takes no parameters.","");
 							}
-                                                        else if(tempB->num_param == -1){
+                                                        else if(tempB->num_param == -1 && tempB->actual_num != 2){
+                                                            #ifdef DEBUG
+                                                            fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
+                                                            #endif
                                                                 if($4->type != tempB->param_type[0]){
    	                                                        	error("parameter type is different in declaration and in function call","");
-									
+
 								}
 								else{
 									if(founderror==FALSE){
@@ -1309,10 +1358,16 @@ name_and_params:
 										}
 									}
 									if(tempB->param_type !=NULL){
-                        	                                                if($4->type != tempB->param_type[0]){
+                                        if($4->type != tempB->param_type[0]){
+                                            #ifdef DEBUG
+                                            fprintf(stderr,"Function mismatch 2: FUNCTION NAME: %s",$1);
+                                            #endif
 											if(tempB->param_type[0]!=INT && tempB->param_type[0]!=FLOAT)
-	                                                                	                error("Parameter type is different in declaration and in function call","");
+                                                error("Parameter type is different in declaration and in function call","");
 											else if(tempB->param_type[0]==INT){
+                                                #ifdef DEBUG
+                                                fprintf(stderr,"Function mismatch 3: FUNCTION NAME: %s",$1);
+                                                #endif
 												switch($4->type){
 													case FLOAT:	warning("Paramter expression will lose data because of different type","");
 															if(founderror==FALSE) gen_instr("int"); break;
@@ -1322,6 +1377,9 @@ name_and_params:
 												}
 											}
 											else if(tempB->param_type[0]==FLOAT){
+                                                #ifdef DEBUG
+                                                fprintf(stderr,"Function mismatch 4: FUNCTION NAME: %s",$1);
+                                                #endif
 												switch($4->type){
 													case INT:	warning("Parameter expression is different type than in declaration","");
 															if(founderror==FALSE) gen_instr("flt"); break;
@@ -1330,7 +1388,7 @@ name_and_params:
 															break;
 												}
 											}
-	
+
 										}
 									}
 									$$.funcent=$3.funcent;
@@ -1343,12 +1401,12 @@ name_and_params:
                                         else
                                                 error("Function is undeclared","");
                                         free(tempE2); tempE2=NULL;
-                                                        
+
                                 }
                         }
-	| name_and_params 
+	| name_and_params
 	comma {}
-	expr { 
+	expr {
 			Entry *tempE, *tempE2; $$.lval = FALSE; listnodeE* tempexprN; ListE * tempLE; int a; Funcb* tempB;
                                 if($1.funcent==NULL){
                                         error("function undelcared, please declare functions before using them","");
@@ -1383,7 +1441,10 @@ name_and_params:
                                                         }
                                                         else if($$.params < tempB->num_param){
                                                                 if($4->type != tempB->param_type[$1.params]){
-									
+                                                                    #ifdef DEBUG
+                                                                    fprintf(stderr,"Function mismatch before warning: FUNCTION NAME: %s",$1);
+                                                                    #endif
+
                                                                 	warning("Parameter type is different in declaration and in function call","");
 									if(founderror==FALSE){
 										if($4->lval==TRUE){
@@ -1415,7 +1476,7 @@ name_and_params:
                                         else
                                                 error("Function is undeclared","");
                                         free(tempE2); tempE2=NULL;
-                                 
+
                                 }
                         }
 
@@ -1435,7 +1496,7 @@ constant: StrConstant { $<value.svalue>$ = $1;
 				$$.ttype = INT;
 				$$.lval = FALSE;
 				$$.numeric= TRUE;
-				} 
+				}
 	| FloatConstant { $<value.fvalue>$ = $1;
 				$$.ttype = FLOAT;
 				$$.lval = FALSE;
@@ -1446,10 +1507,10 @@ constant: StrConstant { $<value.svalue>$ = $1;
 
 identlist: Ident { $$ = mklist(((char*)$1));}
 	| identlist comma Ident { $$ = appendList( $1, $3);}
-	| identlist comma error {yyerrok; error("(unexpected token after comma)",""); 
+	| identlist comma error {yyerrok; error("(unexpected token after comma)","");
 						//deleteList($1);
-						
-				} 
+
+				}
 ;
 
 
@@ -1461,7 +1522,7 @@ mulop: star { $$ = $1;}
 	| divide {$$ = $1;}
 ;
 
-eqop: equequ { $$ = $1;} 
+eqop: equequ { $$ = $1;}
 	| neq { $$ = $1;}
 ;
 
@@ -1477,15 +1538,19 @@ relop: lesst { $$ = $1;}
 int yyerror(char *s)
 {
 	fprintf(stderr,"Error: Line: %d: %s\n", Line_Number, s);
+    return 0;
 }
 
 
 int warning(char *s1, char* s2)
 {
 	fprintf(stderr,"Warning: Line: %d: %s %s\n",Line_Number,s1,s2);
+    return 0;
 }
 
 int error(char* s1, char* s2){
 	fprintf(stderr,"Error: Line: %d: %s %s\n",Line_Number,s1,s2);
 	founderror=TRUE;
+    return 0;
 }
+

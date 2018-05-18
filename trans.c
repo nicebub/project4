@@ -1,6 +1,7 @@
 #include "trans.h"
 #include <stdio.h>
-
+#include <stdlib.h>
+#include <string.h>
 void initializelabel(){
 	labelcounter=1;
 }
@@ -13,7 +14,7 @@ int getlabel(){
 void nullout(char* name, int length){
 	int a;
 	for(a=0;a<length;a++){
-		name[a]=NULL;
+		name[a]=(char)NULL;
 	}
 }
 
@@ -23,7 +24,7 @@ char* genlabelw(char* name, int labelnum){
 	char buf[30];
 	sprintf(buf,"%d",labelnum);
 	tempstr = (char*) malloc(sizeof(char)*(strlen(name)+strlen(buf)+2));
-	nullout(tempstr, (strlen(name)+strlen(buf)+2));
+	nullout(tempstr, (int)(strlen(name)+strlen(buf)+2));
 	tempstr[0]='$';
 	tempstr++;
 	for(a=0;a<(strlen(name));a++)
@@ -41,7 +42,7 @@ void deletelabel(char* label){
 }
 
 void gen_instr(char* name){
-	fprintf(infile, "\t%s\n", name);	
+	fprintf(infile, "\t%s\n", name);
 }
 
 void gen_instr_I(char* name, int arg){
@@ -75,7 +76,7 @@ char * concat(char* char1, char* char2){
 	char* tempstr;
         int a;
         tempstr = (char*) malloc(sizeof(char)*(strlen(char1)+strlen(char2)+1));
-	nullout(tempstr, (strlen(char1)+strlen(char2)+1));
+	nullout(tempstr, (int)(strlen(char1)+strlen(char2)+1));
         for(a=0;a<(strlen(char1));a++)
                 tempstr[a]=char1[a];
         tempstr = (char*)strcat(tempstr,char2);

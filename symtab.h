@@ -4,15 +4,16 @@
 #include "type.h"
 #include <search.h>
 #include <stdio.h>
+#include "main.h"
 
 extern int Line_Number;
 extern FILE *infile;
 extern int offset_counter;
 extern int globalcount;
 
-int warning(char*, char*);
+//extern int warning(char*, char*);
 
-int error(char*,char*);
+//extern int error(char*,char*);
 
 int Ecmp(const void *Entry1, const void *Entry2);  //comparison function
 

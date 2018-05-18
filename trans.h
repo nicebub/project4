@@ -11,10 +11,10 @@ int localcount;
 int labelcounter;
 extern FILE *infile;
 
-void initializelabel();
+void initializelabel(void);
 
 
-int getlabel(); 	//return next available label number
+int getlabel(void); 	//return next available label number
 void gen_label(char* name);	//generate label with label name : name
 char* genlabelw(char* name, int labelnum); //generate a label with $<labelname><labelnumber>
 void gen_instr(char* name); 	//for instructions without arguments
