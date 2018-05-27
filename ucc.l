@@ -10,6 +10,7 @@
 #include "ucc.tab.h"
 #include "ucc.l.h"
 #include "main.h"
+#include <stdint.h>
 int Line_Number = 1;
 %}
 

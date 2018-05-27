@@ -60,4 +60,6 @@ ListE * mklistE(exprtype* expr);
 
 ListE * appendListE(ListE * inList, exprtype* expr);
 
+void printListP(ListP * inList);
+
 #endif

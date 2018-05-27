@@ -1,5 +1,7 @@
 #ifdef DEBUGON
+#ifndef DEBUG
 #define DEBUG
+#endif
 #endif
 #include "command.h"
 #include <stdio.h>
@@ -37,7 +39,7 @@ int checkargs(int argc, char** argv){
 int openfile(int argc, char** argv){
 	char * tempstr;
 	int a;
-	tempstr = (char*) malloc(sizeof(char)*(strlen(argv[1])+5));
+	tempstr = (char*) malloc(sizeof(char)*(strlen(argv[1])+4));  //changed to 4 because losing a '\0' was 5
 	for(a=0;a<(strlen(argv[1])-2);a++)
 		tempstr[a]=argv[1][a];
 	tempstr[a] = '.';

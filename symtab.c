@@ -1,5 +1,7 @@
 #ifdef DEBUGON
+#ifndef DEBUG
 #define DEBUG
+#endif
 #endif
 #include "symtab.h"
 #include "type.h"
@@ -153,7 +155,8 @@ void Swalk(const void *node, VISIT myorder, int level){
 					}
 					if(tempb->num_param == -1){
 						fprintf(stderr,"Parameter Types: ");
-						switch(tempb->param_type[a]){
+                        for(a=0;a<tempb->actual_num;a++){
+                            switch(tempb->param_type[a]){
                                                                 case(INT):      fprintf(stderr,"INT ");break;
                                                                 case(FLOAT):    fprintf(stderr,"FLOAT "); break;
                                                                 case(REFINT):   fprintf(stderr,"REFINT "); break;
@@ -161,11 +164,12 @@ void Swalk(const void *node, VISIT myorder, int level){
                                                                 case(REFSTR):   fprintf(stderr, "REFSTR "); break;
                                                                 case(STR):      fprintf(stderr, "STR "); break;
                                                                 case(VOID):     fprintf(stderr, "VOID "); break;
-                            case CHAR:
+                                case CHAR:
                                 
                                 break;
+                            }
                         }
-						fprintf(stderr,"...");
+						//fprintf(stderr,"...");
 
 					}
 					fprintf(stderr,"\n\n");
@@ -317,6 +321,12 @@ Entry *createFunc(char * name, type returntype, ListP* paramlist){
 		//((Funcb*)(temp->binding))->returntype = returntype;
 		tBinding = (Funcb*) malloc(sizeof(Funcb));
 		tBinding->returntype = returntype;
+        tBinding->num_param = 0;
+        tBinding->bodydef = FALSE;
+        tBinding->label = 0;
+        tBinding->localcount=0;
+        tBinding->actual_num=0;
+        tBinding->param_type=NULL;
         temp->binding = tBinding;
 
         if(paramlist!=NULL ){
@@ -329,13 +339,13 @@ Entry *createFunc(char * name, type returntype, ListP* paramlist){
             #endif
 			((Funcb*)(temp->binding))->num_param = paramlist->listsize;
         }
-		else
+/*		else
 			((Funcb*)(temp->binding))->num_param=0;
-
+*/
 		if(((Funcb*)(temp->binding))->num_param >0){
 			((Funcb*)(temp->binding))->param_type = (type*)malloc((sizeof(type) * paramlist->listsize));
 			tempP = paramlist->list;
-			for(a=1;a<=paramlist->listsize;a++){
+			for(a=0;a<paramlist->listsize;a++){
 				((Funcb*)(temp->binding))->param_type[a] = tempP->ttype;
 				#ifdef DEBUG
 				fprintf(stderr,"in Function install type is %d\n",tempP->ttype);
@@ -353,10 +363,11 @@ Entry *createFunc(char * name, type returntype, ListP* paramlist){
 				((Funcb*)(temp->binding))->num_param = -1;
 			}
 		}
-		else
+/*		else
 			((Funcb*)(temp->binding))->param_type = NULL;
-		((Funcb*)(temp->binding))->bodydef = FALSE;
-		((Funcb*)(temp->binding))->label=0;
+ */
+//		((Funcb*)(temp->binding))->bodydef = FALSE;
+//		((Funcb*)(temp->binding))->label=0;
 		return temp;
 	}
 	else{
@@ -391,10 +402,11 @@ Entry *createParam(char * name, type t_type, int offset){
 	temp = (Entry*) malloc(sizeof(Entry));
 	temp->name = (char*)strdup(((const char*)name));
 	temp->self = PARAM;
-	Paramb * tBindingP = (Paramb *)temp->binding;
+    temp->binding = NULL;
+    Paramb * tBindingP = NULL;
 	//((Paramb*)(temp->binding)) = (Paramb*) malloc(sizeof(Varb));
 	//((Paramb*)(temp->binding))->type = t_type;
-	tBindingP = (Paramb*) malloc(sizeof(Varb));
+	tBindingP = (Paramb*) malloc(sizeof(Paramb));
 	tBindingP->type = t_type;
     tBindingP->offset = offset;
     temp->binding = tBindingP;

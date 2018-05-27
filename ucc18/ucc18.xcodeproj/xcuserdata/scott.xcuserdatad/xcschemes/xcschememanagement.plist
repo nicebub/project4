@@ -11,6 +11,8 @@
 		</dict>
 		<key>ucc18.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
@@ -23,6 +25,11 @@
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>D283AF9A20ADF43A00B07C08</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D2CB13B520ACFEC0006987E5</key>
 		<dict>
 			<key>primary</key>
 			<true/>

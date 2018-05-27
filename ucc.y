@@ -6,8 +6,11 @@ track of the line number, and some of the operators have their precedence specif
 */
 %{
 #ifdef DEBUGON
+#ifndef DEBUG
 #define DEBUG
 #endif
+#endif
+#include "type.h"
 #include "List.h"
 #include "symtab.h"
 #include "data.h"
@@ -30,6 +33,8 @@ extern int offset_counter;
 extern Symtab* mysymtab;
 int mainlabel;
 Funcb* currentFunc;
+extern int yyerror(char *);
+extern int yylex (void);
 extern int warning(char*,char*);
 extern int error(char*,char*);
 %}
@@ -128,15 +133,14 @@ translation_unit: func {}
 	| translation_unit error { error("(unexpected token between translation units or at end of program)","");}
 ;
 
-
 func: funcheader {
 					Entry* tempEntry;
 					Funcb* tempb;
-					Funcb* found;
+					//Funcb* found;
 					int a;
 					ListP* templist;
                     templist= NULL;
-					type tempparam;
+					//type tempparam;
 					listnodeP* tempnode;
 					#ifdef DEBUG
 					printTree(mysymtab);
@@ -259,6 +263,13 @@ func: funcheader {
 			   }
 			   else{
 				   found = lookup((char*)temp->name, mysymtab);
+                   #ifdef DEBUG
+                   fprintf(stderr,"FUNCTION: temp before symbol table: %s\n", temp->name);
+                   Funcb * paramOftemp = temp->binding;
+                   
+                   fprintf(stderr,"binding of temp as Funcb: value num_param in symbol table: %d\n", paramOftemp->num_param);
+                   fprintf(stderr,"param_type of paramOftemp as typeOftemp: value param_type in symbol table: %d\n", paramOftemp->param_type[2]);
+                   #endif
 				   if(found == NULL){ install(temp, mysymtab); /*printTree(mysymtab)*/;}
 				   else{
 					if(((Funcb*)(temp->binding))->returntype != found->returntype)
@@ -296,9 +307,12 @@ func: funcheader {
 funcheader: voidt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof(funcheadertype));
 						$$->returntype = VOID;
 						$$->name = $2;
+                        $$->paramlist=NULL;
+                        if($4.ttype == VOID) $$->ttype = VOID;
 						//(ListP*)($$->paramlist) = $<value.lstpvalue>4;
-						ListP * tempLP = (ListP *)$$->paramlist;
+						ListP * tempLP = NULL;
 						tempLP = $<value.lstpvalue>4;
+                        $$->paramlist = tempLP;
 						}
 	| intt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof(funcheadertype));
 						$$->returntype = INT;
@@ -306,16 +320,18 @@ funcheader: voidt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof
                         $$->paramlist = NULL;
 						if($4.ttype == VOID) $$->ttype = VOID;
 						//(ListP*)($$->paramlist) = $<value.lstpvalue>4;
-						ListP * tempLP = (ListP *)$$->paramlist;
+						ListP * tempLP = NULL;
 						tempLP = $<value.lstpvalue>4;
                         $$->paramlist = tempLP;
 						}
 	| floatt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof(funcheadertype));
 						$$->returntype = FLOAT;
 						$$->name = $2;
+                        if($4.ttype == VOID) $$->ttype = VOID;
 						//(ListP*)($$->paramlist) = $<value.lstpvalue>4;
-						ListP * tempLP = (ListP *)$$->paramlist;
+						ListP * tempLP = NULL;
 						tempLP = $<value.lstpvalue>4;
+                        $$->paramlist = tempLP;
 						}
 	| voidt error rpar { ListP* tempP; yyerrok;
 				$$ =(funcheadertype*) malloc(sizeof(funcheadertype));
@@ -399,6 +415,10 @@ paramdef: paramdeflist {$<value.lstpvalue>$= $1;
 				}
 	| paramdeflist comma elip {
 				$<value.lstpvalue>$ = appendListP($1, "...", VOID);
+                #ifdef DEBUG
+                printListP($<value.lstpvalue>$);
+                #endif
+
 				}
 	| voidt {$<value.lstpvalue>$ = NULL; $$.ttype = VOID;}
 	| paramdeflist error rpar { yyerrok;
@@ -413,21 +433,39 @@ paramdef: paramdeflist {$<value.lstpvalue>$= $1;
 
 paramdeflist: intt Ident  {
 				$$ = mklistP((char*)strdup($2), INT);
+                #ifdef DEBUG
+                printListP($$);
+                #endif
 				}
 		| floatt Ident  {
 				$$ = mklistP((char*)strdup($2), FLOAT);
+                #ifdef DEBUG
+                printListP($$);
+                #endif
 				}
 		| chart star Ident {
 				$$ = mklistP((char*)strdup($3), STR);
-				}
+                #ifdef DEBUG
+                printListP($$);
+                #endif
+                }
 	| paramdeflist comma intt Ident {
 				$$ = appendListP($1, (char*)strdup($4),INT);
+                #ifdef DEBUG
+                printListP($$);
+                #endif
 				}
 	| paramdeflist comma floatt Ident {
 				$$ = appendListP($1, (char*)strdup($4), FLOAT);
+                #ifdef DEBUG
+                printListP($$);
+                #endif
 				}
 	| paramdeflist comma chart star Ident {
 				$$ = appendListP($1, (char*)strdup($5), STR);
+                #ifdef DEBUG
+                printListP($$);
+                #endif
 				}
 ;
 
@@ -511,7 +549,7 @@ stmt: expr semi {
 										switch($2->type){
 											case INT:	gen_instr("fetchI"); break;
 											case FLOAT:	gen_instr("fetchR"); break;
-                                            //case default:
+                                            default: break;
 										}
 									}
 									if($2->type != INT) gen_instr("int");
@@ -527,27 +565,29 @@ stmt: expr semi {
 								warning("function has different returntype","");
 
 								if(founderror==FALSE){
-                                                                        if($2->lval==TRUE){
-                                                                                switch($2->type){
-                                                                                        case INT:       gen_instr("fetchI"); break;
-                                                                                        case FLOAT:     gen_instr("fetchR"); break;
-                                                                                        //default:
+                                                if($2->lval==TRUE){
+                                                    switch($2->type){
+                                                        case INT:       gen_instr("fetchI"); break;
+                                                        case FLOAT:     gen_instr("fetchR"); break;
+                                                        default:    break;
                                                                                 }
                                                                         }
 									switch(currentFunc->returntype){
 										case INT:	switch($2->type){
 													case FLOAT:	gen_instr("int");
 													case INT:	gen_instr("setrvI"); break;
-                                                    //default:
+                                                    default: break;
 												}
 												break;
 										case FLOAT:	switch($2->type){
 													case INT:	gen_instr("flt");
 													case FLOAT:	gen_instr("setrvR"); break;
-                                                    //default:
+                                                    default:    break;
 												}
 												break;
+                                        default: break;
 									}
+                                    
 									gen_instr("returnf");
                                                                 }
 
@@ -575,7 +615,7 @@ stmt: expr semi {
 					switch($4->type){
 						case INT:	gen_instr("fetchI"); break;
 						case FLOAT:	gen_instr("fetchR"); gen_instr("int"); break;
-                        //default:
+                        default:    break;
 					}
 				}
 			}
@@ -660,7 +700,7 @@ ifexprstmt:
 				switch($3->type){
 					case INT:	gen_instr("fetchI"); break;
 					case FLOAT:	gen_instr("fetchR"); gen_instr("int"); break;
-                    //default:
+                    default:    break;
 				}
 			}
 			gen_instr_S("jumpz", genlabelw("",$$.one));
@@ -685,7 +725,7 @@ expr: equalexpr equal equalexpr {
 								switch($3.ttype){
 									case INT:	gen_instr("fetchI"); break;
 									case FLOAT:	gen_instr("fetchR"); break;
-                                    //default:
+                                    default:    break;
 								}
 							}
 						}
@@ -695,7 +735,7 @@ expr: equalexpr equal equalexpr {
 								switch($1.ttype){
 									case(INT): $$->type=INT; gen_instr("storeI"); break;
 									case(FLOAT): $$->type=FLOAT; gen_instr("storeR"); break;
-                                    //default:
+                                    default:    break;
 								}
 							}
 							$$->lval = TRUE;
@@ -741,7 +781,7 @@ equalexpr: relexpr
 				switch($1.ttype){
 					case INT:	if($1.lval==TRUE) gen_instr("fetchI"); break;
 					case FLOAT:	if($1.lval==TRUE) gen_instr("fetchR"); break;
-                   // default:
+                    default:    break;
 				}
 			}
 		}
@@ -752,7 +792,7 @@ equalexpr: relexpr
 				switch($4.ttype){
 					case INT:	if($4.lval==TRUE) gen_instr("fetchI"); break;
 					case FLOAT:	if($4.lval==TRUE) gen_instr("fetchR"); break;
-                   // default:
+                    default:    break;
 				}
 			}
 		}
@@ -769,7 +809,7 @@ equalexpr: relexpr
                                                                                 case EQEQ:      if($1.ttype==INT) gen_instr("eqI");
                                                                                                 else if($1.ttype==FLOAT) gen_instr("eqR");
                                                                                                 break;
-                                                                                //default:
+                                                                                default:    break;
                                                                         }
                                                         }
 
@@ -785,7 +825,7 @@ equalexpr: relexpr
                                                                                 case EQEQ:       gen_instr("fltb");
                                                                                                 gen_instr("eqR");
                                                                                                 break;
-                                                                                //default:
+                                                                                default:    break;
                                                                         }
                                                                 }
 
@@ -801,6 +841,7 @@ equalexpr: relexpr
                                                                                 case EQEQ:       gen_instr("flt");
                                                                                                 gen_instr("eqR");
                                                                                                 break;
+                                                                                default:    break;
                                                                         }
                                                          }
 						}
@@ -818,7 +859,8 @@ relexpr: simpleexpr
 				switch($1.ttype){
 					case INT:	if($1.lval==TRUE) gen_instr("fetchI"); break;
 					case FLOAT:	if($1.lval==TRUE) gen_instr("fetchR"); break;
-				}
+                    default:    break;
+                }
 			}
 		}
 	}
@@ -828,6 +870,7 @@ relexpr: simpleexpr
 					switch($4.ttype){
 						case INT:	if($4.lval==TRUE) gen_instr("fetchI"); break;
 						case FLOAT:	if($4.lval==TRUE) gen_instr("fetchR"); break;
+                        default:    break;
 					}
 				}
 			}
@@ -838,18 +881,19 @@ relexpr: simpleexpr
 							if(($1.ttype==INT && $4.ttype ==INT) || ($1.ttype == FLOAT && $4.ttype==FLOAT)) {$$.ttype=INT;
 								if(founderror==FALSE){
 									switch($<value.relopvalue>2){
-                                                                                case LES:       if($1.ttype==INT) gen_instr("ltI");
-                                                                                                else if($1.ttype==FLOAT) gen_instr("ltR");
-                                                                                                break;
-                                                                                case LEQ:       if($1.ttype==INT) gen_instr("leI");
-                                                                                                else if($1.ttype==FLOAT) gen_instr("leR");
-                                                                                                break;
+                                        case LES:       if($1.ttype==INT) gen_instr("ltI");
+                                                                else if($1.ttype==FLOAT) gen_instr("ltR");
+                                                                            break;
+                                        case LEQ:       if($1.ttype==INT) gen_instr("leI");
+                                                                else if($1.ttype==FLOAT) gen_instr("leR");
+                                                                            break;
 										case GRE:	if($1.ttype==INT) gen_instr("gtI");
 												else if($1.ttype==FLOAT) gen_instr("gtR");
 												break;
 										case GEQ:	if($1.ttype==INT) gen_instr("geI");
 												else if($1.ttype==FLOAT) gen_instr("geR");
 												break;
+                                        default:    break;
                                                                         }
 								}
 
@@ -858,19 +902,20 @@ relexpr: simpleexpr
 								warning("expressons are of different type, data may be lost","");
 								$$.ttype = INT;
 								if(founderror==FALSE){
-                                                                        switch($<value.relopvalue>2){
-                                                                                case LES:       gen_instr("fltb");
+                                                switch($<value.relopvalue>2){
+                                                        case LES:       gen_instr("fltb");
 												gen_instr("ltR");
                                                                                                 break;
-                                                                                case LEQ:       gen_instr("fltb");
+                                                        case LEQ:       gen_instr("fltb");
 												gen_instr("leR");
                                                                                                 break;
-                                                                                case GRE:       gen_instr("fltb");
+                                                        case GRE:       gen_instr("fltb");
 												gen_instr("gtR");
                                                                                                 break;
-                                                                                case GEQ:       gen_instr("fltb");
+                                                        case GEQ:       gen_instr("fltb");
 												gen_instr("geR");
                                                                                                 break;
+                                                        default:    break;
                                                                         }
                                                                 }
 							}
@@ -891,6 +936,7 @@ relexpr: simpleexpr
                                                                                 case GEQ:       gen_instr("flt");
                                                                                                 gen_instr("geR");
                                                                                                 break;
+                                                                                default:     break;
                                                                         }
                                                                 }
 							}
@@ -912,6 +958,7 @@ simpleexpr: simpleexpr
                                 switch($1.ttype){
                                         case INT:       if($1.lval==TRUE) gen_instr("fetchI"); break;
                                         case FLOAT:     if($1.lval==TRUE) gen_instr("fetchR"); break;
+                                        default:        break;
                                 }
                         }
                 }
@@ -924,6 +971,7 @@ simpleexpr: simpleexpr
                                         switch($4.ttype){
                                                 case INT:       if($4.lval==TRUE) gen_instr("fetchI"); break;
                                                 case FLOAT:     if($4.lval==TRUE) gen_instr("fetchR"); break;
+                                                default:        break;
                                         }
                                 }
                         }
@@ -939,6 +987,7 @@ simpleexpr: simpleexpr
                                         		                        case MIN:       if($1.ttype==INT) gen_instr("subI");
                                                 		                                else if($1.ttype==FLOAT) gen_instr("subR");
                                                         		                        break;
+                                                                        default:        break;
                            	                       		      	}
 	                                	            	}
 							}
@@ -952,6 +1001,7 @@ simpleexpr: simpleexpr
 		                                                                case MIN:       gen_instr("fltb");
 		                                                                                gen_instr("subR");
 		                                                                                break;
+                                                                        default:        break;
 		                                                        }
 		                                                }
 							}
@@ -965,6 +1015,7 @@ simpleexpr: simpleexpr
                         		                                        case MIN:       gen_instr("flt");
                         		                                                        gen_instr("subR");
                 		                                                                break;
+                                                                        default:                break;
                 		                                        }
 		                                                }
 							}
@@ -985,6 +1036,7 @@ term: term mulop {
 				switch($1.ttype){
 					case INT:	if($1.lval==TRUE) gen_instr("fetchI"); break;
 					case FLOAT:	if($1.lval==TRUE) gen_instr("fetchR"); break;
+                    default:    break;
 				}
 			}
 		}
@@ -995,6 +1047,7 @@ term: term mulop {
 					switch($4.ttype){
 						case INT:	if($4.lval==TRUE) gen_instr("fetchI"); break;
 						case FLOAT:	if($4.lval==TRUE) gen_instr("fetchR"); break;
+                        default:    break;
 					}
 				}
 			}
@@ -1010,6 +1063,7 @@ term: term mulop {
 								case MULT:	if($1.ttype==INT) gen_instr("mulI");
 										else if($1.ttype==FLOAT) gen_instr("mulR");
 										break;
+                                        default:    break;
 							}
 						}
 					}
@@ -1024,6 +1078,7 @@ term: term mulop {
                                 	                        case MULT:      gen_instr("fltb");
 										gen_instr("mulR");
                                                 	                        break;
+                                                            default:    break;
 	                                                }
 						}
 					}
@@ -1038,6 +1093,7 @@ term: term mulop {
                                 	                        case MULT:      gen_instr("flt");
                                         	                                gen_instr("mulR");
                                                 	                        break;
+                                                            default:            break;
 	                                                }
 						}
 					}
@@ -1111,6 +1167,7 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
 											}
 										}
 										break;
+                                    default:        break;
 
 								}
 							}
@@ -1143,11 +1200,13 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
 								switch($2.ttype){
 									case INT:	gen_instr("fetchI"); break;
 									case FLOAT:	gen_instr("fetchR"); break;
+                                    default:    break;
 								}
 							}
 							switch($2.ttype){
 								case INT:	gen_instr("negI"); break;
 								case FLOAT:	gen_instr("negR"); break;
+                                default:    break;
 							}
 						}
 						else if($1 == PLS){
@@ -1155,6 +1214,7 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
 								switch($2.ttype){
 									case INT:	gen_instr("fetchI"); break;
 									case FLOAT:	gen_instr("fetchR"); break;
+                                    default:    break;
 								}
 							}
 						}
@@ -1174,44 +1234,47 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
                                         else{
                                                 tempE2 = (Entry*) malloc(sizeof(Entry));
                                                 tempE2->name =(char*) $<value.svalue>2;
-                                                if((tempE=lookupB((char*)$<value.svalue>2,mysymtab)) !=NULL){
+                        if((tempE=lookupB((char*)$<value.svalue>2,mysymtab)) !=NULL){
 
-                                                        if(tempE->self ==VAR || tempE->self == PARAM){
-                                                                switch(tempE->self){
-                                                                        case VAR:
-                                                                                $$.ttype = ((Varb*)(tempE->binding))->type;
-                                                                                #ifdef DEBUG
-                                                                                fprintf(stderr,"type is: %d\n", $$.ttype);
-                                                                                #endif
-                                                                                $$.lval = FALSE;
-                                                                                if(((Varb*)(tempE->binding))->type == INT || ((Varb*)(tempE->binding))->type ==FLOAT) $$.numeric=TRUE;
+                            if(tempE->self ==VAR || tempE->self == PARAM){
+                                switch(tempE->self){
+                                    case VAR:
+                                        $$.ttype = ((Varb*)(tempE->binding))->type;
+                                        #ifdef DEBUG
+                                        fprintf(stderr,"type is: %d\n", $$.ttype);
+                                        #endif
+                                        $$.lval = FALSE;
+                                        if(((Varb*)(tempE->binding))->type == INT || ((Varb*)(tempE->binding))->type ==FLOAT)
+                                            $$.numeric=TRUE;
 										if(founderror==FALSE){
-                                                                                        if(inCscope((char*)$<value.svalue>2, mysymtab) == TRUE)
-                                                                                                gen_instr_I("pusha", ((Varb*)(tempE->binding))->offset);
-                                                                                        else{
-                                                                                                gen_instr_tI("pushga",getleveldif($<value.svalue>2,mysymtab),((Varb*)(tempE->binding))->offset);
-                                                                                                //do something else
+                                            if(inCscope((char*)$<value.svalue>2, mysymtab) == TRUE)
+                                                gen_instr_I("pusha", ((Varb*)(tempE->binding))->offset);
+                                            else{
+                                                gen_instr_tI("pushga",getleveldif($<value.svalue>2,mysymtab),((Varb*)(tempE->binding))->offset);
+                                    //do something else
 
-                                                                                        }
-                                                                                }
-                                                                                break;
-                                                                        case PARAM:
-                                                                                $$.ttype = ((Paramb*)(tempE->binding))->type;
-                                                                                #ifdef DEBUG
-                                                                                fprintf(stderr,"type is: %d\n", $$.ttype);
-                                                                                #endif
-                                                                                $$.lval = FALSE;
-                                                                                if(((Paramb*)(tempE->binding))->type == INT || ((Paramb*)(tempE->binding))->type ==FLOAT) $$.numeric=TRUE;
-										if(founderror==FALSE){
-                                                                                        if(inCscope((char*)$<value.svalue>2,mysymtab) ==TRUE){
-                                                                                                gen_instr_I("pusha", ((Varb*)(tempE->binding))->offset);
-                                                                                        }
-                                                                                        else{
-                                                                                                //do something else
-                                                                                        }
-                                                                                }
-
-                                                                }
+                                            }
+                                        }
+                                        break;
+                                    case PARAM:
+                                        $$.ttype = ((Paramb*)(tempE->binding))->type;
+                                        #ifdef DEBUG
+                                        fprintf(stderr,"type is: %d\n", $$.ttype);
+                                        #endif
+                                        $$.lval = FALSE;
+                                        if(((Paramb*)(tempE->binding))->type == INT || ((Paramb*)(tempE->binding))->type ==FLOAT)
+                                            $$.numeric=TRUE;
+                                        if(founderror==FALSE){
+                                            if(inCscope((char*)$<value.svalue>2,mysymtab) ==TRUE){
+                                                gen_instr_I("pusha", ((Varb*)(tempE->binding))->offset);
+                                            }
+                                            else{
+                                //do something else
+                                            }
+                                        }
+                                        break;
+                                    default:            break;
+                                }
                                                         }
                                                         else
 								error("Variable is unkown or undelcared", "");
@@ -1310,104 +1373,138 @@ name_and_params:
 		#endif
 		if(founderror==FALSE) gen_instr_I("enter",1);
 	}
-	expr { Entry *tempE, *tempE2; $$.lval = FALSE; listnodeE* tempexprN; ListE * tempLE; int a; Funcb* tempB;
-
-                                if((tempB=lookup((char*)$<value.svalue>1,mysymtab)) ==NULL){
-                                        error("function undelcared, please declare functions before using them","");
-					error("1","");
-					$$.funcent=NULL;
-				}
-                                else {
+	expr {
+        Entry *tempE, *tempE2;
+        $$.lval = FALSE;
+        //listnodeE* tempexprN;
+        //ListE * tempLE;
+        //int a;
+        Funcb* tempB;
+        if((tempB=lookup((char*)$<value.svalue>1,mysymtab)) ==NULL){
+            error("function undelcared, please declare functions before using them","");
+            error("1","");
+            $$.funcent=NULL;
+        }
+        else {
 					//warning("just checking value of entry: %s",$<value.funcentvalue>$->name);
-                                        tempE2 = (Entry*) malloc(sizeof(Entry));
-                                        tempE2->name = (char*) $<value.svalue>1;
-                                        if( (tempE=lookupB((char*)$<value.svalue>1,mysymtab))!=NULL){
-                                                if(tempE->self != FUNC){
-                                                        error("function undeclared, please declare functions before using them", "");
-							error("2","");
-							$$.funcent=NULL;
-						}
-                                                else{
-                                                        if(tempB->num_param ==0){
-								error("Paramter given for a function that takes no parameters.","");
-							}
-                                                        else if(tempB->num_param == -1 && tempB->actual_num != 2){
-                                                            #ifdef DEBUG
-                                                            fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
-                                                            #endif
-                                                                if($4->type != tempB->param_type[0]){
-   	                                                        	error("parameter type is different in declaration and in function call","");
-
-								}
-								else{
-									if(founderror==FALSE){
-										//gen_instr_S("pushs",$<value.svalue>4);
-									}
-								}
-                                                                $$.ttype = tempB->param_type[0];
-                                                                if($$.ttype==INT || $$.ttype ==FLOAT) $$.numeric=TRUE; else $$.numeric=FALSE;
-								$$.funcent=$3.funcent;
-                                                        }
-                                                        else{
-									if($4->lval==TRUE && $4->numeric==TRUE){
-										if(founderror==FALSE){
-											switch($4->type){
-												case INT:	gen_instr("fetchI"); break;
-												case FLOAT:	gen_instr("fetchR"); break;
-											}
-										}
-									}
-									if(tempB->param_type !=NULL){
-                                        if($4->type != tempB->param_type[0]){
-                                            #ifdef DEBUG
-                                            fprintf(stderr,"Function mismatch 2: FUNCTION NAME: %s",$1);
-                                            #endif
-											if(tempB->param_type[0]!=INT && tempB->param_type[0]!=FLOAT)
-                                                error("Parameter type is different in declaration and in function call","");
-											else if(tempB->param_type[0]==INT){
-                                                #ifdef DEBUG
-                                                fprintf(stderr,"Function mismatch 3: FUNCTION NAME: %s",$1);
-                                                #endif
-												switch($4->type){
-													case FLOAT:	warning("Paramter expression will lose data because of different type","");
-															if(founderror==FALSE) gen_instr("int"); break;
-													case INT:	break;
-													default:	error("Parameter type is different in declaration and function call","");
-															break;
-												}
-											}
-											else if(tempB->param_type[0]==FLOAT){
-                                                #ifdef DEBUG
-                                                fprintf(stderr,"Function mismatch 4: FUNCTION NAME: %s",$1);
-                                                #endif
-												switch($4->type){
-													case INT:	warning("Parameter expression is different type than in declaration","");
-															if(founderror==FALSE) gen_instr("flt"); break;
-													case FLOAT:	break;
-													default:	error("Parameter type is different in declaration and function call","");
-															break;
-												}
-											}
-
-										}
-									}
-									$$.funcent=$3.funcent;
-                                                                if(tempB->param_type !=NULL) $$.ttype=tempB->param_type[0];
-                                                                if($$.ttype==INT || $$.ttype==FLOAT) $$.numeric =TRUE; else $$.numeric=FALSE;
-								$$.params=1;
-                                                        }
-                                                }
-                                        }
-                                        else
-                                                error("Function is undeclared","");
-                                        free(tempE2); tempE2=NULL;
-
-                                }
+            tempE2 = (Entry*) malloc(sizeof(Entry));
+            tempE2->name = (char*) $<value.svalue>1;
+            if( (tempE=lookupB((char*)$<value.svalue>1,mysymtab))!=NULL){
+                if(tempE->self != FUNC){
+                    error("function undeclared, please declare functions before using them", "");
+                    error("2","");
+                    $$.funcent=NULL;
+                }
+                else{
+                    if(tempB->num_param ==0){
+                        error("Paramter given for a function that takes no parameters.","");
+                    }
+                    else if(tempB->num_param == -1){
+                        #ifdef DEBUG
+                        fprintf(stderr,"SPRINTF OR PRINTF mismatch: FUNCTION NAME: %s\n",$1);
+                        fprintf(stderr,"SPRINTF OR PRINTF: FUNCTION TYPE: %d\n",$4->type);
+//                                                            fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
+  //                                                          fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
+                        fprintf(stderr,"SPRINTF OR PRINTF: $4 TYPE: %d\n",$4->type);
+                        fprintf(stderr,"SPRINTF OR PRINTF: tempB->param_type[0] TYPE: %d\n",tempB->param_type[0]);
+                        #endif
+                        if($4->type != tempB->param_type[0]){
+                            error("parameter type is different in declaration and in function call","");
                         }
+                        else{
+                            if(founderror==FALSE){
+										//gen_instr_S("pushs",$<value.svalue>4);
+                            }
+                        }
+                        $$.ttype = tempB->param_type[0];
+                        if($$.ttype==INT || $$.ttype ==FLOAT)
+                            $$.numeric=TRUE;
+                        else
+                            $$.numeric=FALSE;
+                        $$.funcent=$3.funcent;
+                    }
+                    else{
+                        if($4->lval==TRUE && $4->numeric==TRUE){
+                            if(founderror==FALSE){
+                                switch($4->type){
+                                    case INT:	gen_instr("fetchI"); break;
+                                    case FLOAT:	gen_instr("fetchR"); break;
+                                    default:    break;
+                                }
+                            }
+                        }
+                        if(tempB->param_type !=NULL){
+                            if($4->type != tempB->param_type[0]){
+                                #ifdef DEBUG
+                                fprintf(stderr,"Function mismatch 2: FUNCTION NAME: %s",$1);
+                                fprintf(stderr,"Function mismatch 2: FUNCTION TYPE: %d",$4->type);
+                                            //                                                            fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
+                                            //                                                          fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
+                                #endif
+                                if(tempB->param_type[0]!=INT && tempB->param_type[0]!=FLOAT)
+                                    error("Parameter type is different in declaration and in function call","");
+                                else if(tempB->param_type[0]==INT){
+                                        #ifdef DEBUG
+                                        fprintf(stderr,"Function mismatch 3: FUNCTION NAME: %s",$1);
+                                        fprintf(stderr,"Function mismatch 3: FUNCTION TYPE: %d",$4->type);
+                                                //                                                            fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
+                                                //                                                          fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
+                                        #endif
+                                        switch($4->type){
+                                            case FLOAT:
+                                                warning("Paramter expression will lose data because of different type","");
+                                                if(founderror==FALSE)
+                                                    gen_instr("int");
+                                                break;
+                                            case INT:	break;
+                                            default:	error("Parameter type is different in declaration and function call","");
+                                                        break;
+                                        }
+                                }
+                                else if(tempB->param_type[0]==FLOAT){
+                                    #ifdef DEBUG
+                                    fprintf(stderr,"Function mismatch 4: FUNCTION NAME: %s",$1);
+                                    #endif
+                                    switch($4->type){
+                                        case INT:	warning("Parameter expression is different type than in declaration","");
+                                                    if(founderror==FALSE)
+                                                        gen_instr("flt");
+                                                    break;
+                                        case FLOAT:	break;
+                                        default:	error("Parameter type is different in declaration and function call","");
+                                                            break;
+                                    }
+                                }
+
+                            }
+                        }
+                        $$.funcent=$3.funcent;
+
+                        if(tempB->param_type !=NULL)
+                            $$.ttype=tempB->param_type[0];
+                        if($$.ttype==INT || $$.ttype==FLOAT)
+                            $$.numeric =TRUE;
+                        else
+                            $$.numeric=FALSE;
+                        $$.params=1;
+                    }
+                }
+            }
+            else
+                error("Function is undeclared","");
+            free(tempE2); tempE2=NULL;
+
+        }
+    }
 	| name_and_params
 	comma {}
 	expr {
-			Entry *tempE, *tempE2; $$.lval = FALSE; listnodeE* tempexprN; ListE * tempLE; int a; Funcb* tempB;
+			Entry *tempE, *tempE2;
+            $$.lval = FALSE;
+            //listnodeE* tempexprN;
+            //ListE * tempLE;
+            //int a;
+            Funcb* tempB;
                                 if($1.funcent==NULL){
                                         error("function undelcared, please declare functions before using them","");
 					error("3","");
@@ -1435,6 +1532,7 @@ name_and_params:
 										switch($4->type){
 											case INT:	gen_instr("fetchI"); break;
 											case FLOAT:	gen_instr("fetchR"); break;
+                                            default:    break;
 										}
 									}
 								}
@@ -1451,6 +1549,7 @@ name_and_params:
 											switch($4->type){
 												case INT:	gen_instr("fetchI"); break;
 												case FLOAT:	gen_instr("fetchR"); break;
+                                                default:    break;
 											}
 										}
 										if(tempB->param_type[$1.params]==FLOAT){

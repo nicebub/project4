@@ -18,7 +18,8 @@ FLEX = /usr/bin/flex
 MYUCC = "./ucc"
 
 
-CFLAGS = -g  -ggdb -D DEBUGON -I/usr/local/opt/bison/include
+CFLAGS = -g  -ggdb -I/usr/local/opt/bison/include
+#CFLAGS = -g  -ggdb -D DEBUGON -I/usr/local/opt/bison/include
 
 #CFLAGS = -g
 

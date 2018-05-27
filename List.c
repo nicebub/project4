@@ -1,5 +1,7 @@
 #ifdef DEBUGON
+#ifndef DEBUG
 #define DEBUG
+#endif
 #endif
 #include "List.h"
 #include "type.h"
@@ -135,7 +137,7 @@ ListP * appendListP(ListP * inList, char * inVal, type inType){
 			tempN2->val = (char*) strdup(inVal);
 			tempN2->nextnode = NULL;
 			tempN2->ttype = inType;
-			listnodeP * tNodeLL = (listnodeP *) tempN->nextnode;
+			listnodeP * tNodeLL = NULL;
 			//(listnodeP*)(tempN->nextnode) = (listnodeP*) tempN2;
 			tNodeLL = (listnodeP*) tempN2;
             tempN->nextnode = tNodeLL;
@@ -167,17 +169,17 @@ ListP * mklistP(char * inVal, type inType){
 }
 
 void deleteListE(ListE* inList){
-       listnodeE* temp;
-        listnodeE * temp2;
+    listnodeE* temp;
+    listnodeE * temp2;
 	exprtype* exprtemp;
-        if(inList != NULL){
-                if(inList->list != NULL){
-                        temp = inList->list;
+    if(inList != NULL){
+        if(inList->list != NULL){
+            temp = inList->list;
 			#ifdef DEBUG
-                        fprintf(stderr,"Deleting List\n");
+            fprintf(stderr,"Deleting List\n");
 			#endif
-                        while(inList->listsize != 0){
-				exprtemp = temp->expr;
+            while(inList->listsize != 0){
+                exprtemp = temp->expr;
 				#ifdef DEBUG
                                 fprintf(stderr, "Deleting expr with type: ");
                                 switch(exprtemp->type){
@@ -192,17 +194,17 @@ void deleteListE(ListE* inList){
                                 }
 				#endif
 				free(exprtemp);
-                                temp2 = temp;
-                                temp = (listnodeE*)temp->nextnode;
-                                free(temp2);
-                                temp2=NULL;
-				exprtemp= temp->expr;
-                                inList->listsize -= 1;
-                        }
-                        free(inList);
-                        inList=NULL;
-                }
+                temp2 = temp;
+                temp = (listnodeE*)temp->nextnode;
+                free(temp2);
+                temp2=NULL;
+                exprtemp= temp->expr;
+                inList->listsize -= 1;
+            }
+                free(inList);
+                inList=NULL;
         }
+    }
 
 }
 
@@ -255,4 +257,20 @@ ListE * appendListE(ListE * inList, exprtype * inexpr){
                 }
         }
     return NULL;
+}
+
+void printListP(ListP * inList){
+    fprintf(stderr,"inList size: %d",inList->listsize);
+    if(inList != NULL){
+        listnodeP* inNode = inList->list;
+        if(inNode !=NULL){
+            while(inNode != NULL){
+                fprintf(stderr,"\t\t\t---inNode value val: %s\t",inNode->val);
+                fprintf(stderr,"inNode ttype: %d---\n",inNode->ttype);
+                inNode = (listnodeP*)inNode->nextnode;
+                
+            }
+        }
+    }
+
 }
