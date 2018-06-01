@@ -10,11 +10,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../ucc.y"
-            timestampString = "548963461.9438159"
+            timestampString = "549519930.24745"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "528"
-            endingLineNumber = "528">
+            endingLineNumber = "528"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -24,11 +26,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../ucc.y"
-            timestampString = "548963461.943881"
+            timestampString = "549519930.247524"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "156"
-            endingLineNumber = "156">
+            endingLineNumber = "156"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -246,11 +250,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../ucc.y"
-            timestampString = "548963461.944162"
+            timestampString = "549519930.247781"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "162"
-            endingLineNumber = "162">
+            endingLineNumber = "162"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -260,11 +266,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../ucc.y"
-            timestampString = "548963461.944214"
+            timestampString = "549519930.247841"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "253"
-            endingLineNumber = "253">
+            endingLineNumber = "253"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

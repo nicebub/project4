@@ -17,7 +17,7 @@ track of the line number, and some of the operators have their precedence specif
 #include "trans.h"
 #include <stdio.h>
 //#define yyerrok
-#define YYDEBUG 1
+#define YYDEBUG 0
 #define YYERROR_VERBOSE 1
 #define YYSTYPE data
 #include "ucc.l.h"
@@ -149,9 +149,9 @@ func: funcheader {
 					bool alreadyopen=FALSE;
                     tempnode = NULL;
 					if(strcmp("main", (char*)($1->name)) ==0){
-                        #ifndef DEBUG
-                        fprintf(stderr,"hello from inside");
-                        #endif
+			                        #ifdef DEBUG
+                			        fprintf(stderr,"hello from inside\n");
+             				        #endif
 						templist = (ListP*)$1->paramlist;
 	//main function
 						if($1->returntype != INT)
@@ -190,7 +190,7 @@ func: funcheader {
 											for(a=0;a<templist->listsize && a<tempb->num_param &&  stop!=TRUE;a++){
 												if(tempb->param_type[a] != tempnode->ttype){
 													fprintf(stderr,"Error: Line: %d: argument %d: has different parameter type than in function declaration",Line_Number,(a+1));
-													fprintf(stderr, "they are %d and %d\n", tempb->param_type[a], tempnode->ttype);
+													fprintf(stderr, "\nThey are %d and %d\n", tempb->param_type[a], tempnode->ttype);
 													stop=TRUE;
 												}
 												tempnode = (listnodeP*)tempnode->nextnode;

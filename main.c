@@ -9,7 +9,7 @@ that the file opened on the command line arguments ends in a '.c'.  Which also b
 #ifndef DEBUG
 #define DEBUG
 #endif
-int yydebug = 1;
+int yydebug = 0;
 #endif
 #include <stdio.h>
 #include <stdlib.h>
