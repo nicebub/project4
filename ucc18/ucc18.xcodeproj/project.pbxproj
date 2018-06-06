@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D2714FC420C21FEF009B6AE6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2714FC320C21FEF009B6AE6 /* AppDelegate.swift */; };
+		D2714FC620C21FEF009B6AE6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2714FC520C21FEF009B6AE6 /* ViewController.swift */; };
+		D2714FC820C21FF3009B6AE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D2714FC720C21FF3009B6AE6 /* Assets.xcassets */; };
+		D2714FCB20C21FF4009B6AE6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2714FC920C21FF4009B6AE6 /* Main.storyboard */; };
+		D2714FD720C21FF4009B6AE6 /* uccBedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2714FD620C21FF4009B6AE6 /* uccBedTests.swift */; };
+		D2714FE220C21FF4009B6AE6 /* uccBedUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2714FE120C21FF4009B6AE6 /* uccBedUITests.swift */; };
+		D2782C7420C760CE0077B9FC /* libl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D283AFB020ADF97A00B07C08 /* libl.a */; };
+		D2782C7520C760DD0077B9FC /* liby.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D283AFB120ADF97A00B07C08 /* liby.a */; };
 		D27A1FDE20AE1BDE006943DE /* command.h in Headers */ = {isa = PBXBuildFile; fileRef = D2CB13BC20AD00A6006987E5 /* command.h */; };
 		D27A1FDF20AE1BDE006943DE /* data.h in Headers */ = {isa = PBXBuildFile; fileRef = D2CB13C620AD00A7006987E5 /* data.h */; };
 		D27A1FE020AE1BDE006943DE /* expr.h in Headers */ = {isa = PBXBuildFile; fileRef = D2CB13C220AD00A7006987E5 /* expr.h */; };
@@ -22,8 +30,6 @@
 		D283AFA720ADF5BA00B07C08 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = D2CB13C320AD00A7006987E5 /* main.c */; };
 		D283AFA820ADF5BF00B07C08 /* symtab.c in Sources */ = {isa = PBXBuildFile; fileRef = D2CB13BF20AD00A6006987E5 /* symtab.c */; };
 		D283AFA920ADF5C200B07C08 /* trans.c in Sources */ = {isa = PBXBuildFile; fileRef = D2CB13CA20AD00A7006987E5 /* trans.c */; };
-		D283AFB620ADF9DD00B07C08 /* libl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D283AFB420ADF9DD00B07C08 /* libl.a */; };
-		D283AFB720ADF9DD00B07C08 /* liby.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D283AFB520ADF9DD00B07C08 /* liby.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -51,6 +57,23 @@
 		};
 /* End PBXBuildRule section */
 
+/* Begin PBXContainerItemProxy section */
+		D2714FD320C21FF4009B6AE6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D2CB13A320ACFE26006987E5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2714FC020C21FEF009B6AE6;
+			remoteInfo = uccBed;
+		};
+		D2714FDE20C21FF4009B6AE6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D2CB13A320ACFE26006987E5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2714FC020C21FEF009B6AE6;
+			remoteInfo = uccBed;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		D283AF9920ADF43A00B07C08 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -64,11 +87,22 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D2714FC120C21FEF009B6AE6 /* uccBed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = uccBed.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2714FC320C21FEF009B6AE6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D2714FC520C21FEF009B6AE6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		D2714FC720C21FF3009B6AE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D2714FCA20C21FF4009B6AE6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D2714FCC20C21FF4009B6AE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D2714FCD20C21FF4009B6AE6 /* uccBed.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = uccBed.entitlements; sourceTree = "<group>"; };
+		D2714FD220C21FF4009B6AE6 /* uccBedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = uccBedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2714FD620C21FF4009B6AE6 /* uccBedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = uccBedTests.swift; sourceTree = "<group>"; };
+		D2714FD820C21FF4009B6AE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D2714FDD20C21FF4009B6AE6 /* uccBedUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = uccBedUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2714FE120C21FF4009B6AE6 /* uccBedUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = uccBedUITests.swift; sourceTree = "<group>"; };
+		D2714FE320C21FF4009B6AE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D283AF9B20ADF43A00B07C08 /* Xcc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Xcc; sourceTree = BUILT_PRODUCTS_DIR; };
 		D283AFB020ADF97A00B07C08 /* libl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libl.a; path = ../../../../../../../../usr/lib/libl.a; sourceTree = "<group>"; };
 		D283AFB120ADF97A00B07C08 /* liby.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liby.a; path = ../../../../../../../../usr/lib/liby.a; sourceTree = "<group>"; };
-		D283AFB420ADF9DD00B07C08 /* libl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libl.a; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/usr/lib/libl.a; sourceTree = DEVELOPER_DIR; };
-		D283AFB520ADF9DD00B07C08 /* liby.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liby.a; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/usr/lib/liby.a; sourceTree = DEVELOPER_DIR; };
 		D2CB13B920AD00A6006987E5 /* ucc.l.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ucc.l.h; path = ../../ucc.l.h; sourceTree = "<group>"; };
 		D2CB13BA20AD00A6006987E5 /* type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = type.h; path = ../../type.h; sourceTree = "<group>"; };
 		D2CB13BB20AD00A6006987E5 /* command.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = command.c; path = ../../command.c; sourceTree = "<group>"; };
@@ -91,7 +125,6 @@
 		D2CB13CC20AD0217006987E5 /* ucc.output */ = {isa = PBXFileReference; lastKnownFileType = text; name = ucc.output; path = ../../ucc.output; sourceTree = "<group>"; };
 		D2CB13CD20AD0218006987E5 /* ucc.tab.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = ucc.tab.c; path = ../../ucc.tab.c; sourceTree = "<group>"; };
 		D2CB13CE20AD0218006987E5 /* trans.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = trans.o; path = ../../trans.o; sourceTree = "<group>"; };
-		D2CB13CF20AD0218006987E5 /* ucc */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = ucc; sourceTree = "<group>"; };
 		D2CB13D020AD0218006987E5 /* lex.yy.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = lex.yy.o; path = ../../lex.yy.o; sourceTree = "<group>"; };
 		D2CB13D120AD0218006987E5 /* ucc.tab.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = ucc.tab.o; path = ../../ucc.tab.o; sourceTree = "<group>"; };
 		D2CB13D220AD0218006987E5 /* command.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = command.o; path = ../../command.o; sourceTree = "<group>"; };
@@ -102,30 +135,73 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		D2714FBE20C21FEF009B6AE6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2714FCF20C21FF4009B6AE6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2714FDA20C21FF4009B6AE6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D283AF9820ADF43A00B07C08 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D283AFB620ADF9DD00B07C08 /* libl.a in Frameworks */,
-				D283AFB720ADF9DD00B07C08 /* liby.a in Frameworks */,
+				D2782C7520C760DD0077B9FC /* liby.a in Frameworks */,
+				D2782C7420C760CE0077B9FC /* libl.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D283AF9C20ADF43A00B07C08 /* Xcc */ = {
+		D2714FC220C21FEF009B6AE6 /* uccBed */ = {
 			isa = PBXGroup;
 			children = (
+				D2714FC320C21FEF009B6AE6 /* AppDelegate.swift */,
+				D2714FC520C21FEF009B6AE6 /* ViewController.swift */,
+				D2714FC720C21FF3009B6AE6 /* Assets.xcassets */,
+				D2714FC920C21FF4009B6AE6 /* Main.storyboard */,
+				D2714FCC20C21FF4009B6AE6 /* Info.plist */,
+				D2714FCD20C21FF4009B6AE6 /* uccBed.entitlements */,
 			);
-			path = Xcc;
+			path = uccBed;
+			sourceTree = "<group>";
+		};
+		D2714FD520C21FF4009B6AE6 /* uccBedTests */ = {
+			isa = PBXGroup;
+			children = (
+				D2714FD620C21FF4009B6AE6 /* uccBedTests.swift */,
+				D2714FD820C21FF4009B6AE6 /* Info.plist */,
+			);
+			path = uccBedTests;
+			sourceTree = "<group>";
+		};
+		D2714FE020C21FF4009B6AE6 /* uccBedUITests */ = {
+			isa = PBXGroup;
+			children = (
+				D2714FE120C21FF4009B6AE6 /* uccBedUITests.swift */,
+				D2714FE320C21FF4009B6AE6 /* Info.plist */,
+			);
+			path = uccBedUITests;
 			sourceTree = "<group>";
 		};
 		D283AFAA20ADF92200B07C08 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				D283AFB420ADF9DD00B07C08 /* libl.a */,
-				D283AFB520ADF9DD00B07C08 /* liby.a */,
 				D283AFB020ADF97A00B07C08 /* libl.a */,
 				D283AFB120ADF97A00B07C08 /* liby.a */,
 			);
@@ -136,9 +212,10 @@
 			isa = PBXGroup;
 			children = (
 				D2CB13AD20ACFE26006987E5 /* ucc18 */,
-				D283AF9C20ADF43A00B07C08 /* Xcc */,
+				D2714FC220C21FEF009B6AE6 /* uccBed */,
+				D2714FD520C21FF4009B6AE6 /* uccBedTests */,
+				D2714FE020C21FF4009B6AE6 /* uccBedUITests */,
 				D2CB13AC20ACFE26006987E5 /* Products */,
-				D2CB13CF20AD0218006987E5 /* ucc */,
 				D283AFAA20ADF92200B07C08 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -147,6 +224,9 @@
 			isa = PBXGroup;
 			children = (
 				D283AF9B20ADF43A00B07C08 /* Xcc */,
+				D2714FC120C21FEF009B6AE6 /* uccBed.app */,
+				D2714FD220C21FF4009B6AE6 /* uccBedTests.xctest */,
+				D2714FDD20C21FF4009B6AE6 /* uccBedUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -225,6 +305,59 @@
 /* End PBXLegacyTarget section */
 
 /* Begin PBXNativeTarget section */
+		D2714FC020C21FEF009B6AE6 /* uccBed */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2714FEA20C21FF4009B6AE6 /* Build configuration list for PBXNativeTarget "uccBed" */;
+			buildPhases = (
+				D2714FBD20C21FEF009B6AE6 /* Sources */,
+				D2714FBE20C21FEF009B6AE6 /* Frameworks */,
+				D2714FBF20C21FEF009B6AE6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = uccBed;
+			productName = uccBed;
+			productReference = D2714FC120C21FEF009B6AE6 /* uccBed.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D2714FD120C21FF4009B6AE6 /* uccBedTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2714FEB20C21FF4009B6AE6 /* Build configuration list for PBXNativeTarget "uccBedTests" */;
+			buildPhases = (
+				D2714FCE20C21FF4009B6AE6 /* Sources */,
+				D2714FCF20C21FF4009B6AE6 /* Frameworks */,
+				D2714FD020C21FF4009B6AE6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D2714FD420C21FF4009B6AE6 /* PBXTargetDependency */,
+			);
+			name = uccBedTests;
+			productName = uccBedTests;
+			productReference = D2714FD220C21FF4009B6AE6 /* uccBedTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D2714FDC20C21FF4009B6AE6 /* uccBedUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2714FEC20C21FF4009B6AE6 /* Build configuration list for PBXNativeTarget "uccBedUITests" */;
+			buildPhases = (
+				D2714FD920C21FF4009B6AE6 /* Sources */,
+				D2714FDA20C21FF4009B6AE6 /* Frameworks */,
+				D2714FDB20C21FF4009B6AE6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D2714FDF20C21FF4009B6AE6 /* PBXTargetDependency */,
+			);
+			name = uccBedUITests;
+			productName = uccBedUITests;
+			productReference = D2714FDD20C21FF4009B6AE6 /* uccBedUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		D283AF9A20ADF43A00B07C08 /* Xcc */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D283AFA120ADF43A00B07C08 /* Build configuration list for PBXNativeTarget "Xcc" */;
@@ -251,9 +384,21 @@
 		D2CB13A320ACFE26006987E5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0940;
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Laurel Tree Computing";
 				TargetAttributes = {
+					D2714FC020C21FEF009B6AE6 = {
+						CreatedOnToolsVersion = 9.4;
+					};
+					D2714FD120C21FF4009B6AE6 = {
+						CreatedOnToolsVersion = 9.4;
+						TestTargetID = D2714FC020C21FEF009B6AE6;
+					};
+					D2714FDC20C21FF4009B6AE6 = {
+						CreatedOnToolsVersion = 9.4;
+						TestTargetID = D2714FC020C21FEF009B6AE6;
+					};
 					D283AF9A20ADF43A00B07C08 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
@@ -270,6 +415,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = D2CB13A220ACFE26006987E5;
 			productRefGroup = D2CB13AC20ACFE26006987E5 /* Products */;
@@ -278,11 +424,65 @@
 			targets = (
 				D2CB13B520ACFEC0006987E5 /* ucc18 */,
 				D283AF9A20ADF43A00B07C08 /* Xcc */,
+				D2714FC020C21FEF009B6AE6 /* uccBed */,
+				D2714FD120C21FF4009B6AE6 /* uccBedTests */,
+				D2714FDC20C21FF4009B6AE6 /* uccBedUITests */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		D2714FBF20C21FEF009B6AE6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2714FC820C21FF3009B6AE6 /* Assets.xcassets in Resources */,
+				D2714FCB20C21FF4009B6AE6 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2714FD020C21FF4009B6AE6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2714FDB20C21FF4009B6AE6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		D2714FBD20C21FEF009B6AE6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2714FC620C21FEF009B6AE6 /* ViewController.swift in Sources */,
+				D2714FC420C21FEF009B6AE6 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2714FCE20C21FF4009B6AE6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2714FD720C21FF4009B6AE6 /* uccBedTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2714FD920C21FF4009B6AE6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2714FE220C21FF4009B6AE6 /* uccBedUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D283AF9720ADF43A00B07C08 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -299,7 +499,181 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		D2714FD420C21FF4009B6AE6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2714FC020C21FEF009B6AE6 /* uccBed */;
+			targetProxy = D2714FD320C21FF4009B6AE6 /* PBXContainerItemProxy */;
+		};
+		D2714FDF20C21FF4009B6AE6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2714FC020C21FEF009B6AE6 /* uccBed */;
+			targetProxy = D2714FDE20C21FF4009B6AE6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D2714FC920C21FF4009B6AE6 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D2714FCA20C21FF4009B6AE6 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		D2714FE420C21FF4009B6AE6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = uccBed/uccBed.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 78XPJAU3A2;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = uccBed/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.laureltreecomputing.uccBed;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		D2714FE520C21FF4009B6AE6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = uccBed/uccBed.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 78XPJAU3A2;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = uccBed/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.laureltreecomputing.uccBed;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
+		D2714FE620C21FF4009B6AE6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 78XPJAU3A2;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = uccBedTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.laureltreecomputing.uccBedTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/uccBed.app/Contents/MacOS/uccBed";
+			};
+			name = Debug;
+		};
+		D2714FE720C21FF4009B6AE6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 78XPJAU3A2;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = uccBedTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.laureltreecomputing.uccBedTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 4.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/uccBed.app/Contents/MacOS/uccBed";
+			};
+			name = Release;
+		};
+		D2714FE820C21FF4009B6AE6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 78XPJAU3A2;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = uccBedUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.laureltreecomputing.uccBedUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TEST_TARGET_NAME = uccBed;
+			};
+			name = Debug;
+		};
+		D2714FE920C21FF4009B6AE6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 78XPJAU3A2;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = uccBedUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.laureltreecomputing.uccBedUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 4.0;
+				TEST_TARGET_NAME = uccBed;
+			};
+			name = Release;
+		};
 		D283AF9F20ADF43A00B07C08 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -499,6 +873,33 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		D2714FEA20C21FF4009B6AE6 /* Build configuration list for PBXNativeTarget "uccBed" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2714FE420C21FF4009B6AE6 /* Debug */,
+				D2714FE520C21FF4009B6AE6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D2714FEB20C21FF4009B6AE6 /* Build configuration list for PBXNativeTarget "uccBedTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2714FE620C21FF4009B6AE6 /* Debug */,
+				D2714FE720C21FF4009B6AE6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D2714FEC20C21FF4009B6AE6 /* Build configuration list for PBXNativeTarget "uccBedUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2714FE820C21FF4009B6AE6 /* Debug */,
+				D2714FE920C21FF4009B6AE6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		D283AFA120ADF43A00B07C08 /* Build configuration list for PBXNativeTarget "Xcc" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
