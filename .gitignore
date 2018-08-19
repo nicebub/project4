@@ -1,5 +1,5 @@
 # Created by https://www.gitignore.io/api/c
-
+.DS_STORE
 ### C ###
 # Prerequisites
 *.d

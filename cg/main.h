@@ -1,6 +1,6 @@
-#ifndef _MYMAINH
-#define _MYMAINH
-#include "type.h"
+#ifndef _MYCGMAINH
+#define _MYCGMAINH
+#include "typecg.h"
 
 extern int Line_Number;
 extern FILE *infile;
@@ -11,7 +11,7 @@ int offset_counter;
 int othercounter;
 int param_offset;
 int mainlocal;
-extern bool founderror;
+extern boolcg founderror;
 extern int labelcounter;
 
 #endif

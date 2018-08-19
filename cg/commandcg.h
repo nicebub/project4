@@ -1,5 +1,5 @@
-#ifndef _MYCOMMANDH
-#define _MYCOMMANDH
+#ifndef _MYCOMMANDCGH
+#define _MYCOMMANDCGH
 #include <stdio.h>
 
 extern FILE *yyin;

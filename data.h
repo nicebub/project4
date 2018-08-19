@@ -17,7 +17,7 @@ typedef struct {
 		multype multopvalue;
 		eqtype eqopvalue;
 		ListE *lstevalue;
-		//Pair pairvalue;
+		Pair pairvalue;
 		exprtype *exprvalue;
 		reltype relopvalue;
 		funcheadertype *funcheadervalue;
@@ -26,6 +26,7 @@ typedef struct {
 	int one;
 	int two;
 	int mainlabel;
+	char * name;
 	type ttype;
 	bool lval;
 	Entry *funcent;

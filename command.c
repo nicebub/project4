@@ -36,7 +36,7 @@ int checkargs(int argc, char** argv){
 
 }
 
-int openfile(int argc, char** argv){
+char* openfile(int argc, char** argv){
 	char * tempstr;
 	int a;
 	tempstr = (char*) malloc(sizeof(char)*(strlen(argv[1])+4));  //changed to 4 because losing a '\0' was 5
@@ -50,10 +50,10 @@ int openfile(int argc, char** argv){
 	if((infile = fopen(tempstr,"w"))==NULL){
 		fprintf(stderr, "cannot open file %s for writing\n", tempstr);
 		free(tempstr);
-		return -1;
+		return NULL;
 	}
 	else{
 		free(tempstr);
-		return 0;
+		return argv[1];
 	}
 }

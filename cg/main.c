@@ -13,15 +13,15 @@ int yydebug = 0;
 #endif
 #include <stdio.h>
 #include <stdlib.h>
-#include "data.h"
+#include "datacg.h"
 #define YYSTYPE data
-#include "ucc.tab.h"
-#include "symtab.h"
-#include "List.h"
-#include "command.h"
+#include "cg.tab.h"
+#include "symtabcg.h"
+#include "Listcg.h"
+#include "commandcg.h"
 #include "main.h"
-#include "trans.h"
-#include "ucc.l.h"
+#include "transcg.h"
+#include "cg.l.h"
 #include <string.h>
 extern int yyparse(void);
 
@@ -47,7 +47,7 @@ int main(int argc, char **argv){
 //		free(filename);
 		filename=NULL;
 		filename = "main.c";
-		error("Unable to construct symbol table","");
+		error("Unable to construct symbol table\n","");
 		return -1;
 	}
 

@@ -3,6 +3,11 @@
 	This file is the flex specificiation file for the uC language.  It will recognize and return all tokens and output if there are any errors.
 */
 %{
+#ifdef DEBUGON
+#ifndef DEBUG
+#define DEBUG
+#endif
+#endif
 #include "List.h"
 #include "symtab.h"
 #include "data.h"
@@ -274,3 +279,20 @@ char { /* keyword char*/
 	}
 
 %%
+
+#ifdef DEBUG
+void debugprint(char* s1, char*s2){
+	if(s1!=NULL && *s1 && s2!=NULL && *s2){
+			fprintf(stderr,"Debug:::%s:%d-> %s \"%s\"\n",filename,Line_Number,s1,s2);
+	}
+	else if(s1!=NULL && *s1 && s2==NULL){
+			fprintf(stderr,"Debug:::%s:%d-> %s\n",filename,Line_Number,s1);
+	}
+}
+void debugprintd(char* s1, int s2){
+	if(s1!=NULL && *s1){
+			fprintf(stderr,"Debug:::%s:%d-> %s \"%d\"\n",filename,Line_Number,s1, s2);
+	}
+}
+
+#endif

@@ -1,0 +1,124 @@
+# Used for project1 by Scott Lorberbaum
+#
+# This makefile includes an entry "depend" which will automatically
+# generate complete include file dependencies (including nested
+# includes.  To update dependencies, simply update the SRCS variable
+# (and OBJS) and type "make depend"
+#
+TARGETDIR = .
+#
+# Use gcc for Motif compilations.
+CC = /usr/local/bin/gcc-8
+#CC = /usr/bin/gcc
+BISON = /usr/local/opt/bison/bin/bison
+#BISON = /usr/bin/bison
+FLEX = /usr/local/opt/flex/bin/flex
+#FLEX = /usr/bin/flex
+
+
+
+MYCG = "./CG"
+
+
+#CFLAGS = -g  -O0 -ggdb -I/usr/local/opt/bison/include
+CFLAGS = -g  -O0 -ggdb -D DEBUGON -I/usr/local/opt/bison/include
+
+#CFLAGS = -g
+
+
+
+LDFLAGS =  -g -L/usr/local/opt/bison/lib -lc -L/usr/local/opt/flex/lib
+#LDFLAGS =  -g -L/usr/local/opt/bison/lib -lc 
+
+FLOP =
+BISOP = -vtd
+#LIBS = -lfl -lm
+LIBS = -ll -lm
+
+all: cg
+
+run:
+#	exec "for FILE in `ls *.asm`; do ./cg $(FILE); done"
+	for FILE in `ls *.asm` ; do ./cg $(FILE); done
+
+main.c : cg.tab.c main.h
+
+
+transcg.o: transcg.c transcg.h
+	$(CC) -c transcg.c $(CFLAGS)
+
+cg.tab.c : cg.y
+	$(BISON) $(BISOP) cg.y
+
+lex.yy.c : cg.l cg.tab.c
+	$(FLEX) $(FLOP) cg.l
+
+symtabcg.o: symtabcg.h symtabcg.c
+	$(CC) -c symtabcg.c $(CFLAGS)
+
+Listcg.o: Listcg.c
+	$(CC) -c Listcg.c $(CFLAGS)
+
+commandcg.o: commandcg.c commandcg.h
+	$(CC) -c commandcg.c $(CFLAGS)
+
+MAIN = main.c
+
+SRCS  = lex.yy.c \
+	cg.tab.c \
+	main.c \
+	symtabcg.c \
+	Listcg.c  \
+	commandcg.c \
+	transcg.c
+
+OBJS  = lex.yy.o  \
+	cg.tab.o \
+	symtabcg.o \
+	Listcg.o \
+	commandcg.o \
+	transcg.o
+
+
+sample$(NUM) : sample$(NUM).c
+	$(MYUCC) sample$(NUM).c
+
+clean :
+	rm *.o lex.yy.c cg.tab.* cg.output cg example core test *.out *.s; rm -rf cg.dSYM;
+
+
+cg : $(OBJS) $(MAIN)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(OBJS) $(MAIN) $(LIBS)
+
+example: $(OBJS) $(MAIN) symtab.o example.c List.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(OBJS) example.c $(LIBS)
+
+
+#	if (/bin/test -w $@) then (rm $@) else (:) fi
+#
+# make depend
+#
+# The depend switch varies (unfortunately) for different C compilers.
+#        -Em is used by DEC,
+#	 -M by Sun
+#DEPEND = -Em
+#DEPEND = -M
+DEPEND = -MM
+depend:
+	sed -e "/^#=====DO NOT DELETE THIS LINE=====/q" Makefile > Makefile.new
+	$(CC) $(CFLAGS) $(DEPEND) $(SRCS) >> Makefile.new
+#	gcc $(CFLAGS) $(DEPEND) $(SRCS) >> Makefile.new
+	mv Makefile.new Makefile
+
+#=====DO NOT DELETE THIS LINE=====
+lex.yy.o: lex.yy.c Listcg.h typecg.h exprcg.h symtabcg.h cg.l.h main.h \
+ datacg.h transcg.h cg.tab.h
+cg.tab.o: cg.tab.c typecg.h Listcg.h exprcg.h symtabcg.h cg.l.h main.h \
+ datacg.h transcg.h
+main.o: main.c datacg.h symtabcg.h Listcg.h typecg.h exprcg.h cg.l.h \
+ main.h transcg.h cg.tab.h commandcg.h
+symtabcg.o: symtabcg.c symtabcg.h Listcg.h typecg.h exprcg.h cg.l.h \
+ main.h datacg.h transcg.h
+Listcg.o: Listcg.c Listcg.h typecg.h exprcg.h cg.l.h
+commandcg.o: commandcg.c commandcg.h
+transcg.o: transcg.c transcg.h

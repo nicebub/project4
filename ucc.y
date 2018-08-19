@@ -106,7 +106,9 @@ extern int error(char*,char*);
 //%type <value.lstevalue> exprlist
 %type <value.exprvalue> expr
 //%type <value.exprvalue>simpleexpr relexpr equalexpr
-//%type <value.pairvalue> stmt
+//%type <data> equalexpr relexpr simpleexpr
+//%type <data> stmt ifexprstmt
+//%type <data> term factor function_call func_call_with_params name_and_params constant
 
 
 %start starter
@@ -150,7 +152,7 @@ func: funcheader {
                     tempnode = NULL;
 					if(strcmp("main", (char*)($1->name)) ==0){
 			                        #ifdef DEBUG
-                			        fprintf(stderr,"hello from inside\n");
+                			        debugprint("hello from inside"," ");
              				        #endif
 						templist = (ListP*)$1->paramlist;
 	//main function
@@ -207,7 +209,8 @@ func: funcheader {
 												if(templist!=NULL){
 													tempnode= (listnodeP*)templist->list;
 												#ifdef DEBUG
-												fprintf(stderr,"in funcheader before funcbody, param val and type is %s: %d\n",tempnode->val,tempnode->ttype);
+												debugprint("in funcheader before funcbody, param val and type is "," ");
+												debugprint(tempnode->val,(char*)tempnode->ttype);
 												#endif
 												}
 												if(templist!=NULL){
@@ -264,11 +267,15 @@ func: funcheader {
 			   else{
 				   found = lookup((char*)temp->name, mysymtab);
                    #ifdef DEBUG
-                   fprintf(stderr,"FUNCTION: temp before symbol table: %s\n", temp->name);
+					if(temp->name ==NULL)
+                  	 debugprint("FUNCTION: temp before symbol table: ", "NULL");
+					 else
+                  	 debugprint("FUNCTION: temp before symbol table: ", temp->name);
+					 #endif
                    Funcb * paramOftemp = temp->binding;
-                   
-                   fprintf(stderr,"binding of temp as Funcb: value num_param in symbol table: %d\n", paramOftemp->num_param);
-                   fprintf(stderr,"param_type of paramOftemp as typeOftemp: value param_type in symbol table: %d\n", paramOftemp->param_type[2]);
+                   #ifdef DEBUG
+                   debugprintd("binding of temp as Funcb: value num_param in symbol table: ", (paramOftemp->num_param));
+                   debugprintd("param_type of paramOftemp as typeOftemp: value param_type in symbol table: ", (paramOftemp->param_type[2]));
                    #endif
 				   if(found == NULL){ install(temp, mysymtab); /*printTree(mysymtab)*/;}
 				   else{
@@ -1137,7 +1144,8 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
 									case VAR:
 										$$.ttype = ((Varb*)(tempE->binding))->type;
 										#ifdef DEBUG
-										fprintf(stderr,"type is: %d\n", $$.ttype);
+										char temp_char = (char)$$.ttype;
+										debugprint("type is: ", &temp_char);
 										#endif
 										$$.lval = TRUE;
 										if(((Varb*)(tempE->binding))->type == INT || ((Varb*)(tempE->binding))->type ==FLOAT) $$.numeric=TRUE;
@@ -1154,7 +1162,7 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
 									case PARAM:
 										$$.ttype = ((Paramb*)(tempE->binding))->type;
 										#ifdef DEBUG
-										fprintf(stderr,"type is: %d\n", $$.ttype);
+										debugprintd("type is: ", (int)$$.ttype);
 										#endif
 										$$.lval = TRUE;
 										if(((Paramb*)(tempE->binding))->type == INT || ((Paramb*)(tempE->binding))->type ==FLOAT) $$.numeric=TRUE;
@@ -1241,7 +1249,7 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
                                     case VAR:
                                         $$.ttype = ((Varb*)(tempE->binding))->type;
                                         #ifdef DEBUG
-                                        fprintf(stderr,"type is: %d\n", $$.ttype);
+                                        debugprintd("type is: %d\n", (int)$$.ttype);
                                         #endif
                                         $$.lval = FALSE;
                                         if(((Varb*)(tempE->binding))->type == INT || ((Varb*)(tempE->binding))->type ==FLOAT)
@@ -1259,7 +1267,7 @@ factor: constant { $$.ttype = $1.ttype; $$.lval = FALSE; $$.numeric=TRUE;
                                     case PARAM:
                                         $$.ttype = ((Paramb*)(tempE->binding))->type;
                                         #ifdef DEBUG
-                                        fprintf(stderr,"type is: %d\n", $$.ttype);
+                                        debugprintd("type is: ", (int)$$.ttype);
                                         #endif
                                         $$.lval = FALSE;
                                         if(((Paramb*)(tempE->binding))->type == INT || ((Paramb*)(tempE->binding))->type ==FLOAT)
@@ -1367,10 +1375,11 @@ name_and_params:
 		$$.funcent = lookupB((char*)$<value.svalue>1,mysymtab);
 		#ifdef DEBUG
 		printTree(mysymtab);
-		fprintf(stderr,"this the name of function called and the lookup value: %s\n",$1);
-		if(lookupB($1,mysymtab)==NULL) fprintf(stderr,"it was null\n");
-		else fprintf(stderr,"wasn't null\n");
+		debugprint("this the name of function called and the lookup value: ",$1);
+		if(lookupB($1,mysymtab)==NULL) debugprint("it was null","");
+		else debugprint("wasn't null","");
 		#endif
+		$$.name = $$.funcent->name;
 		if(founderror==FALSE) gen_instr_I("enter",1);
 	}
 	expr {
@@ -1401,12 +1410,12 @@ name_and_params:
                     }
                     else if(tempB->num_param == -1){
                         #ifdef DEBUG
-                        fprintf(stderr,"SPRINTF OR PRINTF mismatch: FUNCTION NAME: %s\n",$1);
-                        fprintf(stderr,"SPRINTF OR PRINTF: FUNCTION TYPE: %d\n",$4->type);
-//                                                            fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
-  //                                                          fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
-                        fprintf(stderr,"SPRINTF OR PRINTF: $4 TYPE: %d\n",$4->type);
-                        fprintf(stderr,"SPRINTF OR PRINTF: tempB->param_type[0] TYPE: %d\n",tempB->param_type[0]);
+                        debugprint("SPRINTF OR PRINTF mismatch: FUNCTION NAME: ",$1);
+                        debugprintd("SPRINTF OR PRINTF: FUNCTION TYPE: %d\n",(int)$4->type);
+//                                                            debugprint("Function mismatch 1: FUNCTION NAME: ",$1);
+  //                                                          debugprint("Function mismatch 1: FUNCTION NAME: ",$1);
+                        debugprintd("SPRINTF OR PRINTF: $4 TYPE: %d\n",(int)$4->type);
+                        debugprintd("SPRINTF OR PRINTF: tempB->param_type[0] TYPE: %d\n",(int)tempB->param_type[0]);
                         #endif
                         if($4->type != tempB->param_type[0]){
                             error("parameter type is different in declaration and in function call","");
@@ -1436,8 +1445,8 @@ name_and_params:
                         if(tempB->param_type !=NULL){
                             if($4->type != tempB->param_type[0]){
                                 #ifdef DEBUG
-                                fprintf(stderr,"Function mismatch 2: FUNCTION NAME: %s",$1);
-                                fprintf(stderr,"Function mismatch 2: FUNCTION TYPE: %d",$4->type);
+                                debugprint("Function mismatch 2: FUNCTION NAME: ",$1);
+                                debugprintd("Function mismatch 2: FUNCTION TYPE: ",(int)$4->type);
                                             //                                                            fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
                                             //                                                          fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
                                 #endif
@@ -1445,8 +1454,8 @@ name_and_params:
                                     error("Parameter type is different in declaration and in function call","");
                                 else if(tempB->param_type[0]==INT){
                                         #ifdef DEBUG
-                                        fprintf(stderr,"Function mismatch 3: FUNCTION NAME: %s",$1);
-                                        fprintf(stderr,"Function mismatch 3: FUNCTION TYPE: %d",$4->type);
+                                        debugprint("Function mismatch 3: FUNCTION NAME: ",$1);
+                                        debugprintd("Function mismatch 3: FUNCTION TYPE: ",(int)$4->type);
                                                 //                                                            fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
                                                 //                                                          fprintf(stderr,"Function mismatch 1: FUNCTION NAME: %s",$1);
                                         #endif
@@ -1463,7 +1472,7 @@ name_and_params:
                                 }
                                 else if(tempB->param_type[0]==FLOAT){
                                     #ifdef DEBUG
-                                    fprintf(stderr,"Function mismatch 4: FUNCTION NAME: %s",$1);
+                                    debugprint("Function mismatch 4: FUNCTION NAME: ",$1);
                                     #endif
                                     switch($4->type){
                                         case INT:	warning("Parameter expression is different type than in declaration","");
@@ -1540,7 +1549,7 @@ name_and_params:
                                                         else if($$.params < tempB->num_param){
                                                                 if($4->type != tempB->param_type[$1.params]){
                                                                     #ifdef DEBUG
-                                                                    fprintf(stderr,"Function mismatch before warning: FUNCTION NAME: %s",$1);
+                                                                    debugprint("Function mismatch before warning: FUNCTION NAME: ",$1.name);
                                                                     #endif
 
                                                                 	warning("Parameter type is different in declaration and in function call","");
@@ -1636,19 +1645,22 @@ relop: lesst { $$ = $1;}
 
 int yyerror(char *s)
 {
-	fprintf(stderr,"Error: Line: %d: %s\n", Line_Number, s);
+//	fprintf(stderr,"Error: Line: %d: %s\n", Line_Number, s);
+	fprintf(stderr,"Error:::%s:%d-> %s\n",filename,Line_Number,s);
     return 0;
 }
 
 
 int warning(char *s1, char* s2)
 {
-	fprintf(stderr,"Warning: Line: %d: %s %s\n",Line_Number,s1,s2);
+//	fprintf(stderr,"Warning: Line: %d: %s %s\n",Line_Number,s1,s2);
+	fprintf(stderr,":::::Warning:::%s:%d-> %s %s\n",filename,Line_Number,s1,s2);
     return 0;
 }
 
 int error(char* s1, char* s2){
-	fprintf(stderr,"Error: Line: %d: %s %s\n",Line_Number,s1,s2);
+//	fprintf(stderr,"Error: Line: %d: %s %s\n",Line_Number,s1,s2);
+	fprintf(stderr,"Error:::%s:%d-> %s %s\n",filename,Line_Number,s1, s2);
 	founderror=TRUE;
     return 0;
 }

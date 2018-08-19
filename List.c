@@ -59,11 +59,11 @@ void deleteList(List * inList){
 		if(inList->list != NULL){
 			temp = inList->list;
 			#ifdef DEBUG
-			fprintf(stderr,"Deleting List\n");
+			debugprint("Deleting List\n","");
 			#endif
 			while(temp->nextnode != NULL){
 				#ifdef DEBUG
-				fprintf(stderr, "Deleting %s\n", temp->val);
+				debugprint( "Deleting ", temp->val);
 				#endif
 				free(temp->val);
 				temp2 = temp;
@@ -72,7 +72,7 @@ void deleteList(List * inList){
 				temp2=NULL;
 			}
 			#ifdef DEBUG
-			fprintf(stderr, "Deleting %s\n", temp->val);
+			debugprint( "Deleting ", temp->val);
 			#endif
 			free(temp->val);
 			free(temp);
@@ -90,13 +90,14 @@ void deleteListP(ListP * inList){
 		if(inList->list != NULL){
 			temp = inList->list;
 			#ifdef DEBUG
-			fprintf(stderr,"Deleting List\n");
+			debugprint("Deleting List","");
 			#endif
 			while(inList->listsize != 0){
 				#ifdef DEBUG
-				fprintf(stderr, "Deleting %s with type: ", temp->val);
+				debugprint( "Deleting node with type: ", temp->val);
 
-				switch(temp->ttype){
+//				debugprint(temp->val,"");
+/*				switch(temp->ttype){
 					case(INT): fprintf(stderr, "INT\n"); break;
 					case(FLOAT): fprintf(stderr, "FLOAT\n"); break;
 					case(CHAR): fprintf(stderr, "CHAR\n"); break;
@@ -105,7 +106,7 @@ void deleteListP(ListP * inList){
 					case(REFINT): fprintf(stderr, "REFINT\n"); break;
 					case(REFFLOAT): fprintf(stderr, "REFFLOAT\n"); break;
 					case(VOID): fprintf(stderr, "VOID\n"); break;
-				}
+				}*/
 				#endif
 				free(temp->val);
 				temp2 = temp;
@@ -176,13 +177,13 @@ void deleteListE(ListE* inList){
         if(inList->list != NULL){
             temp = inList->list;
 			#ifdef DEBUG
-            fprintf(stderr,"Deleting List\n");
+            debugprint("Deleting List","");
 			#endif
             while(inList->listsize != 0){
                 exprtemp = temp->expr;
 				#ifdef DEBUG
-                                fprintf(stderr, "Deleting expr with type: ");
-                                switch(exprtemp->type){
+                                debugprint( "Deleting expr with type: ","");
+/*                                switch(exprtemp->type){
                                         case(INT): fprintf(stderr, "INT\n"); break;
                                         case(FLOAT): fprintf(stderr, "FLOAT\n"); break;
                                         case(CHAR): fprintf(stderr, "CHAR\n"); break;
@@ -191,7 +192,7 @@ void deleteListE(ListE* inList){
                                         case(REFINT): fprintf(stderr, "REFINT\n"); break;
                                         case(REFFLOAT): fprintf(stderr, "REFFLOAT\n"); break;
                                         case(VOID): fprintf(stderr, "VOID\n"); break;
-                                }
+                                }*/
 				#endif
 				free(exprtemp);
                 temp2 = temp;
@@ -217,11 +218,11 @@ ListE * mklistE(exprtype* inVal){
                 temp->list = (listnodeE*) malloc(sizeof(listnodeE));
                 temp->listsize=1;
 		#ifdef DEBUG
-		fprintf(stderr, "inVal in mklistE is of type :%d\n", inVal->type);
+		debugprintd( "inVal in mklistE is of type :", inVal->type);
 		#endif
 		temp->list->expr = inVal;
 		#ifdef DEBUG
-		fprintf(stderr," temp in mklistE has type :%d\n",temp->list->expr->type);
+		debugprintd(" temp in mklistE has type :",temp->list->expr->type);
 		#endif
                 temp->list->nextnode = NULL;
                 return temp;
@@ -245,7 +246,8 @@ ListE * appendListE(ListE * inList, exprtype * inexpr){
                         tempN2 = (listnodeE*) malloc(sizeof(listnodeE));
 			tempN2->expr = inexpr;
 			#ifdef DEBUG
-			fprintf(stderr,"in appendlistE inexpr has type :%d\n tempN2 has type :%d\n",inexpr->type, tempN2->expr->type);
+			debugprintd("in appendlistE inexpr has type ",inexpr->type);
+			debugprintd("tempN2 has type :", tempN2->expr->type);
 			#endif
                         tempN2->nextnode = NULL;
 						listnodeE * tNodeLL = NULL;
@@ -260,14 +262,18 @@ ListE * appendListE(ListE * inList, exprtype * inexpr){
 }
 
 void printListP(ListP * inList){
-    fprintf(stderr,"inList size: %d",inList->listsize);
+	#ifdef DEBUG
+    debugprintd("inList size: ",inList->listsize);
+	#endif
     if(inList != NULL){
         listnodeP* inNode = inList->list;
         if(inNode !=NULL){
             while(inNode != NULL){
-                fprintf(stderr,"\t\t\t---inNode value val: %s\t",inNode->val);
-                fprintf(stderr,"inNode ttype: %d---\n",inNode->ttype);
-                inNode = (listnodeP*)inNode->nextnode;
+				#ifdef DEBUG
+                	debugprint("inNode value val: ",inNode->val);
+                	debugprintd("inNode ttype: ",inNode->ttype);
+                	inNode = (listnodeP*)inNode->nextnode;
+				#endif
                 
             }
         }

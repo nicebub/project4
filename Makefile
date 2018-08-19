@@ -8,24 +8,26 @@
 TARGETDIR = .
 #
 # Use gcc for Motif compilations.
-#CC = /usr/local/bin/gcc
+
+#CC = /usr/local/bin/gcc-8
 CC = /usr/bin/gcc
-#BISON = /usr/local/bin/bison
+#BISON = /usr/local/opt/bison@2.7/bin/bison
 BISON = /usr/bin/bison
-#FLEX = /usr/local/bin/flex
+#FLEX = /usr/local/opt/flex/bin/flex
 FLEX = /usr/bin/flex
 
 MYUCC = "./ucc"
 
 
-CFLAGS = -g  -ggdb -I/usr/local/opt/bison/include
-#CFLAGS = -g  -ggdb -D DEBUGON -I/usr/local/opt/bison/include
+#CFLAGS = -g  -ggdb -I/usr/local/opt/bison@2.7/include -D DEBUGON
+CFLAGS = -g  -ggdb -D DEBUGON
 
 #CFLAGS = -g
 
 
 
-LDFLAGS =  -g -L/usr/local/opt/bison/lib -lc
+#LDFLAGS =  -g -L/usr/local/opt/bison@2.7/lib -lc -L/usr/local/opt/flex/lib
+LDFLAGS =  -g -lc 
 
 FLOP =
 BISOP = -vtd
@@ -41,7 +43,7 @@ main.c : ucc.tab.c main.h
 
 
 trans.o: trans.c trans.h
-	gcc -c trans.c $(CFLAGS)
+	$(CC) -c trans.c $(CFLAGS)
 
 ucc.tab.c : ucc.y
 	$(BISON) $(BISOP) ucc.y
@@ -50,13 +52,13 @@ lex.yy.c : ucc.l ucc.tab.c
 	$(FLEX) $(FLOP) ucc.l
 
 symtab.o: symtab.h symtab.c
-	gcc -c symtab.c $(CFLAGS)
+	$(CC) -c symtab.c $(CFLAGS)
 
 List.o: List.c
-	gcc -c List.c $(CFLAGS)
+	$(CC) -c List.c $(CFLAGS)
 
 command.o: command.c command.h
-	gcc -c command.c $(CFLAGS)
+	$(CC) -c command.c $(CFLAGS)
 
 MAIN = main.c
 
@@ -102,13 +104,14 @@ example: $(OBJS) $(MAIN) symtab.o example.c List.o
 DEPEND = -MM
 depend:
 	sed -e "/^#=====DO NOT DELETE THIS LINE=====/q" Makefile > Makefile.new
-	gcc $(CFLAGS) $(DEPEND) $(SRCS) >> Makefile.new
+	$(CC) $(CFLAGS) $(DEPEND) $(SRCS) >> Makefile.new
+#	gcc $(CFLAGS) $(DEPEND) $(SRCS) >> Makefile.new
 	mv Makefile.new Makefile
 
 #=====DO NOT DELETE THIS LINE=====
 lex.yy.o: lex.yy.c List.h type.h expr.h symtab.h main.h data.h trans.h \
   ucc.tab.h ucc.l.h
-ucc.tab.o: ucc.tab.c List.h type.h expr.h symtab.h main.h data.h trans.h \
+ucc.tab.o: ucc.tab.c type.h List.h expr.h symtab.h main.h data.h trans.h \
   ucc.l.h
 main.o: main.c data.h symtab.h List.h type.h expr.h main.h trans.h \
   ucc.tab.h command.h ucc.l.h
