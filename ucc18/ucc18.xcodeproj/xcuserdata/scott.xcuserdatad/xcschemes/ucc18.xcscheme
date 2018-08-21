@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D283AF9A20ADF43A00B07C08"
-               BuildableName = "Xcc"
-               BlueprintName = "Xcc"
+               BlueprintIdentifier = "D2CB13B520ACFEC0006987E5"
+               BuildableName = "ucc18"
+               BlueprintName = "ucc18"
                ReferencedContainer = "container:ucc18.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,15 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D283AF9A20ADF43A00B07C08"
-            BuildableName = "Xcc"
-            BlueprintName = "Xcc"
-            ReferencedContainer = "container:ucc18.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -46,53 +37,44 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
-      useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/scott/Desktop/project4/"
+      useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D283AF9A20ADF43A00B07C08"
-            BuildableName = "Xcc"
-            BlueprintName = "Xcc"
+            BlueprintIdentifier = "D2CB13B520ACFEC0006987E5"
+            BuildableName = "ucc18"
+            BlueprintName = "ucc18"
             ReferencedContainer = "container:ucc18.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "/Users/scott/Desktop/project4/sample2b.c"
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D283AF9A20ADF43A00B07C08"
-            BuildableName = "Xcc"
-            BlueprintName = "Xcc"
+            BlueprintIdentifier = "D2CB13B520ACFEC0006987E5"
+            BuildableName = "ucc18"
+            BlueprintName = "ucc18"
             ReferencedContainer = "container:ucc18.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

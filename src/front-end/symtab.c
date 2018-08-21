@@ -99,7 +99,7 @@ int Ecmp(const void *Entry1, const void *Entry2){
 	return strcmp( ((Entry*)Entry1)->name, ((Entry*)Entry2)->name);
 }
 
-
+#ifdef DEBUG
 void printTree(Symtab *symtab){
 	if(symtab->Stack[0] != NULL)
 		twalk((void*) (symtab->Stack[symtab->actualStacksize-1]), Swalk);
@@ -229,7 +229,7 @@ void Swalk(const void *node, VISIT myorder, int level){
 		}
 	}
 }
-
+#endif
 Symtab * createTree(int Stacksize){
 	Symtab *temp;
 	int a;
@@ -303,7 +303,11 @@ void deleteEntry(Entry * temp){
 						free(temp);
 						temp= NULL;
 						break;
-			default:		debugprint("Error in Node, doesn't have correct binding","");
+			default:	
+						#ifdef DEBUG	
+						debugprint("Error in Node, doesn't have correct binding","");
+						#endif
+						;
 		}
 	}
 

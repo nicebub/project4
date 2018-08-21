@@ -1,5 +1,23 @@
 # Created by https://www.gitignore.io/api/c
 .DS_STORE
+ucc18/ucc
+ucc18/ucc.output
+ucc18/ucc.tab.c
+ucc18/ucc.tab.h
+project4
+test_files
+ucc18/Xcc
+ucc18/Xcc/main.c
+err*.c
+sample*.c
+sample*.*
+my*.*
+my*
+fib.c
+min.c
+fact-func.c
+fact.c
+
 ### C ###
 # Prerequisites
 *.d
