@@ -8,12 +8,12 @@
 TARGETDIR = .
 #
 # Use gcc for Motif compilations.
-CC = /usr/local/bin/gcc-8
-#CC = /usr/bin/gcc
-BISON = /usr/local/opt/bison/bin/bison
-#BISON = /usr/bin/bison
-FLEX = /usr/local/opt/flex/bin/flex
-#FLEX = /usr/bin/flex
+#CC = /usr/local/bin/gcc-8
+CC = /usr/bin/gcc
+#BISON = /usr/local/opt/bison/bin/bison
+BISON = /usr/bin/bison
+#FLEX = /usr/local/opt/flex/bin/flex
+FLEX = /usr/bin/flex
 
 
 
@@ -21,19 +21,19 @@ MYCG = "./CG"
 
 
 #CFLAGS = -g  -O0 -ggdb -I/usr/local/opt/bison/include
-CFLAGS = -g  -O0 -ggdb -D DEBUGON -I/usr/local/opt/bison/include
+#CFLAGS = -g  -O0 -ggdb -D DEBUGON -I/usr/local/opt/bison/include
 
-#CFLAGS = -g
+CFLAGS = -g -O0 -D DEBUGOFF
 
 
 
-LDFLAGS =  -g -L/usr/local/opt/bison/lib -lc -L/usr/local/opt/flex/lib
+#LDFLAGS =  -L/usr/local/opt/bison/lib -lc -L/usr/local/opt/flex/lib
 #LDFLAGS =  -g -L/usr/local/opt/bison/lib -lc 
 
 FLOP =
 BISOP = -vtd
 #LIBS = -lfl -lm
-LIBS = -ll -lm
+#LIBS = -ll -lm
 
 all: cg
 
@@ -53,8 +53,8 @@ cg.tab.c : cg.y
 lex.yy.c : cg.l cg.tab.c
 	$(FLEX) $(FLOP) cg.l
 
-symtabcg.o: symtabcg.h symtabcg.c
-	$(CC) -c symtabcg.c $(CFLAGS)
+#symtabcg.o: symtabcg.h symtabcg.c
+#	$(CC) -c symtabcg.c $(CFLAGS)
 
 Listcg.o: Listcg.c
 	$(CC) -c Listcg.c $(CFLAGS)
@@ -62,33 +62,36 @@ Listcg.o: Listcg.c
 commandcg.o: commandcg.c commandcg.h
 	$(CC) -c commandcg.c $(CFLAGS)
 
+debuglib.o: debuglib.c debuglib.h
+	$(CC) -c debuglib.c $(CFLAGS)
+
 MAIN = main.c
 
 SRCS  = lex.yy.c \
 	cg.tab.c \
 	main.c \
-	symtabcg.c \
 	Listcg.c  \
 	commandcg.c \
-	transcg.c
+	transcg.c \
+	debuglib.c
 
 OBJS  = lex.yy.o  \
 	cg.tab.o \
-	symtabcg.o \
 	Listcg.o \
 	commandcg.o \
-	transcg.o
+	transcg.o \
+	debuglib.o
 
 
 sample$(NUM) : sample$(NUM).c
 	$(MYUCC) sample$(NUM).c
 
 clean :
-	rm *.o lex.yy.c cg.tab.* cg.output cg example core test *.out *.s; rm -rf cg.dSYM;
+	rm *.o lex.yy.c cg.tab.* cg.output cg example core test *.out *.s; rm -rf cg.dSYM debug.output;
 
 
 cg : $(OBJS) $(MAIN)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(OBJS) $(MAIN) $(LIBS)
+	$(CC) $(LDFLAGS) -o $(TARGETDIR)/$@ $(OBJS) $(MAIN) $(LIBS) $(CFLAGS)
 
 example: $(OBJS) $(MAIN) symtab.o example.c List.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(OBJS) example.c $(LIBS)
@@ -105,20 +108,19 @@ example: $(OBJS) $(MAIN) symtab.o example.c List.o
 #DEPEND = -M
 DEPEND = -MM
 depend:
-	sed -e "/^#=====DO NOT DELETE THIS LINE=====/q" Makefile > Makefile.new
+	sed -e "/^#=====DO NOT DELETE THIS LINE=====/q" Makefile.old > Makefile.new
 	$(CC) $(CFLAGS) $(DEPEND) $(SRCS) >> Makefile.new
 #	gcc $(CFLAGS) $(DEPEND) $(SRCS) >> Makefile.new
-	mv Makefile.new Makefile
+	mv Makefile.new Makefile.old
 
 #=====DO NOT DELETE THIS LINE=====
-lex.yy.o: lex.yy.c Listcg.h typecg.h exprcg.h symtabcg.h cg.l.h main.h \
- datacg.h transcg.h cg.tab.h
-cg.tab.o: cg.tab.c typecg.h Listcg.h exprcg.h symtabcg.h cg.l.h main.h \
- datacg.h transcg.h
-main.o: main.c datacg.h symtabcg.h Listcg.h typecg.h exprcg.h cg.l.h \
- main.h transcg.h cg.tab.h commandcg.h
-symtabcg.o: symtabcg.c symtabcg.h Listcg.h typecg.h exprcg.h cg.l.h \
- main.h datacg.h transcg.h
-Listcg.o: Listcg.c Listcg.h typecg.h exprcg.h cg.l.h
+lex.yy.o: lex.yy.c debuglib.h Listcg.h typecg.h exprcg.h symtabcg.h \
+ cg.l.h main.h datacg.h transcg.h cg.tab.h
+cg.tab.o: cg.tab.c debuglib.h Listcg.h typecg.h exprcg.h datacg.h \
+ symtabcg.h cg.l.h main.h transcg.h
+main.o: main.c debuglib.h Listcg.h typecg.h exprcg.h datacg.h symtabcg.h \
+ cg.l.h main.h transcg.h cg.tab.h commandcg.h
+Listcg.o: Listcg.c debuglib.h Listcg.h typecg.h exprcg.h cg.l.h
 commandcg.o: commandcg.c commandcg.h
 transcg.o: transcg.c transcg.h
+debuglib.o: debuglib.c debuglib.h Listcg.h typecg.h exprcg.h

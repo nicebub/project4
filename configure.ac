@@ -1,5 +1,5 @@
 AC_INIT([ucc], [1.0], [info@laureltreecomputing.com])
-AC_CONFIG_SRCDIR([src/main.c])
+#AC_CONFIG_SRCDIR([src/front-end src/back-end])
 AC_CONFIG_AUX_DIR([scripts])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AM_MAINTAINER_MODE

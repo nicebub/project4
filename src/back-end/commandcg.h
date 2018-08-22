@@ -4,7 +4,7 @@
 
 extern FILE *yyin;
 FILE *infile;
-char* filename;
+extern char* filename;
 int checkargs(int argc, char** argv);
 char* openfile(int argc, char** argv);
 

@@ -1,8 +1,5 @@
-/*scott lorberbaum
-   compilers spring 2004
-	This file is the specification file for bison for the uC language.  This is only the minimal amount need to create the ucc.tab.h file which specifies the tokens
-and their values.  Then that file is included in the flex spec file to have identical tokens.  Also there is a declartion of a union, the Line_Number which helps keep
-track of the line number, and some of the operators have their precedence specifed.
+/*
+Code Generator Bison Parser File
 */
 %{
 #ifdef DEBUGON
@@ -10,9 +7,10 @@ track of the line number, and some of the operators have their precedence specif
 #define DEBUG
 #endif
 #endif
+#include "debuglib.h"
 #include "typecg.h"
 #include "Listcg.h"
-#include "symtabcg.h"
+//#include "symtabcg.h"
 #include "datacg.h"
 #include "transcg.h"
 #include <stdio.h>
@@ -30,15 +28,15 @@ extern int mainlocal;
 extern int othercounter;
 extern int param_offset;
 extern int offset_counter;
-extern Symtab* mysymtab;
+//extern Symtab* mysymtab;
 int mainlabel;
 Funcbcg* currentFunc;
-extern int yyerror(char *);
+extern int yyerror(const char *);
 extern int yylex (void);
 extern int warning(char*,char*);
 extern int error(char*,char*);
 %}
-//%expect 1
+%expect 2
 
 %token Ident
 %token IntConstant
@@ -91,14 +89,23 @@ extern int error(char*,char*);
 %type <value.multopvalue> divide star
 %type <value.ivalue> uminus
 %type <command_list> commandlist
-%type <value.cargvalue> command_args optional_command_args
+%type <value.cargvalue> command_args
 
 
 %start starter
 %%
 
-starter: translation_unit {
+starter:{
+	#ifdef DEBUG
+	debugprint(1,"EMPTY STARTER","");
+	#endif
+} 
+	| translation_unit {
 			if(founderror == FALSE){
+				#ifdef DEBUG
+				debugprint(1,"All Translation Units Recognized and compacted into One","");
+				#endif
+
 				/*gen_label("main");
 				gen_instr_I("enter",0);
 				gen_instr_I("alloc",globalcount);
@@ -110,22 +117,34 @@ starter: translation_unit {
 	}
 ;
 
-translation_unit: /* empty because then just a main function defined or empty file? */
-	//| variabledecl {}
-	| translation_unit func {}
-	| translation_unit mainfunc {}
-	//| translation_unit variabledecl {}
-//	| error { error("unexpected token between translation units or at end of program","");}
-	| translation_unit error { error("(unexpected token between translation units or at end of program)","");}
+translation_unit: func {
+			#ifdef DEBUG
+			debugprint(1,"Function Translation Unit Recognized and added to Start of Translation Units","");
+			#endif
+			
+		}
+			
+	| translation_unit func {
+		#ifdef DEBUG
+		debugprint(1,"Function Translation Unit Recognized and added to existing Translation Units","");
+		#endif
+	}
+	| mainfunc {
+		#ifdef DEBUG
+		debugprint(1,"Main Function Translation Unit Recognized and added to Start of Translation Units","");
+		#endif
+	
+	}
+	| translation_unit mainfunc {
+		#ifdef DEBUG
+		debugprint(1,"Main Function Translation Unit Recognized and added to existing Translation Units","");
+		#endif
+	}
 ;
 mainfunc: maint commandlist {
-/*		gen_label(genlabelw((char*)$1.value.svalue, getlabel() ));
-		commandlisttype *temp;
-		temp = $2->list;
-		for(int i = 0; i < temp->length; i++){
-			gen_instr(temp->name);
-			temp = temp->nextcommand;
-		}*/
+	#ifdef DEBUG
+	debugprintc(1,"Proccessing the main function at the bottom of the file with the List of Commands",$2);
+	#endif
 	}
 ;
 
@@ -133,38 +152,54 @@ func: Ident commandlist {
 		gen_label(genlabelw($1, getlabel() ));
 		commandlisttype *temp;
 		temp = $2->list;
-		for(int i = 0; i < temp->length; i++){
-			gen_instr(temp->name);
-			temp = temp->nextcommand;
+		#ifdef DEBUG
+		debugprintd(1,"Counting and Generating Instructions: ", temp->length);
+		#endif
+		if($2 != NULL){
+			for(int i = 0; i < $<command_list>2->listsize && temp!=NULL; i++){
+				#ifdef DEBUG
+				debugprintd(1,"Generating Command ",i);
+				#endif
+				gen_instr(temp->name);
+				temp = temp->nextcommand;
+			}
 		}
 	}
 ;
-commandlist: command_name optional_command_args  {
+commandlist: command_name {
+		#ifdef DEBUG
+		debugprint(1,"A List of Commands is being added to with the first and no arguments",$1);
+		#endif
+		$$ = mkcommandList((char*)$1, (ListC*)NULL);
+		}
+	| commandlist command_name {
+		#ifdef DEBUG
+		debugprinta2(1,"A List of Commands is being added to with another command and no arguments",$2, NULL);
+		#endif
+		$$ = appendcommandList((commandList*)$1, (char*)$2, (ListC*)NULL);
+		}
+	| command_name command_args  {
+		#ifdef DEBUG
+		debugprinta2(1,"A List of Commands is being added to with the first and its arguments as a whole",$1, $2);
+		#endif
 		$$ = mkcommandList((char*)$1, (ListC*)$2);
 		}
-	| commandlist command_name optional_command_args {
+	| commandlist command_name command_args {
+		#ifdef DEBUG
+		debugprinta2(1,"A List of Commands is being added to with another command and its arguments",$2, $3);
+		#endif
 		$$ = appendcommandList((commandList*)$1, (char*)$2, (ListC*)$3);
 		}
 ;
 
 command_name: CommandName {
-		$$ = (char*) $1;
+			#ifdef DEBUG
+			debugprint(1,"CommandName found",$1);
+			#endif
+			$$ = (char*) $1;
 	}
 ;
 
-optional_command_args:  /* empty args */ {			
-			#ifdef DEBUG
-			debugprint("EMPTY inside optional_command_args","");
-			#endif
-			$$ = NULL;
-			}
-	|	command_args {
-			$$ = $1; 
-			#ifdef DEBUG
-			debugprint("command_args matched inside optional_command_args","");
-			#endif
-		}
-;
 
 command_args: Ident {
 			char *vals[2];
@@ -172,7 +207,7 @@ command_args: Ident {
 			vals[1] = NULL;
 			$$ = mklistC(vals);
 			#ifdef DEBUG
-			debugprint("Ident inside command_args","");
+			debugprint(1,"Ident inside command_args",vals[0]);
 			#endif
 		}
 	| StrConstant {
@@ -181,7 +216,7 @@ command_args: Ident {
 			vals[1] = NULL;
 			$$ = mklistC(vals);
 			#ifdef DEBUG
-			debugprint("StrConstant inside command_args","");
+			debugprint(1,"StrConstant inside command_args","");
 			#endif
 		}
 	| IntConstant {
@@ -190,11 +225,14 @@ command_args: Ident {
 			vals[1] = (int)0;
 			$$ = mklistCi(vals);
 			#ifdef DEBUG
-			debugprint("IntConstant inside command_args","");
+			debugprintd(1,"IntConstant inside command_args",$1);
 			#endif
 		}
 	| command_args comma Ident {
 			if($1!=NULL && $1->list !=NULL && $1->list->val[1]==NULL){
+				#ifdef DEBUG
+				debugprint(1,"Ident inside command_args list version",$3);
+				#endif
 				$$ = appendListC($1, (char*)$3, STR);
 			}
 			else{
@@ -203,6 +241,9 @@ command_args: Ident {
 		}
 	| command_args comma StrConstant {
 			if($1!=NULL && $1->list !=NULL && $1->list->val[1]==NULL){
+				#ifdef DEBUG
+				debugprint(1,"StrConst inside command_args list version",$3);
+				#endif
 				$$ = appendListC($1, (char*)$3, STR);
 			}
 			else{
@@ -211,6 +252,9 @@ command_args: Ident {
 		}
 	| command_args comma IntConstant {
 			if($1!=NULL && $1->list !=NULL && $1->list->val[1]==NULL){
+				#ifdef DEBUG
+				debugprintd(1,"IntConstant inside command_args list version",$3);
+				#endif
 				$$ = appendListCi($1, (int)$3, INT);
 			}
 			else{
@@ -222,7 +266,7 @@ command_args: Ident {
 
 %%
 
-int yyerror(char *s)
+int yyerror(const char *s)
 {
 	fprintf(stderr,"%s:%d:-> Error: %s\n", filename,Line_Number, s);
     return 0;

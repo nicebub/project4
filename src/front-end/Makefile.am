@@ -1,4 +1,4 @@
-SUBDIRS = cg
+#SUBDIRS = cg
 BUILT_SOURCES = ucc.y ucc.l 
 bin_PROGRAMS = ucc
 ucc_SOURCES = main.c main.h symtab.c symtab.h List.c List.h command.c command.h trans.c trans.h data.h expr.h type.h ucc.l.h ucc.l ucc.y

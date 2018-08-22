@@ -3,6 +3,7 @@
 #define DEBUG
 #endif
 #endif
+#include "debuglib.h"
 #include "Listcg.h"
 #include "typecg.h"
 #include <stdio.h>
@@ -36,6 +37,10 @@ commandList * mkcommandList(char * inVal, ListC* inargs){
 		temp->list->length=1;
 		temp->list->paramlist = inargs;
 		temp->list->nextcommand = NULL;
+		#ifdef DEBUG
+		debugprintd(1,"Checking CommandList size ",temp->listsize);
+		debugprintc(1,"Checking CommandList Accuracy ",temp);
+		#endif
 		return temp;
 	}
 	error("Value isn't correct, could not make List","");
@@ -117,11 +122,19 @@ commandList* appendcommandList(commandList * inList, char * inVal, ListC *inargs
 
 	if(inList != NULL){
 		if(inList->list !=NULL){
+			#ifdef DEBUG
+			debugprint(1,"Appending Commands to the command list", inVal);
+			#endif
 			tempN = inList->list;
 			while(tempN->nextcommand != NULL) tempN = (commandlisttype*)tempN->nextcommand;
 			tempN2 = (commandlisttype*) malloc(sizeof(commandlisttype));
 			tempN2->name = (char*) strdup(inVal);
-			tempN2->length=1;
+			if(inargs!=NULL){
+				tempN2->length=inargs->listsize;
+			}
+			else{
+				tempN2->length=1;
+			}
 			tempN2->paramlist=inargs;
 			tempN2->nextcommand = NULL;
 			//(listnode*)(tempN->nextnode) = (listnode*)tempN2;
@@ -130,6 +143,10 @@ commandList* appendcommandList(commandList * inList, char * inVal, ListC *inargs
 			tNodeLL = (commandlisttype*)tempN2;
             tempN->nextcommand = tNodeLL;
 			inList->listsize += 1;
+			#ifdef DEBUG
+			debugprintd(1,"Checking CommandList size ",inList->listsize);
+			debugprintc(1,"Checking CommandList Accuracy ",inList);
+			#endif
 			return inList;
 		}
 	}
@@ -502,3 +519,55 @@ void printListP(ListP * inList){
     }
 
 }
+#ifdef DEBUG
+void printListC(ListC * inList){
+	if(inList != NULL){
+		if(inList->list != NULL){
+			if(inList->list->argtype[0] == STR){
+				if((&inList->list->val) != NULL){
+					debugprint(1,"val[0]", inList->list->val[0]);
+				}
+			}
+			else{
+				debugprintd(1,"int_val[0]", inList->list->int_val[0]);
+				
+			}
+			if(inList->list->val[1] != NULL && inList->list->argtype[1] == STR){
+				debugprint(1,"val[1]", inList->list->val[1]);
+			}
+			else if(inList->list->argtype[1] != STR && inList->listsize > 1){
+				debugprintd(1,"int_val[1]", inList->list->int_val[1]);
+			}			
+		}
+		else
+			debugprint(1,"List is empty","");
+	}
+}
+
+void printcommandList(commandList * inList){
+	if(inList != NULL){
+		if(inList->list != NULL){
+			if(inList->list->name != NULL){
+				
+				debugprint(1,"First command of command list", inList->list->name);
+				
+			}
+			else{
+				debugprint(1,"Command List Empty","");
+				
+			}
+			
+			debugprintd(1,"Command List listsize", inList->listsize);
+			commandlisttype* temp = inList->list;
+			for(int i = 0; temp !=NULL && i<inList->listsize; i++){
+				debugprint(1,"Command Name:",temp->name);
+				debugprintd(1,"Command Number of Arguments",temp->length);
+				printListC(temp->paramlist);
+				temp = temp->nextcommand;
+			}
+		}
+		else
+			debugprint(1,"List is empty","");
+	}
+}
+#endif

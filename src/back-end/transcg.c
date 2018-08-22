@@ -14,7 +14,7 @@ int getlabel(){
 void nullout(char* name, int length){
 	int a;
 	for(a=0;a<length;a++){
-		name[a]=(char)NULL;
+		name[a]='\0';;
 	}
 }
 

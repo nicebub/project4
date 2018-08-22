@@ -2,24 +2,39 @@
 #define _MYLISTCGH
 #include "typecg.h"
 #include "exprcg.h"
-
-typedef struct {
+typedef struct _listnodeE listnodeE;
+struct _listnodeE{
 	exprtype* expr;
-	struct listnodeE *nextnode;
-} listnodeE;
+	listnodeE *nextnode;
+};
+
+typedef struct _listnodeC listnodeC;
+struct _listnodeC{
+	char * val[2];
+	int	int_val[2];
+	typecg argtype[2];
+	listnodeC *nextnode;
+};
 
 typedef struct {
 	int listsize;
 	listnodeE *list;
 } ListE;
 
-typedef struct {
+typedef struct _ListC ListC;
+struct _ListC{
+	listnodeC * list;
+	int listsize;
+};
+
+typedef struct _commandlisttype commandlisttype;
+struct _commandlisttype{
 	char* name;
 	int length;
-	struct ListC *paramlist;
-	struct ListCi *paramlisti;
-	struct commandlisttype *nextcommand;
-} commandlisttype;
+	ListC *paramlist;
+	//struct ListCi *paramlisti;
+	commandlisttype *nextcommand;
+};
 
 typedef struct {
 	int listsize;
@@ -33,17 +48,6 @@ typedef struct {
 	int	length;
 } commandargtype;
 
-typedef struct {
-	char * val[2];
-	int	int_val[2];
-	typecg argtype[2];
-	struct listnodeC *nextnode;
-} listnodeC;
-
-typedef struct {
-	listnodeC * list;
-	int listsize;
-} ListC;
 
 typedef struct {
 	char * name;
@@ -52,16 +56,18 @@ typedef struct {
 	typecg ttype;
 } funcheadertype;
 
-typedef struct {
+typedef struct _listnode listnode;
+struct _listnode{
 	char * val;
-	struct listnode *nextnode;
-} listnode;
+	listnode *nextnode;
+};
 
-typedef struct {
+typedef struct _listnodeP listnodeP;
+struct _listnodeP{
 	char * val;
 	typecg ttype;
-	struct listnodeP *nextnode;
-} listnodeP;
+	listnodeP *nextnode;
+};
 
 typedef struct {
 	listnode * list;
@@ -95,6 +101,7 @@ void deleteListP(ListP * inList);
 ListP * mklistP(char* inName, typecg intype);
 ListP * appendListP(ListP *inList, char* inName, typecg intype);
 void printListP(ListP * inList);
+void printListC(ListC * inList);
 
 void deleteListE(ListE *inList);
 ListE * mklistE(exprtype* expr);

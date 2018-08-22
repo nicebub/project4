@@ -11,6 +11,7 @@ that the file opened on the command line arguments ends in a '.c'.  Which also b
 #endif
 int yydebug = 0;
 #endif
+#include "debuglib.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "datacg.h"
@@ -35,29 +36,35 @@ int main(int argc, char **argv){
 	if(checkargs(argc,argv) == -1){
 		#ifdef DEBUG
 			filename = "main.c";
-			debugprint("No arguments given to compiler","");
+			debugprint(3,"No arguments given to compiler","");
 		#endif
 		return -1;
 	}
 	if((filename = openfile(argc, argv)) == NULL){
 		return -1;
 	}
-	mysymtab = createTree(100);
+/*	mysymtab = createTree(100);
 	if(mysymtab == NULL){
 //		free(filename);
 		filename=NULL;
 		filename = "main.c";
 		error("Unable to construct symbol table\n","");
 		return -1;
-	}
+	}*/
 
 	offset_counter=5;
+	do{
 	yyparse();
+}while(!feof(yyin));
+		#ifdef DEBUG
+		printf("Finished Parsing");
+		debugprint(3,"Finished Parsing","");
+		#endif
 
-	#ifdef DEBUG
+/*	#ifdef DEBUG
 	printTree(mysymtab);
 	#endif
-	deleteTree(mysymtab);
+	deleteTree(mysymtab);*/
 	if(infile !=NULL)
 		fclose(infile);
 //	free(filename);
