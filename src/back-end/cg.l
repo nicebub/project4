@@ -12,6 +12,11 @@
 #include "symtabcg.h"
 #include "datacg.h"
 #define YYSTYPE data
+//#define YY_INPUT(buf,result,max_size)  {\
+//   result = GetNextChar(buf, max_size); \
+ //  if (  result <= 0  ) \
+//      result = YY_NULL; \
+//    }
 #include "cg.tab.h"
 #include "cg.l.h"
 #include "main.h"
@@ -21,6 +26,7 @@ int check_str_length_bf_input(char* input);
 char maxstrconst = (char)MAX_STR_CONST;
 %}
 %option noyywrap
+%option nodefault
 %option stack
 %s	initial
 %x	string
@@ -53,6 +59,7 @@ ADOF	"&"
 		#ifdef DEBUG
 			debugprint(0,"End of string being processed - returning\n","");
 		#endif
+		++current_char;
 		return(StrConstant);
 	}
 	else {
@@ -66,6 +73,7 @@ ADOF	"&"
 
 \n {	BEGIN(INITIAL);
 	++Line_Number;
+	current_char = 1;
 		#ifdef DEBUG
 			debugprint(0,"Matched unallowed newling character in processing string\n","");
 		#endif
@@ -79,22 +87,25 @@ ADOF	"&"
 		#ifdef DEBUG
 			debugprint(0,"Matched character Escaped n double backslash n in processing string ",yytext);
 		#endif
+		current_char += 2;
 	}
 	else {
 		register int c;
 		BEGIN(INITIAL);
+		current_char +=2;
 		#ifdef DEBUG
 			debugprint(0,"Matched character Escaped n but pattern string too large - absorbing ",yytext);
 		#endif
 		error("string too large, size must be less than:", &maxstrconst);
 		while(((c = input()) != '\"') && (c != EOF)){
+			++current_char;
 			#ifdef DEBUG
 				debugprint(0,"Matched characters inside string but too large - absorbing ",yytext);
 			#endif
 			;
 		}
 		if(c == EOF) error("eof terminated string","");
-
+			++current_char;
 	}
 	}
 
@@ -102,6 +113,7 @@ ADOF	"&"
 	if(check_str_length_bf_input(yytext)){
 		*string_buf_ptr++ = '\\';
 		*string_buf_ptr++ = '\"';
+		current_char += 2;
 		#ifdef DEBUG
 			debugprint(0,"Double Escaped Double Quote found - backslash backslash backslash doublequote processing string ",yytext);
 		#endif
@@ -109,18 +121,21 @@ ADOF	"&"
 	else {
 		register int c;
 		BEGIN(INITIAL);
+			current_char += 2;
 		#ifdef DEBUG
 			debugprint(0,"Matched string pattern but string too large - absorbing ",yytext);
 		#endif
 		error("string too large, size must be less than:", &maxstrconst);
 		while(((c = input()) != '\"') && (c != EOF)){
+			if(c == '\n') current_char = 0;
+			++current_char;
 			#ifdef DEBUG
 				debugprint(0,"Matched characters inside string but too large - absorbing ",yytext);
 			#endif
 			;
 		}
 		if(c == EOF) error("eof terminated string","");
-
+			++current_char;
 	}
 
 	}
@@ -128,19 +143,25 @@ ADOF	"&"
 \\[^n\\\"] {
 		register int c;
 		BEGIN(INITIAL);
+			current_char += 2;
 		#ifdef DEBUG
 	debugprint(0,"Backslash and then another character - not n, backslash, or double quotation in string Processing ",yytext);
 		#endif
 		error("illegal character:%s a in string",yytext);
-		while(((c = input()) != '\"') && (c != EOF));
+		while(((c = input()) != '\"') && (c != EOF)){
+			if(c == '\n') current_char = 0;
+			++current_char;
+		}
 		if(c == EOF) error("eof terminated string","");
 		}
 
 ((\\\\{SPACE}+)*|[&@$\%^/,.+'-\[\]{}();~`|=#\!:<>]*|{LETTER}|{DIGIT}|{PERCENT}|{SPACE}|{BEGCOM}|{ENDCOM}|{QUESTION})* {
 	if(check_str_length_bf_input(yytext)){
 		char *yptr = yytext;
-		while((yptr != NULL) && *yptr)
+		while((yptr != NULL) && *yptr){
 			*string_buf_ptr++ = *yptr++;
+			++current_char; 
+		}
 		#ifdef DEBUG
 			debugprint(0,"Matching string pattern to current string ",yytext);
 		#endif
@@ -168,6 +189,14 @@ ADOF	"&"
 	error("eof terminated string","");
 	#ifdef DEBUG
 		debugprint(0,"END-OF-FILE character matched while in processing a string constant\n","");
+	#endif
+	BEGIN(INITIAL);
+	}
+. {
+//	ECHO;
+	error("Characters are not allowed in string","");
+	#ifdef DEBUG
+		debugprint(0,"OTHER CHARACTERS while in processing a string constant\n","");
 	#endif
 	BEGIN(INITIAL);
 	}
@@ -436,7 +465,7 @@ flt(b)? { /* keyword flt */
 				#endif
 				return(Ident);
 				}
-^main { /* last function - the call to main */
+main { /* last function - the call to main */
 		yylval.ttype= STR;
 		yylval.value.svalue = (char *) strdup(yytext);
 		#ifdef DEBUG
@@ -571,7 +600,7 @@ flt(b)? { /* keyword flt */
 
 [ \t\r]+	{ /*eat up tabs, whitespace */
 	#ifdef DEBUG
-		debugprint(0,"Getting rid of other whitespace\n","");
+		debugprint(0,"Getting rid of other whitespace","");
 	#endif
 	}
 
@@ -582,6 +611,13 @@ flt(b)? { /* keyword flt */
 	#endif
 	error("illegal character: %s b",yytext);
 	}
+	
+<<EOF>> {
+		#ifdef DEBUG
+			debugprint(0,"Found the END-OF-FILE character - assuming end of actual file","");
+		#endif
+		return '\0';
+		}
 
 %%
 int check_str_length_bf_input(char* input){
@@ -591,9 +627,3 @@ int check_str_length_bf_input(char* input){
 	return 0;
 }
 
-/*<<EOF>> {
-#	#ifdef DEBUG
-#		debugprint(0,"Found the END-OF-FILE character - assuming end of actual file","");
-#	#endif
-#	return '\0';
-#	}*/

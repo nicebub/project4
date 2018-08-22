@@ -1,4 +1,5 @@
 #include "transcg.h"
+#include "cg.tab.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,6 +40,10 @@ char* genlabelw(char* name, int labelnum){
 	int a;
 	char buf[30];
 	sprintf(buf,"%d",labelnum);
+	if(name == NULL){
+		error("Can't generate a label without a name","");
+		return NULL;
+	}
 	tempstr = (char*) malloc(sizeof(char)*(strlen(name)+strlen(buf)+2));
 	nullout(tempstr, (int)(strlen(name)+strlen(buf)+2));
 	tempstr[0]='_';

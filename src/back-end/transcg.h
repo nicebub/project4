@@ -10,6 +10,7 @@ int globalcount;
 int localcount;
 int labelcounter;
 extern FILE *infile;
+extern int error(char*, char*);
 
 void initializelabel(void);
 

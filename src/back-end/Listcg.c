@@ -26,6 +26,22 @@ List * mklist(char * inVal){
 	error("Value isn't correct, could not make List","");
     return NULL;
 }
+trans_u_list* mkTransList(char* inName, commandList* inList){
+	trans_u_list *temp;
+	translation_unit* temp_unit;
+	if(inName != NULL && inList !=NULL){
+		temp = (trans_u_list*) malloc(sizeof(trans_u_list));
+		temp_unit = (translation_unit*) malloc(sizeof(translation_unit));
+		temp->listsize=1;
+		temp->list = temp_unit;
+		temp_unit->name = inName;
+		temp_unit->commandlist = inList;
+		temp_unit->next_trans_unit = NULL;
+		return temp;
+	}
+	error("Could not make Translation Unit List","");
+	return NULL;
+}
 
 commandList * mkcommandList(char * inVal, ListC* inargs){
 	commandList* temp;
@@ -113,6 +129,27 @@ List * appendList(List * inList, char * inVal){
     return NULL;
 }
 
+trans_u_list * appendTransList(trans_u_list* inTransList, char* inName, commandList* inList){
+	translation_unit *temp;
+	translation_unit *temp2;
+	if(inTransList != NULL){
+		if(inTransList->list != NULL){
+			#ifdef DEBUG
+			debugprint(1,"Appending Translation Unit to Trans_List","");
+			#endif
+			temp = inTransList->list;
+			while(temp->next_trans_unit != NULL) temp = temp->next_trans_unit;
+			temp2 = (translation_unit*) malloc(sizeof(translation_unit));
+			temp2->name = (char*)strdup(inName);
+			temp2->commandlist = inList;
+			temp2->next_trans_unit = NULL;
+			temp->next_trans_unit = temp2;
+				return inTransList;
+		}
+		return NULL;
+	}
+	return NULL;
+}
 
 commandList* appendcommandList(commandList * inList, char * inVal, ListC *inargs){
 	//List * tempL;
@@ -277,6 +314,44 @@ void deletecommandList(commandList * inList){
 			temp->name=NULL;
 			deleteListC(temp->paramlist);
 			temp->paramlist=NULL;
+			free(temp);
+			temp=NULL;
+			free(inList);
+			inList=NULL;
+		}
+	}
+}
+
+
+void deleteTransList(trans_u_list* inList){
+	translation_unit* temp;
+	translation_unit* temp2;
+	if(inList != NULL){
+		if(inList->list != NULL){
+			temp = inList->list;
+			#ifdef DEBUG
+			fprintf(stderr,"Deleting Translation Unit List\n");
+			#endif
+			while(temp->next_trans_unit != NULL){
+				#ifdef DEBUG
+				fprintf(stderr, "Deleting %s\n", temp->name);
+				#endif
+				free(temp->name);
+				temp->name=NULL;
+				deletecommandList(temp->commandlist);
+				temp->commandlist=NULL;
+				temp2 = temp;
+				temp = (translation_unit*)temp->next_trans_unit;
+				free(temp2);
+				temp2=NULL;
+			}
+			#ifdef DEBUG
+			fprintf(stderr, "Deleting %s\n", temp->name);
+			#endif
+			free(temp->name);
+			temp->name=NULL;
+			deletecommandList(temp->commandlist);
+			temp->commandlist=NULL;
 			free(temp);
 			temp=NULL;
 			free(inList);
@@ -542,6 +617,8 @@ void printListC(ListC * inList){
 		else
 			debugprint(1,"List is empty","");
 	}
+	else
+		debugprint(1,"List is empty","");
 }
 
 void printcommandList(commandList * inList){

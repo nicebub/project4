@@ -58,3 +58,21 @@ char* openfile(int argc, char** argv){
 		return argv[1];
 	}
 }
+FILE* openfilea(char *name){
+	char * tempstr;
+	FILE * outfile;
+	int a;
+	tempstr = (char*) malloc(sizeof(char)*strlen(name)+1);  //add 3 for .s and null character
+	for(a=0;a<(strlen(name)+1);a++)
+		tempstr[a]=name[a];
+	tempstr[a] = '\0';
+	if((outfile = fopen(tempstr,"w"))==NULL){
+		fprintf(stderr, "%s: -> Cannot open file %s for writing\n", filename, tempstr);
+		free(tempstr);
+		tempstr=NULL;
+		return NULL;
+	}
+	else{
+		return outfile;
+	}
+}

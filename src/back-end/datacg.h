@@ -22,7 +22,7 @@ typedef struct {
 		exprtype *exprvalue;
 		reltypecg relopvalue;
 		commandlisttype *commandlistvalue;
-		funcheadertype *funcheadervalue;
+		translation_unit * transunitvalue;
 		//Entry *funcentvalue;
 	} value;
 	int one;
@@ -32,6 +32,7 @@ typedef struct {
 	boolcg lval;
 	commandList* command_list;
 	commandBinding *command_binding;
+	trans_u_list * trans_list;
 	Entry *funcent;
 	boolcg numeric;
 	Entry* entry;

@@ -90,7 +90,8 @@ extern int error(char*,char*);
 %type <value.ivalue> uminus
 %type <command_list> commandlist
 %type <value.cargvalue> command_args
-
+%type <value.transunitvalue> func mainfunc
+%type <trans_list> tunits translation_unit
 
 %start starter
 %%
@@ -100,7 +101,7 @@ starter:{
 	debugprint(1,"EMPTY STARTER","");
 	#endif
 } 
-	| translation_unit {
+	| tunits {
 			if(founderror == FALSE){
 				#ifdef DEBUG
 				debugprint(1,"All Translation Units Recognized and compacted into One","");
@@ -116,46 +117,76 @@ starter:{
 			}
 	}
 ;
-
-translation_unit: func {
-			#ifdef DEBUG
-			debugprint(1,"Function Translation Unit Recognized and added to Start of Translation Units","");
-			#endif
-			
-		}
-			
-	| translation_unit func {
+tunits: translation_unit mainfunc {
+	if($1 != NULL && $2 != NULL){
+		$$ = appendTransList($1,$2->name, $2->commandlist);
 		#ifdef DEBUG
-		debugprint(1,"Function Translation Unit Recognized and added to existing Translation Units","");
+		debugprint(1,"Main Function Translation Unit Recognized and added to Start of Translation Units","");
 		#endif
 	}
+}
 	| mainfunc {
+		$$ = mkTransList($1->name, $1->commandlist);
 		#ifdef DEBUG
 		debugprint(1,"Main Function Translation Unit Recognized and added to Start of Translation Units","");
 		#endif
 	
 	}
-	| translation_unit mainfunc {
+translation_unit: func {
+	if($1 != NULL){
+			$$ = mkTransList($1->name, $1->commandlist);
+			#ifdef DEBUG
+			debugprint(1,"Function Translation Unit Recognized and added to Start of Translation Units","");
+			#endif
+	}
+			
+		}
+			
+	| translation_unit func {
+		$$ = appendTransList($1,$2->name, $2->commandlist);
 		#ifdef DEBUG
-		debugprint(1,"Main Function Translation Unit Recognized and added to existing Translation Units","");
+		debugprint(1,"Function Translation Unit Recognized and added to existing Translation Units","");
 		#endif
 	}
 ;
+
 mainfunc: maint commandlist {
-	#ifdef DEBUG
-	debugprintc(1,"Proccessing the main function at the bottom of the file with the List of Commands",$2);
-	#endif
+	if($2 != NULL){
+		#ifdef DEBUG
+		debugprintc(1,"Proccessing the main function at the bottom of the file with the List of Commands",$2);
+		#endif
+		commandlisttype *temp;
+		temp = $2->list;
+		if( $2 != NULL){
+			$$->name = "main";
+			$$->commandlist = $2;
+			$$->next_trans_unit = NULL;
+//			for(int i = 0; i < $<command_list>2->listsize && temp!=NULL; i++){
+//				#ifdef DEBUG
+//				debugprintd(1,"Generating Command ",i);
+//				#endif
+//				gen_instr(temp->name);
+//				temp = temp->nextcommand;
+//			}
+		}
+	}
 	}
 ;
 
 func: Ident commandlist {
 		gen_label(genlabelw($1, getlabel() ));
 		commandlisttype *temp;
-		temp = $2->list;
-		#ifdef DEBUG
-		debugprintd(1,"Counting and Generating Instructions: ", temp->length);
-		#endif
+		temp = NULL;
 		if($2 != NULL){
+			temp = $2->list;
+			#ifdef DEBUG
+			debugprintd(1,"Counting and Generating Instructions: ", temp->length);
+			#endif
+		}
+		if($1 != NULL && $2 != NULL){
+			$$->name = $1;
+			$$->commandlist = $2;
+			$$->next_trans_unit = NULL;
 			for(int i = 0; i < $<command_list>2->listsize && temp!=NULL; i++){
 				#ifdef DEBUG
 				debugprintd(1,"Generating Command ",i);

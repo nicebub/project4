@@ -23,14 +23,15 @@ MYCG = "./CG"
 #CFLAGS = -g  -O0 -ggdb -I/usr/local/opt/bison/include
 #CFLAGS = -g  -O0 -ggdb -D DEBUGON -I/usr/local/opt/bison/include
 
-CFLAGS = -g -O0 -D DEBUGOFF
+CFLAGS = -g -O0 -D DEBUGON
+#CFLAGS = -g -O0 -D DEBUGOFF
 
 
 
 #LDFLAGS =  -L/usr/local/opt/bison/lib -lc -L/usr/local/opt/flex/lib
 #LDFLAGS =  -g -L/usr/local/opt/bison/lib -lc 
 
-FLOP =
+FLOP = -v -p -p -B
 BISOP = -vtd
 #LIBS = -lfl -lm
 #LIBS = -ll -lm
@@ -115,12 +116,12 @@ depend:
 
 #=====DO NOT DELETE THIS LINE=====
 lex.yy.o: lex.yy.c debuglib.h Listcg.h typecg.h exprcg.h symtabcg.h \
- cg.l.h main.h datacg.h transcg.h cg.tab.h
+  cg.l.h main.h datacg.h transcg.h cg.tab.h
 cg.tab.o: cg.tab.c debuglib.h Listcg.h typecg.h exprcg.h datacg.h \
- symtabcg.h cg.l.h main.h transcg.h
+  symtabcg.h cg.l.h main.h transcg.h
 main.o: main.c debuglib.h Listcg.h typecg.h exprcg.h datacg.h symtabcg.h \
- cg.l.h main.h transcg.h cg.tab.h commandcg.h
+  cg.l.h main.h transcg.h cg.tab.h commandcg.h
 Listcg.o: Listcg.c debuglib.h Listcg.h typecg.h exprcg.h cg.l.h
 commandcg.o: commandcg.c commandcg.h
-transcg.o: transcg.c transcg.h
+transcg.o: transcg.c transcg.h cg.tab.h
 debuglib.o: debuglib.c debuglib.h Listcg.h typecg.h exprcg.h

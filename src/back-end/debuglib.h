@@ -1,6 +1,7 @@
 #ifndef _DEBUGLIB_H
 #define _DEBUGLIB_H
 extern int Line_Number;
+extern int current_char;
 extern char * filename;
 #ifdef DEBUG
 #include "Listcg.h"

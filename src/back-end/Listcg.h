@@ -36,10 +36,27 @@ struct _commandlisttype{
 	commandlisttype *nextcommand;
 };
 
-typedef struct {
+typedef struct _commandList commandList;
+struct _commandList{
 	int listsize;
 	commandlisttype *list;
-} commandList;
+};
+
+//typedef struct _transunit funcblock;
+typedef struct _transunit translation_unit;
+struct _transunit{
+	char * name;
+	commandList * commandlist;
+	translation_unit * next_trans_unit;
+//	typecg returntype;
+//	typecg ttype;
+};
+
+typedef struct _trans_u_list trans_u_list;
+struct _trans_u_list{
+	int listsize;
+	translation_unit * list;
+};
 
 typedef struct {
 	typecg argtype;
@@ -82,30 +99,32 @@ typedef struct {
 
 void deleteList(List * inList);
 void deleteListC(ListC * inList);
+void deleteListP(ListP * inList);
+void deleteListE(ListE *inList);
 void deleteCommandList(commandList* inList);
+void deleteTransList(trans_u_list* inList);
 
 List * mklist(char * inVal);
-commandList* mkcommandList(char * inVal, ListC * inargs);
 ListC* mklistC(char * inVal[2]);
 ListC* mklistCi(int inVal[2]);
+ListP * mklistP(char* inName, typecg intype);
+ListE * mklistE(exprtype* expr);
+commandList* mkcommandList(char * inVal, ListC * inargs);
+trans_u_list* mkTransList(char* inName, commandList* inList);
 
 List * appendList(List * inList, char* inVal);
-commandList * appendcommandList(commandList * inList, char* inVal, ListC* inargs);
-//commandList * appendcommandListi(commandList * inList, int* inVal, ListC* inargs);
 ListC* appendListC(ListC* inList, char* inVal, typecg inType);
 ListC* appendListCi(ListC* inList, int inVal, typecg inType);
-void printListC(ListC * inList);
-void printcommandList(commandList * inList);
-
-void deleteListP(ListP * inList);
-ListP * mklistP(char* inName, typecg intype);
 ListP * appendListP(ListP *inList, char* inName, typecg intype);
-void printListP(ListP * inList);
-void printListC(ListC * inList);
-
-void deleteListE(ListE *inList);
-ListE * mklistE(exprtype* expr);
 ListE * appendListE(ListE * inList, exprtype* expr);
+commandList * appendcommandList(commandList * inList, char* inVal, ListC* inargs);
+trans_u_list * appendTransList(trans_u_list* inTransList, char* inName, commandList* inList);
+
+void printListC(ListC * inList);
+void printListC(ListC * inList);
+void printListP(ListP * inList);
+void printcommandList(commandList * inList);
+void printTransList(trans_u_list *inList);
 
 
 #endif

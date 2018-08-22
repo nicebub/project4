@@ -25,6 +25,10 @@ int yydebug = 0;
 #include "cg.l.h"
 #include <string.h>
 extern int yyparse(void);
+//extern int yytables_fload(FILE *);
+//extern int yytables_destroy();
+//extern int yylex_destroy();
+//extern int yy_delete_buffer();
 
 int main(int argc, char **argv){
 	founderror=FALSE;
@@ -35,8 +39,8 @@ int main(int argc, char **argv){
 	filename = NULL;
 	if(checkargs(argc,argv) == -1){
 		#ifdef DEBUG
-			filename = "main.c";
-			debugprint(3,"No arguments given to compiler","");
+			filename = "input_filename.c";
+			debugprint(3,"No arguments given to compiler: Examaple -- ", filename);
 		#endif
 		return -1;
 	}
@@ -53,12 +57,17 @@ int main(int argc, char **argv){
 	}*/
 
 	offset_counter=5;
+/*	if(yytables_fload(openfilea("lex.yy.tables")) == 0){
+		error("can't open lex.yy.tables","");
+		return -1;
+	}*/
 	do{
+
 	yyparse();
 }while(!feof(yyin));
 		#ifdef DEBUG
-		printf("Finished Parsing");
-		debugprint(3,"Finished Parsing","");
+		//printf("Finished Parsing");
+		debugprint(3,"Finished Parsing ",filename);
 		#endif
 
 /*	#ifdef DEBUG
@@ -67,6 +76,8 @@ int main(int argc, char **argv){
 	deleteTree(mysymtab);*/
 	if(infile !=NULL)
 		fclose(infile);
+/*	yytables_destroy();
+	yylex_destroy();*/
 //	free(filename);
 //	filename=NULL;
 	return 0;
