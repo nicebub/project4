@@ -11,6 +11,7 @@
 #include "Listcg.h"
 #include "symtabcg.h"
 #include "datacg.h"
+#include "memlib.h"
 #define YYSTYPE data
 //#define YY_INPUT(buf,result,max_size)  {\
 //   result = GetNextChar(buf, max_size); \
@@ -22,6 +23,7 @@
 #include "main.h"
 #include <stdint.h>
 //extern int Line_Number;
+int tag;
 int check_str_length_bf_input(char* input);
 char maxstrconst = (char)MAX_STR_CONST;
 %}
@@ -55,7 +57,10 @@ ADOF	"&"
 \" {	BEGIN(INITIAL);
 	if(check_str_length_bf_input("")){
 		*string_buf_ptr ='\0';
-		yylval.value.svalue = (char*) strdup(string_buf);
+		yylval.value.svalue = (char*) requestmem(strlen(string_buf)+1, STR, &tag);
+			if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+		strcpy(yylval.value.svalue,string_buf);
+		yylval.value.svalue[strlen(string_buf)] = '\0';
 		#ifdef DEBUG
 			debugprint(0,"End of string being processed - returning\n","");
 		#endif
@@ -66,7 +71,7 @@ ADOF	"&"
 		#ifdef DEBUG
 			debugprint(0,"End of string being processed - not enough room for NULL character\n","");
 		#endif
-		error("string too large, size must be less than:", &maxstrconst);
+		error(1,"string too large, size must be less than:", &maxstrconst);
 
 	}
 	}
@@ -77,7 +82,7 @@ ADOF	"&"
 		#ifdef DEBUG
 			debugprint(0,"Matched unallowed newling character in processing string\n","");
 		#endif
-	error("unterminated string constant","");
+	error(1,"unterminated string constant","");
 	}
 
 \\n {
@@ -96,7 +101,7 @@ ADOF	"&"
 		#ifdef DEBUG
 			debugprint(0,"Matched character Escaped n but pattern string too large - absorbing ",yytext);
 		#endif
-		error("string too large, size must be less than:", &maxstrconst);
+		error(1,"string too large, size must be less than:", &maxstrconst);
 		while(((c = input()) != '\"') && (c != EOF)){
 			++current_char;
 			#ifdef DEBUG
@@ -104,7 +109,7 @@ ADOF	"&"
 			#endif
 			;
 		}
-		if(c == EOF) error("eof terminated string","");
+		if(c == EOF) error(1,"eof terminated string","");
 			++current_char;
 	}
 	}
@@ -121,11 +126,11 @@ ADOF	"&"
 	else {
 		register int c;
 		BEGIN(INITIAL);
-			current_char += 2;
+		current_char += 2;
 		#ifdef DEBUG
 			debugprint(0,"Matched string pattern but string too large - absorbing ",yytext);
 		#endif
-		error("string too large, size must be less than:", &maxstrconst);
+		error(1,"string too large, size must be less than:", &maxstrconst);
 		while(((c = input()) != '\"') && (c != EOF)){
 			if(c == '\n') current_char = 0;
 			++current_char;
@@ -134,7 +139,7 @@ ADOF	"&"
 			#endif
 			;
 		}
-		if(c == EOF) error("eof terminated string","");
+		if(c == EOF) error(1,"eof terminated string","");
 			++current_char;
 	}
 
@@ -147,12 +152,13 @@ ADOF	"&"
 		#ifdef DEBUG
 	debugprint(0,"Backslash and then another character - not n, backslash, or double quotation in string Processing ",yytext);
 		#endif
-		error("illegal character:%s a in string",yytext);
+		error(1,"illegal character:%s a in string",yytext);
 		while(((c = input()) != '\"') && (c != EOF)){
 			if(c == '\n') current_char = 0;
 			++current_char;
 		}
-		if(c == EOF) error("eof terminated string","");
+		if(c == EOF) error(1,"eof terminated string","");
+			++current_char;
 		}
 
 ((\\\\{SPACE}+)*|[&@$\%^/,.+'-\[\]{}();~`|=#\!:<>]*|{LETTER}|{DIGIT}|{PERCENT}|{SPACE}|{BEGCOM}|{ENDCOM}|{QUESTION})* {
@@ -169,24 +175,28 @@ ADOF	"&"
 	else {
 		register int c;
 		BEGIN(INITIAL);
+		current_char += strlen(yytext);
 		#ifdef DEBUG
 			debugprint(0,"Matched string pattern but string too large - absorbing ",yytext);
 		#endif
-		error("string too large, size must be less than:", &maxstrconst);
+		error(1,"string too large, size must be less than:", &maxstrconst);
 		while(((c = input()) != '\"') && (c != EOF)){
+			if(c == '\n') current_char = 0;
+			++current_char;
 			#ifdef DEBUG
 				debugprint(0,"Matched characters inside string but too large - absorbing ",yytext);
 			#endif
 			;
 		}
-		if(c == EOF) error("eof terminated string","");
+		if(c == EOF) error(1,"eof terminated string","");
+			++current_char;
 
 	}
 
 	}
 
 <<EOF>> {
-	error("eof terminated string","");
+	error(1,"eof terminated string","");
 	#ifdef DEBUG
 		debugprint(0,"END-OF-FILE character matched while in processing a string constant\n","");
 	#endif
@@ -194,7 +204,8 @@ ADOF	"&"
 	}
 . {
 //	ECHO;
-	error("Characters are not allowed in string","");
+	++current_char;
+	error(1,"Characters are not allowed in string","");
 	#ifdef DEBUG
 		debugprint(0,"OTHER CHARACTERS while in processing a string constant\n","");
 	#endif
@@ -208,8 +219,12 @@ return(f)? {/* keyword returnf */
 	#ifdef DEBUG
 		debugprint(0,"Keyword returnf or return found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -217,8 +232,12 @@ alloc|enter|call {/* keyword alloc|enter|call */
 	#ifdef DEBUG
 		debugprint(0,"Keyword alloct, enter, or call found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -227,8 +246,12 @@ push(s|cI|a) { /*keyword pushs, pushcI and pusha */
 	#ifdef DEBUG
 		debugprint(0,"Keyword pushs, pushcI, or pusha found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -236,8 +259,12 @@ popI { /* keyword popI */
 	#ifdef DEBUG
 		debugprint(0,"Keyword popI found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -245,8 +272,12 @@ fetch(I|R) { /* keyword fetchI or fetchR */
 	#ifdef DEBUG
 		debugprint(0,"Keyword fetchI or fetchR found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -254,8 +285,12 @@ store(I|R) { /* keyword storeI or storeR */
 	#ifdef DEBUG
 		debugprint(0,"Keyword storeI or storeR found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -263,8 +298,12 @@ setrvI { /* keyword setrvI */
 	#ifdef DEBUG
 		debugprint(0,"Keyword setrvI found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -272,8 +311,12 @@ leI|ltI { /* keyword leI or ltI*/
 	#ifdef DEBUG
 		debugprint(0,"Keyword leI or ltI found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -281,8 +324,12 @@ jump(z)? { /* keyword jumpz or jump */
 	#ifdef DEBUG
 		debugprint(0,"Keyword jump or jumpz found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -290,8 +337,12 @@ add(I|R) { /* keyword addI or addR */
 	#ifdef DEBUG
 		debugprint(0,"Keyword addI or addR found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -299,8 +350,12 @@ sub(I|R) { /* keyword subI or subR */
 	#ifdef DEBUG
 		debugprint(0,"Keyword subI or subR found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -308,8 +363,12 @@ mul(I|R) { /* keyword mulI or mulR */
 	#ifdef DEBUG
 		debugprint(0,"Keyword mulI or mulR found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -317,8 +376,12 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Keyword flt found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -326,8 +389,12 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Keyword int found with clear matching pattern ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
-	yylval.value.svalue = (char*) strdup(yytext);
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
 	return(CommandName);
 	}
 
@@ -335,6 +402,7 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Left Parentheses character found with clear matching pattern ",yytext);
 	#endif
+	++current_char;
 	return(lpar);
 	}
 
@@ -342,6 +410,7 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Right Parentheses character found with clear matching pattern ",yytext);
 	#endif
+	++current_char;
 	return(rpar);
 	}
 
@@ -349,6 +418,7 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Left Curly Bracket character found with clear matching pattern ",yytext);
 	#endif
+	++current_char;
 	return(lcbra);
 	}
 
@@ -356,6 +426,7 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Right Curly Bracket character found with clear matching pattern ",yytext);
 	#endif
+	++current_char;
 	return(rcbra);
 	}
 
@@ -363,6 +434,7 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Semicolon character found with clear matching pattern ",yytext);
 	#endif
+	++current_char;
 	return(semi);
 	}
 
@@ -370,6 +442,7 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Comma character found with clear matching pattern ",yytext);
 	#endif
+	++current_char;
 	return(comma);
 	}
 
@@ -377,6 +450,7 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Less than character found with clear matching pattern ",yytext);
 	#endif
+	++current_char;
 	return(lesst);
 	}
 
@@ -384,6 +458,7 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Greater than character found with clear matching pattern ",yytext);
 	#endif
+	++current_char;
 	return(greatt);
 	}
 
@@ -391,6 +466,7 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Equals sign character found with clear matching pattern ",yytext);
 	#endif
+	++current_char;
 	return(equal);
 	}
 
@@ -398,6 +474,7 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Plus sign character found with clear matching pattern ",yytext);
 	#endif
+	++current_char;
 	return(plus);
 	}
 
@@ -405,6 +482,7 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Minus sign character found with clear matching pattern ",yytext);
 	#endif
+	++current_char;
 	return(minus);
 	}
 
@@ -412,12 +490,14 @@ flt(b)? { /* keyword flt */
 	#ifdef DEBUG
 		debugprint(0,"Divide sign character found with clear matching pattern ",yytext);
 	#endif
+	++current_char;
 	return(divide);
 	}
 \* {	yylval.value.multopvalue = MULT;
 	#ifdef DEBUG
 		debugprint(0,"Multiplication character found with clear matching pattern ",yytext);
 	#endif
+	++current_char;
 	return(star);
 	}
 
@@ -425,6 +505,7 @@ flt(b)? { /* keyword flt */
 		#ifdef DEBUG
 			debugprint(0,"Greater than or equal character set found with clear matching pattern ",yytext);
 		#endif
+		current_char += 2;
 		return(geq);
 	}
 
@@ -432,6 +513,7 @@ flt(b)? { /* keyword flt */
 		#ifdef DEBUG
 			debugprint(0,"Less than or equal character set found with clear matching pattern ",yytext);
 		#endif
+		current_char += 2;
 		return(leq);
 	}
 
@@ -439,6 +521,7 @@ flt(b)? { /* keyword flt */
 		#ifdef DEBUG
 			debugprint(0,"Not equal character set found with clear matching pattern ",yytext);
 		#endif
+		current_char += 2;
 		return(neq);
 	}
 
@@ -446,6 +529,7 @@ flt(b)? { /* keyword flt */
 		#ifdef DEBUG
 			debugprint(0,"Equivalence character set found with clear matching pattern ",yytext);
 		#endif
+		current_char += 2;
 		return(equequ);
 	}
 
@@ -453,50 +537,64 @@ flt(b)? { /* keyword flt */
 		#ifdef DEBUG
 			debugprint(0,"Ampersand - Address of Operator found with clear matching pattern ",yytext);
 		#endif
+		++current_char;
 		return(adof);
 	}
 
 
 {DLLRSN}({LETTER}|{DIGIT})*{DIGIT}*	{ /* identifier / label */
 				yylval.ttype = STR;
-				yylval.value.svalue = (char *) strdup(yytext);
+				yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+					if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+				strcpy(yylval.value.svalue,yytext);
+					yylval.value.svalue[strlen(yytext)] = '\0';
 				#ifdef DEBUG
 					debugprint(0,"Identifier found with matching pattern ",yytext);
 				#endif
+				current_char += strlen(yytext);
 				return(Ident);
 				}
 main { /* last function - the call to main */
+		int tag;
 		yylval.ttype= STR;
-		yylval.value.svalue = (char *) strdup(yytext);
+		yylval.value.svalue = (char*) requestmem(strlen("main")+1, STR, &tag);
+			if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+		strcpy(yylval.value.svalue,yytext);
+			yylval.value.svalue[strlen("main")] = '\0';
 		#ifdef DEBUG
-			debugprint(0,"Main function found - assumed near end of file ",yytext);
+			debugprint(0,"Main function found - assumed near end of file ",yylval.value.svalue);
 		#endif
+		current_char += strlen(yytext);
 		return(maint);
 	}
 ((0|([1-9]{DIGIT}*)))(alloc|enter|pushs|pusha|pushcI|"return"|call) {
 									#ifdef DEBUG
 										debugprint(0,"Character pattern found is not in the language ",yytext);
 									#endif
-									error("illegal token: %s", yytext);
+									current_char += strlen(yytext);
+									error(1,"illegal token: %s", yytext);
 							}
 
 ((0|([1-9]{DIGIT}*)))("int"|popI|fetchI|fetchR|storeI|storeR|setrvI)	{
 									#ifdef DEBUG
 										debugprint(0,"Character pattern found is not in the language ",yytext);
 									#endif
-									error("illegal token: %s", yytext);
+									current_char += strlen(yytext);
+									error(1,"illegal token: %s", yytext);
 							}
 ((0|([1-9]{DIGIT}*)))(leI|ltI|jumpz|jump|addI|addR|subI|subR)	{
 									#ifdef DEBUG
 										debugprint(0,"Character pattern found is not in the language ",yytext);
 									#endif
-									error("illegal token: %s", yytext);
+									current_char += strlen(yytext);
+									error(1,"illegal token: %s", yytext);
 							}
 ((0|([1-9]{DIGIT}*)))(mulI|mulR|flt|fltb)	{
 									#ifdef DEBUG
 										debugprint(0,"Character pattern found is not in the language ",yytext);
 									#endif
-									error("illegal token: %s", yytext);
+									current_char += strlen(yytext);
+									error(1,"illegal token: %s", yytext);
 							}
 
 
@@ -504,39 +602,45 @@ main { /* last function - the call to main */
 									#ifdef DEBUG
 										debugprint(0,"Character pattern found is not in the language ",yytext);
 									#endif
-									error("illegal token: %s",yytext);
+									current_char += strlen(yytext);
+									error(1,"illegal token: %s",yytext);
 									}
 ((0|([1-9]{DIGIT}*))(\.{DIGIT}+))(call|int|popI|fetchI|fetchR|storeI|storeR|setrvI)	{
 									#ifdef DEBUG
 										debugprint(0,"Character pattern found is not in the language ",yytext);
 									#endif
-									error("illegal token: %s",yytext);
+									current_char += strlen(yytext);
+									error(1,"illegal token: %s",yytext);
 									}
 ((0|([1-9]{DIGIT}*))(\.{DIGIT}+))(leI|ltI|jumpz|jump|addI|addR|subI|subR|mulI)	{
 									#ifdef DEBUG
 										debugprint(0,"Character pattern found is not in the language ",yytext);
 									#endif
-									error("illegal token: %s",yytext);
+									current_char += strlen(yytext);
+									error(1,"illegal token: %s",yytext);
 									}
 ((0|([1-9]{DIGIT}*))(\.{DIGIT}+))(mulR|flt|fltb)	{
 									#ifdef DEBUG
 										debugprint(0,"Character pattern found is not in the language ",yytext);
 									#endif
-									error("illegal token: %s",yytext);
+									current_char += strlen(yytext);
+									error(1,"illegal token: %s",yytext);
 									}
 
 (0|([1-9]{DIGIT}*))({LETTER}({LETTER}|{DIGIT})*) { /* bad form*/
 							#ifdef DEBUG
 								debugprint(0,"Character pattern found is not in the language ",yytext);
 							#endif
-						error("illegal token: %s", yytext);
+							current_char += strlen(yytext);
+						error(1,"illegal token: %s", yytext);
 						}
 
 ((0|([1-9]{DIGIT}*))(\.{DIGIT}{DIGIT}*))({LETTER}({LETTER}|{DIGIT})*) {/*bad form*/
 							#ifdef DEBUG
 								debugprint(0,"Character pattern found is not in the language ",yytext);
 							#endif
-							error("illegal token: %s",yytext);
+							current_char += strlen(yytext);
+							error(1,"illegal token: %s",yytext);
 							}
 
 
@@ -547,22 +651,25 @@ main { /* last function - the call to main */
 					#ifdef DEBUG
 						debugprint(0,"Float found unchecked bounds ",yytext);
 					#endif
+					current_char += strlen(yytext);
 					return(FloatConstant);
 					}
 
 0{DIGIT}+\.{DIGIT}+		{/* bad float*/
-					error("illegal float: %s",yytext);
-				#ifdef DEBUG
+					#ifdef DEBUG
 					debugprint(0,"Floats cannot start with a 0 ",yytext);
-				#endif
+					#endif
+					current_char += strlen(yytext);
+					error(1,"illegal float: %s",yytext);
 				}
 
 
 0{DIGIT}+	{/* bad integer*/
-				error("illegal integer: %s", yytext);
 				#ifdef DEBUG
-					debugprint(0,"Integers cannot start with a 0 ",yytext);
+				debugprint(0,"Integers cannot start with a 0 ",yytext);
 				#endif
+				current_char += strlen(yytext);
+				error(1,"illegal integer: %s", yytext);
 		}
 
 (0|([1-9]{DIGIT}*))		{/*integer constant*/
@@ -571,6 +678,7 @@ main { /* last function - the call to main */
 				#ifdef DEBUG
 					debugprint(0,"Integer found unchecked bounds ",yytext);
 				#endif
+				current_char += strlen(yytext);
 				return(IntConstant);
 				}
 
@@ -578,12 +686,14 @@ main { /* last function - the call to main */
 	#ifdef DEBUG
 		debugprint(0,"Elipses (...) found ",yytext);
 	#endif
+	current_char += strlen(yytext);
 	return(elip);
 	}
 
 \" {
 	string_buf_ptr = string_buf;
 	*string_buf_ptr = '\0';
+	++current_char;
 	BEGIN(string);
 	#ifdef DEBUG
 		debugprint(0,"Double Quotes Found: Beginning of a string assumed ",yytext);
@@ -595,6 +705,7 @@ main { /* last function - the call to main */
 	#ifdef DEBUG
 		debugprint(0,"Found a newline character - increasing internal counter","");
 	#endif
+	current_char = 1;
 	++Line_Number;
 	}
 
@@ -602,6 +713,7 @@ main { /* last function - the call to main */
 	#ifdef DEBUG
 		debugprint(0,"Getting rid of other whitespace","");
 	#endif
+	current_char += strlen(yytext);
 	}
 
 
@@ -609,7 +721,8 @@ main { /* last function - the call to main */
 	#ifdef DEBUG
 		debugprint(0,"Solo Character found ",yytext);
 	#endif
-	error("illegal character: %s b",yytext);
+	current_char += strlen(yytext);
+	error(1,"illegal character: %s b",yytext);
 	}
 	
 <<EOF>> {

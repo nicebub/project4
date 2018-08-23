@@ -8,4 +8,5 @@ extern char* filename;
 int checkargs(int argc, char** argv);
 char* openfile(int argc, char** argv);
 FILE* openfilea(char* name);
+int tag;
 #endif

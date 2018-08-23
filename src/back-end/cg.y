@@ -22,7 +22,7 @@ Code Generator Bison Parser File
 #include "main.h"
 #include <string.h>
 extern int Line_Number;
-boolcg founderror=FALSE;
+extern boolcg founderror;
 extern int globalcount;
 extern int mainlocal;
 extern int othercounter;
@@ -34,7 +34,7 @@ Funcbcg* currentFunc;
 extern int yyerror(const char *);
 extern int yylex (void);
 extern int warning(char*,char*);
-extern int error(char*,char*);
+extern int error(int which, char*,char*);
 %}
 %expect 2
 
@@ -105,6 +105,8 @@ starter:{
 			if(founderror == FALSE){
 				#ifdef DEBUG
 				debugprint(1,"All Translation Units Recognized and compacted into One","");
+				debugprint(1,"Printing all commands","");
+				debugprintt(1,$1);
 				#endif
 
 				/*gen_label("main");
@@ -158,7 +160,7 @@ mainfunc: maint commandlist {
 		commandlisttype *temp;
 		temp = $2->list;
 		if( $2 != NULL){
-			$$->name = "main";
+			$$->name = $<value.svalue>1;
 			$$->commandlist = $2;
 			$$->next_trans_unit = NULL;
 //			for(int i = 0; i < $<command_list>2->listsize && temp!=NULL; i++){
@@ -184,7 +186,7 @@ func: Ident commandlist {
 			#endif
 		}
 		if($1 != NULL && $2 != NULL){
-			$$->name = $1;
+			$$->name = (char*)strdup($1);
 			$$->commandlist = $2;
 			$$->next_trans_unit = NULL;
 			for(int i = 0; i < $<command_list>2->listsize && temp!=NULL; i++){
@@ -310,9 +312,4 @@ int warning(char *s1, char* s2)
     return 0;
 }
 
-int error(char* s1, char* s2){
-	fprintf(stderr,"%s:%d:-> Error: %s %s\n",filename,Line_Number,s1,s2);
-	founderror=TRUE;
-    return 0;
-}
 

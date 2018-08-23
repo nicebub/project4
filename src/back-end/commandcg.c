@@ -4,6 +4,8 @@
 #endif
 #endif
 #include "commandcg.h"
+#include "memlib.h"
+#include "debuglib.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,9 +43,12 @@ int checkargs(int argc, char** argv){
 }
 
 char* openfile(int argc, char** argv){
-	char * tempstr;
+	char * tempstr, *tempstr2;
 	int a;
-	tempstr = (char*) malloc(sizeof(char)*(strlen(argv[1])+3));  //add 3 for .s and null character
+	int tag;
+//	tempstr = (char*) malloc(sizeof(char)*(strlen(argv[1])+3));  //add 3 for .s and null character
+	tempstr = (char*) requestmem(strlen(argv[1])+3, STR, &tag);
+	if(tempstr == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
 	for(a=0;a<(strlen(argv[1])-4);a++)
 		tempstr[a]=argv[1][a];
 	tempstr[a] = '.';
@@ -51,24 +56,32 @@ char* openfile(int argc, char** argv){
 	tempstr[a+2] = '\0';
 	if((infile = fopen(tempstr,"w"))==NULL){
 		fprintf(stderr, "%s: -> Cannot open file %s for writing\n", argv[0], tempstr);
-		free(tempstr);
+		release(tempstr, STR, tag);
+//		free(tempstr);
 		return NULL;
 	}
 	else{
-		return argv[1];
+		tempstr2 = (char*) requestmem(strlen(argv[1])+3, STR, &tag);
+		if(tempstr2 == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+		strcpy(tempstr2, argv[1]);
+		return tempstr2;
 	}
 }
 FILE* openfilea(char *name){
 	char * tempstr;
 	FILE * outfile;
+	int tag;
 	int a;
-	tempstr = (char*) malloc(sizeof(char)*strlen(name)+1);  //add 3 for .s and null character
+//	tempstr = (char*) malloc(sizeof(char)*strlen(name)+1);  //add 3 for .s and null character
+	tempstr = (char*) requestmem(strlen(name)+1, STR, &tag);
+	if(tempstr == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
 	for(a=0;a<(strlen(name)+1);a++)
 		tempstr[a]=name[a];
 	tempstr[a] = '\0';
 	if((outfile = fopen(tempstr,"w"))==NULL){
 		fprintf(stderr, "%s: -> Cannot open file %s for writing\n", filename, tempstr);
-		free(tempstr);
+		release(tempstr, STR, tag);
+		//free(tempstr);
 		tempstr=NULL;
 		return NULL;
 	}

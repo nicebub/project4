@@ -11,7 +11,7 @@
 #include <string.h>
 #include "cg.l.h"
 //extern int warning(char*,char*);
-//extern int error(char*,char*);
+//extern int error(1,char*,char*);
 
 List * mklist(char * inVal){
 	List* temp;
@@ -23,7 +23,7 @@ List * mklist(char * inVal){
 		temp->list->nextnode = NULL;
 		return temp;
 	}
-	error("Value isn't correct, could not make List","");
+	error(1,"Value isn't correct, could not make List","");
     return NULL;
 }
 trans_u_list* mkTransList(char* inName, commandList* inList){
@@ -39,7 +39,7 @@ trans_u_list* mkTransList(char* inName, commandList* inList){
 		temp_unit->next_trans_unit = NULL;
 		return temp;
 	}
-	error("Could not make Translation Unit List","");
+	error(1,"Could not make Translation Unit List","");
 	return NULL;
 }
 
@@ -59,7 +59,7 @@ commandList * mkcommandList(char * inVal, ListC* inargs){
 		#endif
 		return temp;
 	}
-	error("Value isn't correct, could not make List","");
+	error(1,"Value isn't correct, could not make List","");
     return NULL;
 }
 
@@ -82,7 +82,7 @@ ListC * mklistC(char * inVal[2]){
 		temp->list->nextnode = NULL;
 		return temp;
 	}
-	error("Value isn't correct, could not make List","");
+	error(1,"Value isn't correct, could not make List","");
     return NULL;
 }
 ListC * mklistCi(int inVal[2]){
@@ -100,7 +100,7 @@ ListC * mklistCi(int inVal[2]){
 		temp->list->nextnode = NULL;
 		return temp;
 	}
-	error("Value isn't correct, could not make List","");
+	error(1,"Value isn't correct, could not make List","");
     return NULL;
 }
 
@@ -144,6 +144,7 @@ trans_u_list * appendTransList(trans_u_list* inTransList, char* inName, commandL
 			temp2->commandlist = inList;
 			temp2->next_trans_unit = NULL;
 			temp->next_trans_unit = temp2;
+			inTransList->listsize +=1;
 				return inTransList;
 		}
 		return NULL;
@@ -480,7 +481,7 @@ ListP * mklistP(char * inVal, typecg inType){
 		temp->list->nextnode = NULL;
 		return temp;
 	}
-	else {error("Value isn't correct, could not make List","");
+	else {error(1,"Value isn't correct, could not make List","");
 		return NULL;
 		}
 
@@ -546,7 +547,7 @@ ListE * mklistE(exprtype* inVal){
                 temp->list->nextnode = NULL;
                 return temp;
         }
-        else {error("Value isn't correct, could not make List","");
+        else {error(1,"Value isn't correct, could not make List","");
                 return NULL;
                 }
 
@@ -647,4 +648,26 @@ void printcommandList(commandList * inList){
 			debugprint(1,"List is empty","");
 	}
 }
+
+void printTransList(trans_u_list *inList){
+	if(inList !=NULL){
+		if(inList->list !=NULL){
+			debugprintd(1,"Translation Units Available", inList->listsize);
+			translation_unit *temp = inList->list;
+			for(int i = 0; temp !=NULL && i<inList->listsize; i++){
+				debugprint(1,"Translation Unit Name:",temp->name);
+				printcommandList(temp->commandlist);
+				temp = temp->next_trans_unit;
+			}
+			
+		}
+		else{
+			debugprint(1,"Translation Unit List Empty","");
+		}
+	}
+	else{
+		debugprint(1,"Translation Unit List Empty","");		
+	}
+}
+
 #endif

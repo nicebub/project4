@@ -36,7 +36,10 @@ BISOP = -vtd
 #LIBS = -lfl -lm
 #LIBS = -ll -lm
 
-all: cg
+all: cg memlib
+
+memlib: memlib_main.c memlib.c memlib.h debuglib.o Listcg.o
+	$(CC) -o memlib memlib.c memlib_main.c debuglib.o Listcg.o $(CFLAGS)
 
 run:
 #	exec "for FILE in `ls *.asm`; do ./cg $(FILE); done"
@@ -66,6 +69,9 @@ commandcg.o: commandcg.c commandcg.h
 debuglib.o: debuglib.c debuglib.h
 	$(CC) -c debuglib.c $(CFLAGS)
 
+memlib.o: memlib.c memlib.h
+	$(CC) -c memlib.c $(CFLAGS)
+
 MAIN = main.c
 
 SRCS  = lex.yy.c \
@@ -74,21 +80,23 @@ SRCS  = lex.yy.c \
 	Listcg.c  \
 	commandcg.c \
 	transcg.c \
-	debuglib.c
+	debuglib.c \
+	memlib.c
 
 OBJS  = lex.yy.o  \
 	cg.tab.o \
 	Listcg.o \
 	commandcg.o \
 	transcg.o \
-	debuglib.o
+	debuglib.o \
+	memlib.o
 
 
 sample$(NUM) : sample$(NUM).c
 	$(MYUCC) sample$(NUM).c
 
 clean :
-	rm *.o lex.yy.c cg.tab.* cg.output cg example core test *.out *.s; rm -rf cg.dSYM debug.output;
+	rm *.o lex.yy.c cg.tab.* cg.output cg example core test *.out *.s; rm -rf cg.dSYM debug.output memlib memlib.dSYM;
 
 
 cg : $(OBJS) $(MAIN)
@@ -115,13 +123,14 @@ depend:
 	mv Makefile.new Makefile.old
 
 #=====DO NOT DELETE THIS LINE=====
-lex.yy.o: lex.yy.c debuglib.h Listcg.h typecg.h exprcg.h symtabcg.h \
+lex.yy.o: lex.yy.c debuglib.h typecg.h Listcg.h exprcg.h symtabcg.h \
   cg.l.h main.h datacg.h transcg.h cg.tab.h
-cg.tab.o: cg.tab.c debuglib.h Listcg.h typecg.h exprcg.h datacg.h \
+cg.tab.o: cg.tab.c debuglib.h typecg.h Listcg.h exprcg.h datacg.h \
   symtabcg.h cg.l.h main.h transcg.h
-main.o: main.c debuglib.h Listcg.h typecg.h exprcg.h datacg.h symtabcg.h \
+main.o: main.c debuglib.h typecg.h Listcg.h exprcg.h datacg.h symtabcg.h \
   cg.l.h main.h transcg.h cg.tab.h commandcg.h
-Listcg.o: Listcg.c debuglib.h Listcg.h typecg.h exprcg.h cg.l.h
+Listcg.o: Listcg.c debuglib.h typecg.h Listcg.h exprcg.h cg.l.h
 commandcg.o: commandcg.c commandcg.h
 transcg.o: transcg.c transcg.h cg.tab.h
-debuglib.o: debuglib.c debuglib.h Listcg.h typecg.h exprcg.h
+debuglib.o: debuglib.c debuglib.h typecg.h Listcg.h exprcg.h
+memlib.o: memlib.c memlib.h typecg.h Listcg.h exprcg.h debuglib.h

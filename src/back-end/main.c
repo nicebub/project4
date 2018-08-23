@@ -23,6 +23,7 @@ int yydebug = 0;
 #include "main.h"
 #include "transcg.h"
 #include "cg.l.h"
+#include "memlib.h"
 #include <string.h>
 extern int yyparse(void);
 //extern int yytables_fload(FILE *);
@@ -35,8 +36,8 @@ int main(int argc, char **argv){
 	othercounter=1;
 	globalcount=0;
 	param_offset=0;
+	filename = "main.c";
 	initializelabel();
-	filename = NULL;
 	if(checkargs(argc,argv) == -1){
 		#ifdef DEBUG
 			filename = "input_filename.c";
@@ -44,6 +45,8 @@ int main(int argc, char **argv){
 		#endif
 		return -1;
 	}
+	filename = argv[1];
+	init_mem_man();
 	if((filename = openfile(argc, argv)) == NULL){
 		return -1;
 	}
@@ -80,6 +83,7 @@ int main(int argc, char **argv){
 	yylex_destroy();*/
 //	free(filename);
 //	filename=NULL;
+	releaseall();
 	return 0;
 
 }

@@ -6,11 +6,12 @@ typedef struct {
 	int one;
 	int two;
 } cgPair;
+int tag;
 int globalcount;
 int localcount;
 int labelcounter;
 extern FILE *infile;
-extern int error(char*, char*);
+extern int error(int which, char*, char*);
 
 void initializelabel(void);
 

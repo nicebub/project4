@@ -37,7 +37,9 @@ typedef enum {
 	REFINT,
 	REFFLOAT,
 	REFSTR,
-	COMMAND
+	COMMAND,
+	LONG,
+	OBJ
 } typecg;
 
 typedef enum {
