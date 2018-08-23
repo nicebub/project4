@@ -103,35 +103,35 @@
 		D283AF9B20ADF43A00B07C08 /* Xcc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Xcc; sourceTree = BUILT_PRODUCTS_DIR; };
 		D283AFB020ADF97A00B07C08 /* libl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libl.a; path = ../../../../../../../../usr/lib/libl.a; sourceTree = "<group>"; };
 		D283AFB120ADF97A00B07C08 /* liby.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liby.a; path = ../../../../../../../../usr/lib/liby.a; sourceTree = "<group>"; };
-		D2CB13B920AD00A6006987E5 /* ucc.l.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ucc.l.h; path = ../../ucc.l.h; sourceTree = "<group>"; };
-		D2CB13BA20AD00A6006987E5 /* type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = type.h; path = ../../type.h; sourceTree = "<group>"; };
-		D2CB13BB20AD00A6006987E5 /* command.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = command.c; path = ../../command.c; sourceTree = "<group>"; };
-		D2CB13BC20AD00A6006987E5 /* command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = command.h; path = ../../command.h; sourceTree = "<group>"; };
+		D2CB13B920AD00A6006987E5 /* ucc.l.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ucc.l.h; path = "../../src/front-end/ucc.l.h"; sourceTree = "<group>"; };
+		D2CB13BA20AD00A6006987E5 /* type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = type.h; path = "../../src/front-end/type.h"; sourceTree = "<group>"; };
+		D2CB13BB20AD00A6006987E5 /* command.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = command.c; path = "../../src/front-end/command.c"; sourceTree = "<group>"; };
+		D2CB13BC20AD00A6006987E5 /* command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = command.h; path = "../../src/front-end/command.h"; sourceTree = "<group>"; };
 		D2CB13BD20AD00A6006987E5 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../README; sourceTree = "<group>"; };
-		D2CB13BE20AD00A6006987E5 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = Makefile; path = ../../Makefile; sourceTree = "<group>"; };
-		D2CB13BF20AD00A6006987E5 /* symtab.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = symtab.c; path = ../../symtab.c; sourceTree = "<group>"; };
-		D2CB13C020AD00A6006987E5 /* trans.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = trans.h; path = ../../trans.h; sourceTree = "<group>"; };
-		D2CB13C120AD00A6006987E5 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = main.h; path = ../../main.h; sourceTree = "<group>"; };
-		D2CB13C220AD00A7006987E5 /* expr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = expr.h; path = ../../expr.h; sourceTree = "<group>"; };
-		D2CB13C320AD00A7006987E5 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = ../../main.c; sourceTree = "<group>"; };
-		D2CB13C420AD00A7006987E5 /* symtab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = symtab.h; path = ../../symtab.h; sourceTree = "<group>"; };
-		D2CB13C520AD00A7006987E5 /* ucc.l */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; name = ucc.l; path = ../../ucc.l; sourceTree = "<group>"; };
-		D2CB13C620AD00A7006987E5 /* data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = data.h; path = ../../data.h; sourceTree = "<group>"; };
-		D2CB13C720AD00A7006987E5 /* List.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = List.h; path = ../../List.h; sourceTree = "<group>"; };
-		D2CB13C820AD00A7006987E5 /* List.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = List.c; path = ../../List.c; sourceTree = "<group>"; };
-		D2CB13C920AD00A7006987E5 /* ucc.y */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; name = ucc.y; path = ../../ucc.y; sourceTree = "<group>"; };
-		D2CB13CA20AD00A7006987E5 /* trans.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = trans.c; path = ../../trans.c; sourceTree = "<group>"; };
-		D2CB13CB20AD0217006987E5 /* symtab.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = symtab.o; path = ../../symtab.o; sourceTree = "<group>"; };
-		D2CB13CC20AD0217006987E5 /* ucc.output */ = {isa = PBXFileReference; lastKnownFileType = text; name = ucc.output; path = ../../ucc.output; sourceTree = "<group>"; };
-		D2CB13CD20AD0218006987E5 /* ucc.tab.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = ucc.tab.c; path = ../../ucc.tab.c; sourceTree = "<group>"; };
-		D2CB13CE20AD0218006987E5 /* trans.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = trans.o; path = ../../trans.o; sourceTree = "<group>"; };
-		D2CB13D020AD0218006987E5 /* lex.yy.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = lex.yy.o; path = ../../lex.yy.o; sourceTree = "<group>"; };
-		D2CB13D120AD0218006987E5 /* ucc.tab.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = ucc.tab.o; path = ../../ucc.tab.o; sourceTree = "<group>"; };
-		D2CB13D220AD0218006987E5 /* command.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = command.o; path = ../../command.o; sourceTree = "<group>"; };
-		D2CB13D320AD0218006987E5 /* lex.yy.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = lex.yy.c; path = ../../lex.yy.c; sourceTree = "<group>"; };
-		D2CB13D420AD0218006987E5 /* ucc.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = ucc.dSYM; path = ../../ucc.dSYM; sourceTree = "<group>"; };
-		D2CB13D520AD0218006987E5 /* ucc.tab.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ucc.tab.h; path = ../../ucc.tab.h; sourceTree = "<group>"; };
-		D2CB13D620AD0219006987E5 /* List.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = List.o; path = ../../List.o; sourceTree = "<group>"; };
+		D2CB13BE20AD00A6006987E5 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = Makefile; path = "../../src/front-end/Makefile"; sourceTree = "<group>"; };
+		D2CB13BF20AD00A6006987E5 /* symtab.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = symtab.c; path = "../../src/front-end/symtab.c"; sourceTree = "<group>"; };
+		D2CB13C020AD00A6006987E5 /* trans.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = trans.h; path = "../../src/front-end/trans.h"; sourceTree = "<group>"; };
+		D2CB13C120AD00A6006987E5 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = main.h; path = "../../src/front-end/main.h"; sourceTree = "<group>"; };
+		D2CB13C220AD00A7006987E5 /* expr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = expr.h; path = "../../src/front-end/expr.h"; sourceTree = "<group>"; };
+		D2CB13C320AD00A7006987E5 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = "../../src/front-end/main.c"; sourceTree = "<group>"; };
+		D2CB13C420AD00A7006987E5 /* symtab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = symtab.h; path = "../../src/front-end/symtab.h"; sourceTree = "<group>"; };
+		D2CB13C520AD00A7006987E5 /* ucc.l */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; name = ucc.l; path = "../../src/front-end/ucc.l"; sourceTree = "<group>"; };
+		D2CB13C620AD00A7006987E5 /* data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = data.h; path = "../../src/front-end/data.h"; sourceTree = "<group>"; };
+		D2CB13C720AD00A7006987E5 /* List.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = List.h; path = "../../src/front-end/List.h"; sourceTree = "<group>"; };
+		D2CB13C820AD00A7006987E5 /* List.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = List.c; path = "../../src/front-end/List.c"; sourceTree = "<group>"; };
+		D2CB13C920AD00A7006987E5 /* ucc.y */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; name = ucc.y; path = "../../src/front-end/ucc.y"; sourceTree = "<group>"; };
+		D2CB13CA20AD00A7006987E5 /* trans.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = trans.c; path = "../../src/front-end/trans.c"; sourceTree = "<group>"; };
+		D2CB13CB20AD0217006987E5 /* symtab.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = symtab.o; path = "../../src/front-end/symtab.o"; sourceTree = "<group>"; };
+		D2CB13CC20AD0217006987E5 /* ucc.output */ = {isa = PBXFileReference; lastKnownFileType = text; name = ucc.output; path = "../../src/front-end/ucc.output"; sourceTree = "<group>"; };
+		D2CB13CD20AD0218006987E5 /* ucc.tab.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = ucc.tab.c; path = "../../src/front-end/ucc.tab.c"; sourceTree = "<group>"; };
+		D2CB13CE20AD0218006987E5 /* trans.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = trans.o; path = "../../src/front-end/trans.o"; sourceTree = "<group>"; };
+		D2CB13D020AD0218006987E5 /* lex.yy.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = lex.yy.o; path = "../../src/front-end/lex.yy.o"; sourceTree = "<group>"; };
+		D2CB13D120AD0218006987E5 /* ucc.tab.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = ucc.tab.o; path = "../../src/front-end/ucc.tab.o"; sourceTree = "<group>"; };
+		D2CB13D220AD0218006987E5 /* command.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = command.o; path = "../../src/front-end/command.o"; sourceTree = "<group>"; };
+		D2CB13D320AD0218006987E5 /* lex.yy.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = lex.yy.c; path = "../../src/front-end/lex.yy.c"; sourceTree = "<group>"; };
+		D2CB13D420AD0218006987E5 /* ucc.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = ucc.dSYM; path = "../../src/front-end/ucc.dSYM"; sourceTree = "<group>"; };
+		D2CB13D520AD0218006987E5 /* ucc.tab.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ucc.tab.h; path = "../../src/front-end/ucc.tab.h"; sourceTree = "<group>"; };
+		D2CB13D620AD0219006987E5 /* List.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = List.o; path = "../../src/front-end/List.o"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -295,7 +295,7 @@
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/scott/uga_undergrad_work/atlas_stuff/newcomp/project4/project4;
+			buildWorkingDirectory = "~/Desktop/project4/src/front-end/";
 			dependencies = (
 			);
 			name = ucc18;

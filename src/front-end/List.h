@@ -2,34 +2,30 @@
 #define _MYLISTH
 #include "type.h"
 #include "expr.h"
-
-typedef struct {
+typedef struct _listnodeE listnodeE;
+struct _listnodeE{
 	exprtype* expr;
-	struct listnodeE *nextnode;
-} listnodeE;
+	listnodeE *nextnode;
+};
 
 typedef struct {
 	int listsize;
 	listnodeE *list;
 } ListE;
 
-typedef struct {
-	char * name;
-	struct ListP *paramlist;
-	type returntype;
-	type ttype;
-} funcheadertype;
 
-typedef struct {
+typedef struct _listnode listnode;
+struct _listnode{
 	char * val;
-	struct listnode *nextnode;
-} listnode;
+	listnode *nextnode;
+};
 
-typedef struct {
+typedef struct _listnodeP listnodeP;
+struct _listnodeP{
 	char * val;
 	type ttype;
-	struct listnodeP *nextnode;
-} listnodeP;
+	listnodeP *nextnode;
+};
 
 typedef struct {
 	listnode * list;
@@ -37,10 +33,18 @@ typedef struct {
 	
 } List;
 
-typedef struct {
+typedef struct _ListP ListP;
+struct _ListP{
 	listnodeP * list;
 	int listsize;
-} ListP;
+};
+
+typedef struct {
+    char * name;
+    ListP * paramlist;
+    type returntype;
+    type ttype;
+} funcheadertype;
 
 void deleteList(List * inList);
 
