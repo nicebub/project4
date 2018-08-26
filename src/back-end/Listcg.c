@@ -50,7 +50,11 @@ commandList * mkcommandList(char * inVal, ListC* inargs){
 		temp->list = (commandlisttype*) malloc(sizeof(commandlisttype));
 		temp->listsize=1;
 		temp->list->name = (char*) strdup(inVal);
-		temp->list->length=1;
+		if(inargs == NULL){
+			temp->list->length=0;
+		}
+		else
+			temp->list->length = inargs->listsize;
 		temp->list->paramlist = inargs;
 		temp->list->nextcommand = NULL;
 		#ifdef DEBUG
@@ -128,10 +132,36 @@ List * appendList(List * inList, char * inVal){
 	}
     return NULL;
 }
-
+trans_u_list * prependTransList(trans_u_list* inTransList, char* inName, commandList* inList){
+	translation_unit *temp;
+	translation_unit *temp2;
+	temp = NULL;
+	temp2 = NULL;
+	if(inTransList != NULL){
+		if(inTransList->list != NULL){
+			#ifdef DEBUG
+			debugprint(1,"Appending Translation Unit to Trans_List","");
+			#endif
+			temp = inTransList->list;
+			//while(temp->next_trans_unit != NULL) temp = temp->next_trans_unit;
+			temp2 = (translation_unit*) malloc(sizeof(translation_unit));
+			temp2->name = (char*)strdup(inName);
+			temp2->commandlist = inList;
+			temp2->next_trans_unit = inTransList->list;
+			//temp->next_trans_unit = temp2;
+			inTransList->list = temp2;
+			inTransList->listsize +=1;
+				return inTransList;
+		}
+		return NULL;
+	}
+	return NULL;
+}
 trans_u_list * appendTransList(trans_u_list* inTransList, char* inName, commandList* inList){
 	translation_unit *temp;
 	translation_unit *temp2;
+	temp = NULL;
+	temp2 = NULL;
 	if(inTransList != NULL){
 		if(inTransList->list != NULL){
 			#ifdef DEBUG
@@ -171,7 +201,7 @@ commandList* appendcommandList(commandList * inList, char * inVal, ListC *inargs
 				tempN2->length=inargs->listsize;
 			}
 			else{
-				tempN2->length=1;
+				tempN2->length=0;
 			}
 			tempN2->paramlist=inargs;
 			tempN2->nextcommand = NULL;
@@ -251,6 +281,23 @@ ListC * appendListCi(ListC * inList, int inVal, typecg inType){
 	}
     return NULL;
 }
+
+translation_unit * getlastUnit(trans_u_list* inTransList){
+	translation_unit * temp;
+	temp = NULL;
+	if(inTransList !=NULL){
+		temp = inTransList->list;
+		while(temp !=NULL && temp->next_trans_unit !=NULL){
+			temp = temp->next_trans_unit;
+		}
+		if(temp !=NULL){
+			return temp;
+		}
+		return NULL;
+	}
+	return NULL;
+}
+
 
 
 void deleteList(List * inList){
@@ -437,6 +484,21 @@ void deleteListP(ListP * inList){
 			inList=NULL;
 		}
 	}
+}
+
+trans_u_list * concat_trans_unit_list(trans_u_list* front, trans_u_list* back){
+	translation_unit * temp;
+	temp = NULL;
+	if(front != NULL){
+		if(back != NULL){
+			temp = getlastUnit(front);
+			if(temp !=NULL){
+				temp->next_trans_unit = back->list;
+				front->listsize += back->listsize;
+			}
+		}
+		return front;
+}
 }
 
 

@@ -1,18 +1,14 @@
 #ifndef _MEMLIB_H
 #define _MEMLIB_H
-#ifdef DEBUGON
-#ifndef DEBUG
-#define DEBUG
-#endif
-#endif
 #include "typecg.h"
 #include "Listcg.h"
-#define MAX_MEM 1000
+#define MAX_MEM 90
 typedef struct _int_memory_object int_m;
 struct _int_memory_object {
 	int *value;
 	unsigned long address;
 	int tag;
+	int o_tag;
 	typecg type;
 };
 
@@ -21,6 +17,7 @@ struct _float_memory_object {
 	float *value;
 	unsigned long address;
 	int tag;
+	int o_tag;
 	typecg type;
 };
 
@@ -30,6 +27,7 @@ struct _str_memory_object {
 	char *value;
 	unsigned long address;
 	int tag;
+	int o_tag;
 	typecg type;
 };
 typedef struct _memory_manager mem_man;
@@ -65,9 +63,6 @@ struct _memory_manager{
 	int f_amount;
 	int o_amount;
 	
-//	typecg itype[MAX_MEM];
-//	typecg cstype[MAX_MEM];
-//	typecg ftype[MAX_MEM];
 	typecg otype[MAX_MEM];
 	
 };
@@ -89,7 +84,7 @@ void *assign_to_obj(void* obj1, typecg intype, void* obj2, typecg intype2);
 void list_i_mem();
 void list_f_mem();
 void list_cs_mem();
-void list_o_mem();
-void list_mem(typecg intype);
+void list_o_mem(boolcg SUPPRESS_EMPTY_HASH);
+void list_mem(typecg intype, boolcg SUPPRESS_EMPTY_HASH);
 #endif
 #endif

@@ -43,8 +43,8 @@ typedef enum {
 } typecg;
 
 typedef enum {
-	TRUE,
-	FALSE
+	FALSE,
+	TRUE
 } boolcg;
 
 typedef struct {

@@ -215,9 +215,9 @@ ADOF	"&"
 
 
 
-return(f)? {/* keyword returnf */
+return[f]? {/* keyword return */
 	#ifdef DEBUG
-		debugprint(0,"Keyword returnf or return found with clear matching pattern ",yytext);
+		debugprint(0,"Keyword return or returnf found with clear matching pattern ",yytext);
 	#endif
 	current_char += strlen(yytext);
 	yylval.ttype = COMMAND;
@@ -541,8 +541,7 @@ flt(b)? { /* keyword flt */
 		return(adof);
 	}
 
-
-{DLLRSN}({LETTER}|{DIGIT})*{DIGIT}*	{ /* identifier / label */
+{DLLRSN}({LETTER}|{DIGIT})+{DIGIT}*	{ /* identifier / label */
 				yylval.ttype = STR;
 				yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
 					if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
@@ -554,10 +553,12 @@ flt(b)? { /* keyword flt */
 				current_char += strlen(yytext);
 				return(Ident);
 				}
+
+
 main { /* last function - the call to main */
 		int tag;
 		yylval.ttype= STR;
-		yylval.value.svalue = (char*) requestmem(strlen("main")+1, STR, &tag);
+		yylval.value.svalue = (char*) requestmem(strlen(MAIN_STRING)+1, STR, &tag);
 			if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
 		strcpy(yylval.value.svalue,yytext);
 			yylval.value.svalue[strlen("main")] = '\0';
@@ -707,6 +708,7 @@ main { /* last function - the call to main */
 	#endif
 	current_char = 1;
 	++Line_Number;
+	return newlinet;
 	}
 
 [ \t\r]+	{ /*eat up tabs, whitespace */
@@ -740,3 +742,29 @@ int check_str_length_bf_input(char* input){
 	return 0;
 }
 
+/*returnf {/* keyword returnf 
+	#ifdef DEBUG
+		debugprint(0,"Keyword returnf found with clear matching pattern ",yytext);
+	#endif
+	current_char += strlen(yytext);
+	yylval.ttype = COMMAND;
+	yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+	strcpy(yylval.value.svalue,yytext);
+		yylval.value.svalue[strlen(yytext)] = '\0';
+	return(returnft);
+	}*/
+
+	/*{DLLRSN}({DIGIT})+	{ /* created label 
+										yylval.ttype = STR;
+										yylval.value.svalue = (char*) requestmem(strlen(yytext)+1, STR, &tag);
+											if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+										strcpy(yylval.value.svalue,yytext);
+											yylval.value.svalue[strlen(yytext)] = '\0';
+										#ifdef DEBUG
+											debugprint(0,"Created Label found with matching pattern ",yytext);
+										#endif
+										current_char += strlen(yytext);
+										return(labelt);
+										}
+	*/

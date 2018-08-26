@@ -1,6 +1,7 @@
 #include "transcg.h"
 #include "memlib.h"
-#include "cg.tab.h"
+#include "debuglib.h"
+//#include "cg.tab.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,7 +21,7 @@ void nullout(char* name, int length){
 	}
 }
 
-/*char* genlabelw(char* name, int labelnum){
+/*char* w(char* name, int labelnum){
 	char* tempstr;
 	int a;
 	char buf[30];
@@ -36,37 +37,32 @@ void nullout(char* name, int length){
 	return tempstr;
 }
 */
-char* genlabelw(char* name, int labelnum){
+char* genlabelu(char* name, int labelnum){
 	char* tempstr;
 	int a;
-	char buf[30];
-	sprintf(buf,"%d",labelnum);
+//	char buf[30];
+//	sprintf(buf,"%d",labelnum);
 	if(name == NULL){
-		error(1,"Can't generate a label without a name","");
+		error(PARSER,"Can't generate a label without a name","");
 		return NULL;
 	}
-	tempstr = (char*) requestmem(strlen(name)+(strlen(buf)+2), STR, &tag);
+//	tempstr = (char*) requestmem(strlen(name)+(strlen(buf)+2), STR, &tag);
+	tempstr = (char*) requestmem(strlen(name)+2, STR, &tag);
 	if(tempstr == NULL){ 
-		error(1,"OUT OF MEMORY",""); exit(-1);
+		error(PARSER,"OUT OF MEMORY",""); exit(-1);
 	}
-	nullout(tempstr, (int)(strlen(name)+strlen(buf)+2));
+//	nullout(tempstr, (int)(strlen(name)+strlen(buf)+2));
+	nullout(tempstr, (int)(strlen(name)+2));
 	tempstr[0]='_';
 	tempstr++;
-	int t;
 	if(name[0] == '$'){ 
-		tempstr[0] = name[1];
-		t = 1;
-		for(a=t+1;a<=(strlen(name));a++)
-			tempstr[a-1]=name[a];
+		name++;
 	}
-	else{
-		tempstr[0] = name[0];
-		t = 0;
-		for(a=t+1;a<=(strlen(name));a++)
-			tempstr[a]=name[a];
-	}
+	for(a=0;a<(strlen(name));a++)
+		tempstr[a]=name[a];
 	tempstr= tempstr-1;
-	tempstr = (char*)strcat(tempstr,buf);
+	name = name - 1;
+//	tempstr = (char*)strcat(tempstr,buf);
 	return tempstr;
 }
 
@@ -108,13 +104,94 @@ void gen_instr_tI(char * name, int arg1, int arg2){
 	fprintf(infile, "\t%s\t%d, %d\n",name, arg1, arg2);
 }
 
+void gen_filename_comment(){
+	fprintf(infile, "; File: %s\n",filename);
+	
+}
+void gen_section_text(){
+	fprintf(infile, "	.section __TEXT,__text,regular,pure_instructions\n");
+	fprintf(infile, "	.macosx_version_min 10, 13\n");
+	
+}
+void gen_printf_dec(){
+//	fprintf(infile, "extern _printf\n");
+	
+}
+void gen_global_main(){
+	fprintf(infile, ".globl _main1		## -- BEGIN MAIN FUNCTION\n");
+	
+}
+void gen_prolog_macro(){
+	fprintf(infile, "%%macro clib_prolog 1\n");
+	fprintf(infile, "	mov ebx, esp\n");
+	fprintf(infile, "	and esp, 0xFFFFFFF0\n" );
+	fprintf(infile, "	sub esp, 12\n");
+	fprintf(infile, "	push ebx\n" );
+	fprintf(infile, "	sub esp, %%1\n");
+	fprintf(infile, "%%endmacro\n");
+}
+
+void gen_epilog_macro(){
+
+/*	char *str1[] = { 
+		"%%macro clib_epilog 1\n", 
+		"	add esp, %1\n",
+		 "	pop ebx\n", 
+		 "	mov esp, ebx\n",
+		 "%%end macro\n" 
+	 };
+	 char * temp;
+	 temp = NULL;*/
+	 
+//	char str2[] = "	add esp, %1\n";
+//	char str3[] = "	pop ebx\n";
+//	char str4[] = "	mov esp, ebx\n";
+		fprintf(infile, "%%macro clib_epilog 1\n");
+		fprintf(infile, "	add esp, %%1\n");
+		fprintf(infile, "	pop ebx\n" );
+		fprintf(infile, "	mov esp, ebx\n");
+		fprintf(infile, "%%end macro\n");
+}
+
+void gen_set_stack(){
+	fprintf(infile, "	push ebp\n");
+	fprintf(infile, "	mov ebp, esp\n");
+	fprintf(infile, "	push ebx\n");
+	
+}
+
+void gen_reverse_stack(){
+	fprintf(infile, "	pop ebx\n");
+	fprintf(infile, "	mov esp, ebp\n");
+	fprintf(infile, "	pop ebp\n");
+//	fprintf(infile, "mov eax, 0\n");
+//	fprintf(infile, "ret\n");
+}
+
+void gen_func_prolog(){
+	fprintf(infile, "	.cfi_startproc\n");
+//	fprintf(infile, "	pop ebx\n");
+//	fprintf(infile, "	pop ebx\n");
+	
+}
+void gen_func_epilog(){
+	fprintf(infile, "	.cfi_endproc\n");
+	fprintf(infile, "					END FUNCTION\n");
+//	fprintf(infile, "	pop ebx\n");
+	
+}
+
+void gen_end_prog(){
+	fprintf(infile, ".subsections_via_symbols\n");
+}
 
 char * concat(char* char1, char* char2){
 	char* tempstr;
+	tempstr = NULL;
         int a;
         //tempstr = (char*) malloc(sizeof(char)*(strlen(char1*)+strlen(char2)+1));
 		tempstr = (char*) requestmem(strlen(char1)+strlen(char2)+1, STR, &tag);
-		if(tempstr == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+		if(tempstr == NULL){ error(PARSER,"OUT OF MEMORY",""); exit(-1);}
 		nullout(tempstr, (int)(strlen(char1)+strlen(char2)+1));
         for(a=0;a<(strlen(char1));a++)
                 tempstr[a]=char1[a];

@@ -13,7 +13,9 @@ char* filename = (char*) NULL;
 boolcg founderror = FALSE;
 char * which_program(int which){
 	char * program;
-	switch(which){
+	program = NULL;
+	program = which_strings[which];
+/*	switch(which){
 		case 0:
 				program = "Lexer:";
 				break;
@@ -31,7 +33,7 @@ char * which_program(int which){
 		default:
 					program = "unknown";
 					break;
-	}
+	}*/
 	return program;
 }
 int error(int which, char* s1, char* s2){
@@ -44,7 +46,7 @@ int error(int which, char* s1, char* s2){
 }
 
 #ifdef DEBUG
-void debugprint(int which,char* s1, char*s2){
+void debugprint(int which,const char* s1, const char*s2){
 	char * program = NULL;
 	program = which_program(which);
 	if(s1!=NULL && s2!=NULL){
@@ -56,7 +58,7 @@ void debugprint(int which,char* s1, char*s2){
 	else
 		fprintf(stderr,"Debug::%s::%s:%d:%d-> %s\n",program,filename,Line_Number,current_char,"DEBUGPRINT HAS NOTHING TO PRINT");
 }
-void debugprintd(int which,char* s1, int s2){
+void debugprintd(int which,const char* s1, int s2){
 	char * program = NULL;
 	program = which_program(which);
 	if(s1!=NULL){
@@ -65,7 +67,7 @@ void debugprintd(int which,char* s1, int s2){
 	else
 		fprintf(stderr,"Debug::%s::%s:%d:%d-> %s\n",program,filename,Line_Number,current_char,"DEBUGPRINTD HAS NOTHING TO PRINT");
 }
-void debugprinta(int which,char* s1, ListC* inList){
+void debugprinta(int which,const char* s1, ListC* inList){
 	char * program = NULL;
 	program = which_program(which);
 	if(s1!=NULL){
@@ -76,7 +78,7 @@ void debugprinta(int which,char* s1, ListC* inList){
 		fprintf(stderr,"Debug::%s::%s:%d:%d-> %s\n",program,filename,Line_Number,current_char,"DEBUGPRINTA HAS NOTHING TO PRINT");
 }
 
-void debugprinta2(int which,char* s1, char* s2, ListC* inList){
+void debugprinta2(int which,const char* s1, const char* s2, ListC* inList){
 	char * program = NULL;
 	program = which_program(which);
 	if(s1!=NULL && s2 !=NULL){
@@ -89,7 +91,7 @@ void debugprinta2(int which,char* s1, char* s2, ListC* inList){
 	else
 		fprintf(stderr,"Debug::%s::%s:%d:%d-> %s\n",program,filename,Line_Number,current_char,"DEBUGPRINTA2 HAS NOTHING TO PRINT");
 }
-void debugprintc(int which,char* s1, commandList* inList){
+void debugprintc(int which,const char* s1, commandList* inList){
 	char * program = NULL;
 	program = which_program(which);
 	if(s1!=NULL){
@@ -103,8 +105,9 @@ void debugprintt(int which,trans_u_list *inList){
 	if(inList != NULL)
 		printTransList(inList);
 }
-void dbprint(int which,char * s1, typecg intype, void * value){
+void dbprint(int which,const char * s1, typecg intype, void * value){
 	char * program = NULL;
+	if(value == NULL) return;
 	program = which_program(which);
 	switch(intype){
 		case INT:

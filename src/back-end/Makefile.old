@@ -8,12 +8,12 @@
 TARGETDIR = .
 #
 # Use gcc for Motif compilations.
-#CC = /usr/local/bin/gcc-8
-CC = /usr/bin/gcc
-#BISON = /usr/local/opt/bison/bin/bison
-BISON = /usr/bin/bison
-#FLEX = /usr/local/opt/flex/bin/flex
-FLEX = /usr/bin/flex
+CC = /usr/local/bin/gcc-8
+#CC = /usr/bin/gcc
+BISON = /usr/local/opt/bison/bin/bison
+#BISON = /usr/bin/bison
+FLEX = /usr/local/opt/flex/bin/flex
+#FLEX = /usr/bin/flex
 
 
 
@@ -21,9 +21,9 @@ MYCG = "./CG"
 
 
 #CFLAGS = -g  -O0 -ggdb -I/usr/local/opt/bison/include
-#CFLAGS = -g  -O0 -ggdb -D DEBUGON -I/usr/local/opt/bison/include
+CFLAGS = -g  -O0 -ggdb -D DEBUGON -I/usr/local/opt/bison/include
 
-CFLAGS = -g -O0 -D DEBUGON
+#CFLAGS = -g -O0 -D DEBUGON
 #CFLAGS = -g -O0 -D DEBUGOFF
 
 
@@ -124,13 +124,15 @@ depend:
 
 #=====DO NOT DELETE THIS LINE=====
 lex.yy.o: lex.yy.c debuglib.h typecg.h Listcg.h exprcg.h symtabcg.h \
-  cg.l.h main.h datacg.h transcg.h cg.tab.h
+ cg.l.h main.h datacg.h transcg.h memlib.h cg.tab.h
 cg.tab.o: cg.tab.c debuglib.h typecg.h Listcg.h exprcg.h datacg.h \
-  symtabcg.h cg.l.h main.h transcg.h
+ symtabcg.h cg.l.h main.h transcg.h
 main.o: main.c debuglib.h typecg.h Listcg.h exprcg.h datacg.h symtabcg.h \
-  cg.l.h main.h transcg.h cg.tab.h commandcg.h
+ cg.l.h main.h transcg.h cg.tab.h commandcg.h memlib.h
 Listcg.o: Listcg.c debuglib.h typecg.h Listcg.h exprcg.h cg.l.h
-commandcg.o: commandcg.c commandcg.h
-transcg.o: transcg.c transcg.h cg.tab.h
+commandcg.o: commandcg.c commandcg.h memlib.h typecg.h Listcg.h exprcg.h \
+ debuglib.h
+transcg.o: transcg.c transcg.h memlib.h typecg.h Listcg.h exprcg.h \
+ cg.tab.h
 debuglib.o: debuglib.c debuglib.h typecg.h Listcg.h exprcg.h
 memlib.o: memlib.c memlib.h typecg.h Listcg.h exprcg.h debuglib.h

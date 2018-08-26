@@ -1,5 +1,8 @@
 # Created by https://www.gitignore.io/api/c
 .DS_STORE
+src/assembly_test/
+src/back-end/Makefile
+src/front-end/Makefile
 ucc18/ucc
 ucc18/ucc.output
 ucc18/ucc.tab.c

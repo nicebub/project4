@@ -119,6 +119,9 @@ ListP * appendListP(ListP *inList, char* inName, typecg intype);
 ListE * appendListE(ListE * inList, exprtype* expr);
 commandList * appendcommandList(commandList * inList, char* inVal, ListC* inargs);
 trans_u_list * appendTransList(trans_u_list* inTransList, char* inName, commandList* inList);
+trans_u_list * prependTransList(trans_u_list* inTransList, char* inName, commandList* inList);
+translation_unit * getlastUnit(trans_u_list* inTransList);
+trans_u_list * concat_trans_unit_list(trans_u_list* , trans_u_list*);
 
 void printListC(ListC * inList);
 void printListC(ListC * inList);

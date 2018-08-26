@@ -6,16 +6,30 @@ extern int current_char;
 extern char * filename;
 extern boolcg founderror;
 int error(int which, char*,char*);
+typedef enum _which which;
+enum _which{
+	LEXER,
+	PARSER,
+	MEMLIBC,
+	MAINC,
+	COMMANDC,
+	TRANSC,
+	LISTC,
+	SYMTABC
+};
+static const char *which_strings[] = {
+	":Lexer:", ":Parser", ":MEMMAN", "::Main:", "Command", ":Trans:", "::List:", ":Symtab"
+};
 #ifdef DEBUG
 #include "Listcg.h"
-void dbprint(int which,char* s1, typecg intype, void *value);
-void debugprint(int,char*,char*);
+void dbprint(int which,const char* s1, typecg intype, void *value);
+void debugprint(int,const char*,const char*);
 void debugprintt(int, trans_u_list*);
-void debugprintd(int,char*, int);
-void debugprintf(int,char*, float);
-void debugprinta(int,char*, ListC *);
-void debugprintc(int,char*, commandList *);
-void debugprinta2(int,char*, char*, ListC *);
+void debugprintd(int,const char*, int);
+void debugprintf(int,const char*, float);
+void debugprinta(int,const char*, ListC *);
+void debugprintc(int,const char*, commandList *);
+void debugprinta2(int,const char*, const char*, ListC *);
 char *which_program(int);
 #endif
 #endif

@@ -26,22 +26,24 @@ int yydebug = 0;
 #include "memlib.h"
 #include <string.h>
 extern int yyparse(void);
+char *MAIN_STRING="main";
 //extern int yytables_fload(FILE *);
 //extern int yytables_destroy();
 //extern int yylex_destroy();
 //extern int yy_delete_buffer();
-
 int main(int argc, char **argv){
 	founderror=FALSE;
 	othercounter=1;
 	globalcount=0;
 	param_offset=0;
+	infile = NULL;
+	filename = NULL;
 	filename = "main.c";
 	initializelabel();
 	if(checkargs(argc,argv) == -1){
 		#ifdef DEBUG
-			filename = "input_filename.c";
-			debugprint(3,"No arguments given to compiler: Examaple -- ", filename);
+			//filename = "input_filename.c";
+			dbprint(MAINC,"Improper or no arguments given to compiler: Example filename -- ", STR, filename);
 		#endif
 		return -1;
 	}
@@ -69,21 +71,16 @@ int main(int argc, char **argv){
 	yyparse();
 }while(!feof(yyin));
 		#ifdef DEBUG
-		//printf("Finished Parsing");
-		debugprint(3,"Finished Parsing ",filename);
+		dbprint(MAINC,"Finished Parsing ",STR,filename);
 		#endif
-
-/*	#ifdef DEBUG
-	printTree(mysymtab);
-	#endif
-	deleteTree(mysymtab);*/
-	if(infile !=NULL)
-		fclose(infile);
+		if(infile !=NULL)
+			fclose(infile);
+		infile=NULL;
 /*	yytables_destroy();
 	yylex_destroy();*/
 //	free(filename);
-//	filename=NULL;
-	releaseall();
+	filename=NULL;
+	mem_cleanup();
 	return 0;
 
 }
