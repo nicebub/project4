@@ -1,6 +1,8 @@
 #ifdef DEBUGON
+#ifdef LISTDEBUG
 #ifndef DEBUG
 #define DEBUG
+#endif
 #endif
 #endif
 #include "debuglib.h"
@@ -23,7 +25,7 @@ List * mklist(char * inVal){
 		temp->list->nextnode = NULL;
 		return temp;
 	}
-	error(1,"Value isn't correct, could not make List","");
+	error(LISTC,"Value isn't correct, could not make List","");
     return NULL;
 }
 trans_u_list* mkTransList(char* inName, commandList* inList){
@@ -39,7 +41,7 @@ trans_u_list* mkTransList(char* inName, commandList* inList){
 		temp_unit->next_trans_unit = NULL;
 		return temp;
 	}
-	error(1,"Could not make Translation Unit List","");
+	error(LISTC,"Could not make Translation Unit List","");
 	return NULL;
 }
 
@@ -58,12 +60,12 @@ commandList * mkcommandList(char * inVal, ListC* inargs){
 		temp->list->paramlist = inargs;
 		temp->list->nextcommand = NULL;
 		#ifdef DEBUG
-		debugprintd(1,"Checking CommandList size ",temp->listsize);
-		debugprintc(1,"Checking CommandList Accuracy ",temp);
+		debugprintd(LISTC,"Checking CommandList size ",temp->listsize);
+		debugprintc(LISTC,"Checking CommandList Accuracy ",temp);
 		#endif
 		return temp;
 	}
-	error(1,"Value isn't correct, could not make List","");
+	error(LISTC,"Value isn't correct, could not make List","");
     return NULL;
 }
 
@@ -86,7 +88,7 @@ ListC * mklistC(char * inVal[2]){
 		temp->list->nextnode = NULL;
 		return temp;
 	}
-	error(1,"Value isn't correct, could not make List","");
+	error(LISTC,"Value isn't correct, could not make List","");
     return NULL;
 }
 ListC * mklistCi(int inVal[2]){
@@ -104,7 +106,7 @@ ListC * mklistCi(int inVal[2]){
 		temp->list->nextnode = NULL;
 		return temp;
 	}
-	error(1,"Value isn't correct, could not make List","");
+	error(LISTC,"Value isn't correct, could not make List","");
     return NULL;
 }
 
@@ -140,7 +142,7 @@ trans_u_list * prependTransList(trans_u_list* inTransList, char* inName, command
 	if(inTransList != NULL){
 		if(inTransList->list != NULL){
 			#ifdef DEBUG
-			debugprint(1,"Appending Translation Unit to Trans_List","");
+			debugprint(LISTC,"Appending Translation Unit to Trans_List","");
 			#endif
 			temp = inTransList->list;
 			//while(temp->next_trans_unit != NULL) temp = temp->next_trans_unit;
@@ -165,7 +167,7 @@ trans_u_list * appendTransList(trans_u_list* inTransList, char* inName, commandL
 	if(inTransList != NULL){
 		if(inTransList->list != NULL){
 			#ifdef DEBUG
-			debugprint(1,"Appending Translation Unit to Trans_List","");
+			debugprint(LISTC,"Appending Translation Unit to Trans_List","");
 			#endif
 			temp = inTransList->list;
 			while(temp->next_trans_unit != NULL) temp = temp->next_trans_unit;
@@ -191,7 +193,7 @@ commandList* appendcommandList(commandList * inList, char * inVal, ListC *inargs
 	if(inList != NULL){
 		if(inList->list !=NULL){
 			#ifdef DEBUG
-			debugprint(1,"Appending Commands to the command list", inVal);
+			debugprint(LISTC,"Appending Commands to the command list", inVal);
 			#endif
 			tempN = inList->list;
 			while(tempN->nextcommand != NULL) tempN = (commandlisttype*)tempN->nextcommand;
@@ -212,8 +214,8 @@ commandList* appendcommandList(commandList * inList, char * inVal, ListC *inargs
             tempN->nextcommand = tNodeLL;
 			inList->listsize += 1;
 			#ifdef DEBUG
-			debugprintd(1,"Checking CommandList size ",inList->listsize);
-			debugprintc(1,"Checking CommandList Accuracy ",inList);
+			debugprintd(LISTC,"Checking CommandList size ",inList->listsize);
+			debugprintc(LISTC,"Checking CommandList Accuracy ",inList);
 			#endif
 			return inList;
 		}
@@ -498,7 +500,8 @@ trans_u_list * concat_trans_unit_list(trans_u_list* front, trans_u_list* back){
 			}
 		}
 		return front;
-}
+	}
+	return NULL;
 }
 
 
@@ -543,7 +546,7 @@ ListP * mklistP(char * inVal, typecg inType){
 		temp->list->nextnode = NULL;
 		return temp;
 	}
-	else {error(1,"Value isn't correct, could not make List","");
+	else {error(LISTC,"Value isn't correct, could not make List","");
 		return NULL;
 		}
 
@@ -609,7 +612,7 @@ ListE * mklistE(exprtype* inVal){
                 temp->list->nextnode = NULL;
                 return temp;
         }
-        else {error(1,"Value isn't correct, could not make List","");
+        else {error(LISTC,"Value isn't correct, could not make List","");
                 return NULL;
                 }
 
@@ -663,25 +666,25 @@ void printListC(ListC * inList){
 		if(inList->list != NULL){
 			if(inList->list->argtype[0] == STR){
 				if((&inList->list->val) != NULL){
-					debugprint(1,"val[0]", inList->list->val[0]);
+					debugprint(LISTC,"val[0]", inList->list->val[0]);
 				}
 			}
 			else{
-				debugprintd(1,"int_val[0]", inList->list->int_val[0]);
+				debugprintd(LISTC,"int_val[0]", inList->list->int_val[0]);
 				
 			}
 			if(inList->list->val[1] != NULL && inList->list->argtype[1] == STR){
-				debugprint(1,"val[1]", inList->list->val[1]);
+				debugprint(LISTC,"val[1]", inList->list->val[1]);
 			}
 			else if(inList->list->argtype[1] != STR && inList->listsize > 1){
-				debugprintd(1,"int_val[1]", inList->list->int_val[1]);
+				debugprintd(LISTC,"int_val[1]", inList->list->int_val[1]);
 			}			
 		}
 		else
-			debugprint(1,"List is empty","");
+			debugprint(LISTC,"List is empty","");
 	}
 	else
-		debugprint(1,"List is empty","");
+		debugprint(LISTC,"List is empty","");
 }
 
 void printcommandList(commandList * inList){
@@ -689,46 +692,46 @@ void printcommandList(commandList * inList){
 		if(inList->list != NULL){
 			if(inList->list->name != NULL){
 				
-				debugprint(1,"First command of command list", inList->list->name);
+				debugprint(LISTC,"First command of command list", inList->list->name);
 				
 			}
 			else{
-				debugprint(1,"Command List Empty","");
+				debugprint(LISTC,"Command List Empty","");
 				
 			}
 			
-			debugprintd(1,"Command List listsize", inList->listsize);
+			debugprintd(LISTC,"Command List listsize", inList->listsize);
 			commandlisttype* temp = inList->list;
 			for(int i = 0; temp !=NULL && i<inList->listsize; i++){
-				debugprint(1,"Command Name:",temp->name);
-				debugprintd(1,"Command Number of Arguments",temp->length);
+				debugprint(LISTC,"Command Name:",temp->name);
+				debugprintd(LISTC,"Command Number of Arguments",temp->length);
 				printListC(temp->paramlist);
 				temp = temp->nextcommand;
 			}
 		}
 		else
-			debugprint(1,"List is empty","");
+			debugprint(LISTC,"List is empty","");
 	}
 }
 
 void printTransList(trans_u_list *inList){
 	if(inList !=NULL){
 		if(inList->list !=NULL){
-			debugprintd(1,"Translation Units Available", inList->listsize);
+			debugprintd(LISTC,"Translation Units Available", inList->listsize);
 			translation_unit *temp = inList->list;
 			for(int i = 0; temp !=NULL && i<inList->listsize; i++){
-				debugprint(1,"Translation Unit Name:",temp->name);
+				debugprint(LISTC,"Translation Unit Name:",temp->name);
 				printcommandList(temp->commandlist);
 				temp = temp->next_trans_unit;
 			}
 			
 		}
 		else{
-			debugprint(1,"Translation Unit List Empty","");
+			debugprint(LISTC,"Translation Unit List Empty","");
 		}
 	}
 	else{
-		debugprint(1,"Translation Unit List Empty","");		
+		debugprint(LISTC,"Translation Unit List Empty","");		
 	}
 }
 

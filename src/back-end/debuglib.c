@@ -45,6 +45,15 @@ int error(int which, char* s1, char* s2){
     return 0;
 }
 
+
+int warning(int which, char *s1, char* s2){
+	char * program = NULL;
+	program = which_program(which);
+	fprintf(stderr,"WARNING::%s::%s:%d:%d-> %s \"%s\"\n",program,filename,Line_Number,current_char,s1,s2);
+    return 0;
+}
+
+
 #ifdef DEBUG
 void debugprint(int which,const char* s1, const char*s2){
 	char * program = NULL;
@@ -72,7 +81,9 @@ void debugprinta(int which,const char* s1, ListC* inList){
 	program = which_program(which);
 	if(s1!=NULL){
 		fprintf(stderr,"Debug::%s::%s:%d:%d-> %s \n",program,filename,Line_Number,current_char,s1);
-			printListC(inList);
+		#ifdef LISTDEBUG
+		printListC(inList);
+		#endif
 	}
 	else
 		fprintf(stderr,"Debug::%s::%s:%d:%d-> %s\n",program,filename,Line_Number,current_char,"DEBUGPRINTA HAS NOTHING TO PRINT");
@@ -83,7 +94,9 @@ void debugprinta2(int which,const char* s1, const char* s2, ListC* inList){
 	program = which_program(which);
 	if(s1!=NULL && s2 !=NULL){
 		fprintf(stderr,"Debug::%s::%s:%d:%d-> %s %s\n",program,filename,Line_Number,current_char,s1,s2);
-			printListC(inList);
+		#ifdef LISTDEBUG
+		printListC(inList);
+		#endif
 	}
 	else if(s1 != NULL && s2 == NULL){
 		fprintf(stderr,"Debug::%s::%s:%d:%d-> %s\n",program,filename,Line_Number,current_char,s1);
@@ -96,14 +109,19 @@ void debugprintc(int which,const char* s1, commandList* inList){
 	program = which_program(which);
 	if(s1!=NULL){
 		fprintf(stderr,"Debug::%s::%s:%d:%d-> %s \n",program,filename,Line_Number,current_char,s1);
-			printcommandList(inList);
+		#ifdef LISTDEBUG
+		printcommandList(inList);
+		#endif
 	}
 	else
 		fprintf(stderr,"Debug::%s::%s:%d:%d-> %s\n",program,filename,Line_Number,current_char,"DEBUGPRINTC HAS NOTHING TO PRINT");
 }
 void debugprintt(int which,trans_u_list *inList){
-	if(inList != NULL)
+	if(inList != NULL){
+		#ifdef LISTDEBUG		
 		printTransList(inList);
+		#endif
+	}
 }
 void dbprint(int which,const char * s1, typecg intype, void * value){
 	char * program = NULL;

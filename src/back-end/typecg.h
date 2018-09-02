@@ -4,16 +4,27 @@ typedef enum {
 	PLS,
 	MIN
 } addtypecg;
+static const char *addtypecg_strings[] = {
+	"PLUS", "MINUS"
+};
+
 
 typedef enum {
 	DIV,
 	MULT
 } multypecg;
+static const char *multtypecg_strings[] = {
+	"DIV", "MULT"
+};
+
 
 typedef enum {
 	NEQ,
 	EQEQ
 } eqtypecg;
+static const char *eqtypecg_strings[] = {
+	"NOT EQUAL", "DOUBLE EQUALS"
+};
 
 typedef enum {
 	LES,
@@ -21,12 +32,18 @@ typedef enum {
 	GRE,
 	GEQ
 } reltypecg;
+static const char *reltypecg_strings[] = {
+	"LESS THAN", "LESS THAN OR EQUAL", "GREATER THAN", "GREATER THAN OR EQUAL"
+};
 
 typedef enum {
 	FUNC,
 	VAR,
 	PARAM
 } btypecg;
+static const char *btypecg_strings[] = {
+	"FUNCTION", "VARIABLE", "PARAMETER"
+};
 
 typedef enum {
 	INT,
@@ -39,13 +56,20 @@ typedef enum {
 	REFSTR,
 	COMMAND,
 	LONG,
-	OBJ
+	OBJ,
+	GENERIC
 } typecg;
+static const char *typecg_strings[] = {
+	"INT", "FLOAT", "VOID", "CHAR", "STR", "REFINT", "REFFLOAT", "REFSTR", "COMMAND", "LONG", "OBJ", "GENERIC"
+};
 
 typedef enum {
 	FALSE,
 	TRUE
 } boolcg;
+static const char *boolcg_strings[] = {
+	"FALSE", "TRUE"
+};
 
 typedef struct {
 	typecg returntype;

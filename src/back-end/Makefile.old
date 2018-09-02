@@ -8,12 +8,13 @@
 TARGETDIR = .
 #
 # Use gcc for Motif compilations.
-CC = /usr/local/bin/gcc-8
-#CC = /usr/bin/gcc
-BISON = /usr/local/opt/bison/bin/bison
-#BISON = /usr/bin/bison
-FLEX = /usr/local/opt/flex/bin/flex
-#FLEX = /usr/bin/flex
+#CC = /usr/local/bin/gcc-8
+CC = /usr/bin/gcc
+#CC= x86_64-apple-darwin17.7.0-gcc-8
+#BISON = /usr/local/opt/bison/bin/bison
+BISON = /usr/bin/bison
+#FLEX = /usr/local/opt/flex/bin/flex
+FLEX = /usr/bin/flex
 
 
 
@@ -21,7 +22,7 @@ MYCG = "./CG"
 
 
 #CFLAGS = -g  -O0 -ggdb -I/usr/local/opt/bison/include
-CFLAGS = -g  -O0 -ggdb -D DEBUGON -I/usr/local/opt/bison/include
+CFLAGS = -mmacosx-version-min=10.13 -g  -O0 -ggdb -D DEBUGON -I/usr/local/opt/bison/include
 
 #CFLAGS = -g -O0 -D DEBUGON
 #CFLAGS = -g -O0 -D DEBUGOFF
@@ -31,15 +32,26 @@ CFLAGS = -g  -O0 -ggdb -D DEBUGON -I/usr/local/opt/bison/include
 #LDFLAGS =  -L/usr/local/opt/bison/lib -lc -L/usr/local/opt/flex/lib
 #LDFLAGS =  -g -L/usr/local/opt/bison/lib -lc 
 
-FLOP = -v -p -p -B
+FLOP = -v -p -p -B 
 BISOP = -vtd
 #LIBS = -lfl -lm
 #LIBS = -ll -lm
 
-all: cg memlib
+all: cg memlib reglib as_sample
+
+
+
+as_sample: as_sample.asm as_sample.s a.out
+	ld a.out -arch x86_64 -macosx_version_min 10.13 -e _main -lsystem
+a.out: as_sample.s
+	rm a.out || as -g as_sample.s
+
 
 memlib: memlib_main.c memlib.c memlib.h debuglib.o Listcg.o
-	$(CC) -o memlib memlib.c memlib_main.c debuglib.o Listcg.o $(CFLAGS)
+	$(CC) $(CFLAGS) -o memlib memlib.c memlib_main.c debuglib.o Listcg.o 
+
+reglib: reglib.c reglib.h debuglib.o memlib.c memlib.h reglib_main.c Listcg.o
+	$(CC) $(CFLAGS) -o reglib reglib.c reglib_main.c debuglib.o Listcg.o memlib.c
 
 run:
 #	exec "for FILE in `ls *.asm`; do ./cg $(FILE); done"
@@ -96,7 +108,7 @@ sample$(NUM) : sample$(NUM).c
 	$(MYUCC) sample$(NUM).c
 
 clean :
-	rm *.o lex.yy.c cg.tab.* cg.output cg example core test *.out *.s; rm -rf cg.dSYM debug.output memlib memlib.dSYM;
+	rm *.o lex.yy.c cg.tab.* cg.output cg example core test *.out *.s; rm -rf cg.dSYM debug.output memlib reglib memlib.dSYM reglib.dSYM;
 
 
 cg : $(OBJS) $(MAIN)

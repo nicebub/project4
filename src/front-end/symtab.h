@@ -29,6 +29,10 @@ bool inCscope(const char *name, Symtab *symtab);
 
 void openscope(Symtab *symtab);
 
+void openmainscope(Symtab *symtab);
+
+void closemainscope(Symtab *symtab);
+
 void closescope(Symtab *symtab);
 
 void deleteEntry(Entry * temp);

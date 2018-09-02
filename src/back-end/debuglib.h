@@ -5,7 +5,10 @@ extern int Line_Number;
 extern int current_char;
 extern char * filename;
 extern boolcg founderror;
+
 int error(int which, char*,char*);
+int warning(int which, char*, char*);
+
 typedef enum _which which;
 enum _which{
 	LEXER,
@@ -15,10 +18,11 @@ enum _which{
 	COMMANDC,
 	TRANSC,
 	LISTC,
-	SYMTABC
+	SYMTABC,
+	REGLIBC
 };
 static const char *which_strings[] = {
-	":Lexer:", ":Parser", ":MEMMAN", "::Main:", "Command", ":Trans:", "::List:", ":Symtab"
+	":Lexer:", ":Parser", ":MEMMAN", "::Main:", "Command", "Translator", "::List:", ":Symtab", "Reglib.c"
 };
 #ifdef DEBUG
 #include "Listcg.h"

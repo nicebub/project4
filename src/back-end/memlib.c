@@ -10,7 +10,7 @@
 #include "Listcg.h"
 #include "string.h"
 #include <stdlib.h>
-#include <stdio.h>
+//#include <stdio.h>
 
 extern mem_man mem_manager;
 
@@ -25,17 +25,20 @@ void init_mem_man(){
 	
 	mem_manager.i_num = 0;
 	mem_manager.f_num = 0;
+	mem_manager.g_num = 0;
 	mem_manager.cs_num = 0;
 	mem_manager.o_num = 0;
 	mem_manager.f_amount = 0;
 	mem_manager.cs_amount = 0;
 	mem_manager.i_amount = 0;
+	mem_manager.g_amount = 0;
 	mem_manager.o_amount = 0;
 	
 	for(int i = 0; i < MAX_MEM;i++){
 		mem_manager.intbucket[i] = NULL;
 		mem_manager.charbucket[i] = NULL;
 		mem_manager.floatbucket[i] = NULL;
+		mem_manager.genericbucket[i] = NULL;
 		mem_manager.objbucket[i] = NULL;
 		mem_manager.otype[i] = OBJ;
 	}
@@ -83,6 +86,16 @@ int get_avail_mem_tag(typecg intype){
 						}
 						return -1;
 					}
+		case GENERIC:
+					if(mem_manager.g_num < MAX_MEM)
+						return mem_manager.g_num;
+					else{
+						for(int i = 0; i<MAX_MEM; i++){
+							if(mem_manager.generichash[i] == 0) return i;
+						}
+						return -1;
+					}
+					
 					
 		default: 
 					return -1;
@@ -93,9 +106,11 @@ void * requestmem(int size, typecg intype, int *tag){
 	int * temp;
 	char * tempchar;
 	float * tempfloat;
+	void * tempgeneric;
 	temp = NULL;
 	tempchar = NULL;
 	tempfloat = NULL;
+	tempgeneric = NULL;
 //	#ifdef DEBUG
 //	dbprint(MEMLIBC,"Requesting Memory",STR,"");
 //	#endif
@@ -152,6 +167,25 @@ void * requestmem(int size, typecg intype, int *tag){
 						#endif
 						if(mem_manager.f_num < MAX_MEM) mem_manager.f_num += 1; 
 						return (void*)tempfloat;
+			case GENERIC:
+						#ifdef DEBUG
+						dbprint(MEMLIBC,"Requesting Memory for a Generic Memory Type",GENERIC,"");
+						#endif
+						tempgeneric = NULL;
+						mem_manager.genericbucket[*tag] = malloc(size);
+						tempgeneric = mem_manager.genericbucket[*tag];
+						mem_manager.generichash[*tag] = 1;
+						mem_manager.genericref[*tag] += 1;
+						mem_manager.g_amount += 1;
+						mem_manager.generic_size[*tag] = size;
+						mem_manager.generic_address[*tag] = (unsigned long) mem_manager.genericbucket[*tag];
+						#ifdef DEBUG
+						dbprint(MEMLIBC,"Generic Memory Object Address after creation",LONG,(void*)&mem_manager.generic_address[*tag]);
+						#endif
+						if(mem_manager.g_num < MAX_MEM) mem_manager.g_num += 1;
+						return tempgeneric;
+
+						
 			default:
 						return NULL;
 		}
@@ -324,6 +358,19 @@ int releaseall(){
 		mem_manager.f_amount -= 1;
 	}
 	mem_manager.f_num = 0;
+
+	for(int i = 0; i < mem_manager.g_num;i++){
+		if(mem_manager.genericbucket[i] != NULL) free(mem_manager.genericbucket[i]);
+		mem_manager.genericbucket[i] = NULL;
+		mem_manager.generichash[i] = 0;
+		mem_manager.genericref[i] = 0;
+		mem_manager.generic_size[i] = 0;
+		mem_manager.generic_address[i] = 0;
+		mem_manager.g_amount -= 1;
+	}
+	mem_manager.g_num = 0;
+
+
 	for(int i = 0; i < mem_manager.cs_num;i++){
 		if(mem_manager.charbucket[i] != NULL) free(mem_manager.charbucket[i]);
 		mem_manager.charbucket[i] = NULL;
@@ -356,9 +403,11 @@ int release(void * mem, typecg intype, int tag){
 	int * temp;
 	char * tempchar;
 	float * tempfloat;
+	void * tempgeneric;
 	temp = NULL;
 	tempchar = NULL;
 	tempfloat = NULL;
+	tempgeneric = NULL;
 	
 	if(mem !=NULL){
 		if(tag > MAX_MEM){
@@ -456,6 +505,33 @@ int release(void * mem, typecg intype, int tag){
 							//list_f_mem();
 							#endif
 							return 0;
+
+				case GENERIC:
+							#ifdef DEBUG
+							dbprint(MEMLIBC,"Releasing Generic Memory with tag", INT, &tag);
+							//list_cs_mem();
+							#endif	
+							if((tag > mem_manager.g_num && tag < MAX_MEM) || tag < 0) return -1;
+							if(mem_manager.genericbucket[tag] != NULL){
+								if(mem_manager.genericref[tag] == 1){ 
+									free(mem_manager.genericbucket[tag]);
+									mem_manager.genericbucket[tag] = NULL;
+									mem_manager.genericref[tag] = 0;
+									mem_manager.generichash[tag] = 0;
+									mem_manager.generic_size[tag] = 0;
+									mem_manager.generic_address[tag] = 0;
+									mem_manager.g_amount -= 1;
+									if(tag == mem_manager.g_num -1) mem_manager.g_num -=1;
+									}
+									else mem_manager.genericref[tag] -= 1;
+									}
+									#ifdef DEBUG
+									dbprint(MEMLIBC,"Checking for errors on release",STR,"");
+									//list_cs_mem();
+									#endif
+									return 0;
+
+
 				default:
 							#ifdef DEBUG
 							dbprint(MEMLIBC,"WRONG TYPE",STR,"");
@@ -626,7 +702,7 @@ int releaseobj(void * obj, typecg intype){
 int releaseallobj(){
 	int range;
 	#ifdef DEBUG
-	dbprint(MEMLIBC,"Releasing All Memory Objects"," : listing all memory before release", STR, "");
+	dbprint(MEMLIBC,"Releasing All Memory Objects : listing all memory before release", STR, "");
 	dbprint(MEMLIBC,"How many Objects through the o_num variable", INT, (void*)&mem_manager.o_num);
 	#endif	
 	if(mem_manager.o_num < MAX_MEM) range = MAX_MEM;
@@ -765,6 +841,7 @@ int mem_cleanup(){
 	list_mem(STR,FALSE);
 	list_mem(INT,FALSE);
 	list_mem(FLOAT,FALSE);
+	list_mem(GENERIC,FALSE);
 //	list_mem(OBJ,FALSE);
 	#endif
 
@@ -776,6 +853,7 @@ int mem_cleanup(){
 	list_mem(STR,FALSE);
 	list_mem(INT,FALSE);
 	list_mem(FLOAT,FALSE);
+	list_mem(GENERIC,FALSE);
 	#endif
 	return 0;
 }
@@ -803,6 +881,21 @@ void list_f_mem(){
 		 }
 	}
 }
+
+void list_g_mem(){
+	dbprint(MEMLIBC,"Generic Memory Object Memory", INT, (void*)&mem_manager.g_amount);
+	for(int i=0;i<mem_manager.g_num;i++){
+		if(mem_manager.generichash[i] == 1){ 
+			dbprint(MEMLIBC,"Allocated in slot", INT, &i);
+			dbprint(MEMLIBC,"Size in Bytes", INT, &mem_manager.generic_size[i]);
+//			dbprint(MEMLIBC,"String/Character value", STR, mem_manager.charbucket[i]);
+			dbprint(MEMLIBC,"Number of References", INT, &mem_manager.genericref[i]);
+			dbprint(MEMLIBC,"Address Given", LONG, (void*)&(mem_manager.generic_address[i]));
+		}
+	}
+}
+
+
 void list_cs_mem(){
 	dbprint(MEMLIBC,"String/Character Memory ", INT, (void*)&mem_manager.cs_amount);
 	for(int i=0;i<mem_manager.cs_num;i++){
@@ -835,7 +928,7 @@ void list_o_mem(boolcg SUPPRESS_EMPTY_HASH){
 							if(mem_manager.inthash[temp->tag] == 1){
 								dbprint(MEMLIBC,"- Integer Allocated for Object in slot", INT, &temp->tag);
 								dbprint(MEMLIBC,"-- Integer value", INT, (mem_manager.intbucket[temp->tag]));
-								dbprint(MEMLIBC,"-- Number of References", INT &(mem_manager.intref[temp->tag]));
+								dbprint(MEMLIBC,"-- Number of References", INT , &(mem_manager.intref[temp->tag]));
 								dbprint(MEMLIBC,"-- Integer Address Given", LONG, (void*)&(mem_manager.int_address[temp->tag]));
 							}
 							break;
@@ -844,7 +937,7 @@ void list_o_mem(boolcg SUPPRESS_EMPTY_HASH){
 						ftag = tempfloat->tag;
 						if(mem_manager.floathash[ftag] == 1){
 							 dbprint(MEMLIBC,"- Float Allocated for Object in slot", INT, &(ftag));
-						 	dbprint(MEMLIBC,"-- Float value", FLOAT, (void*) FLOAT, &mem_manager.floatbucket[ftag]);
+						 	dbprint(MEMLIBC,"-- Float value", FLOAT, (void*)  &mem_manager.floatbucket[ftag]);
 		 					 dbprint(MEMLIBC,"-- Number of References", INT, &mem_manager.floatref[ftag]);
 							 dbprint(MEMLIBC,"-- Float Address Given", LONG, (void*)&(mem_manager.float_address[ftag]));
 						 }
@@ -854,7 +947,7 @@ void list_o_mem(boolcg SUPPRESS_EMPTY_HASH){
 						tempstr = (str_m*)&mem_manager.objbucket[i];
 						if(mem_manager.charhash[tempstr->tag] == 1){ 
 							dbprint(MEMLIBC,"- String/Character Allocated for Object in slot", INT, &tempstr->tag);
-							debugprint(2,"-- String/Character value", STR, mem_manager.charbucket[tempstr->tag]);
+							dbprint(MEMLIBC,"-- String/Character value", STR, mem_manager.charbucket[tempstr->tag]);
 							dbprint(MEMLIBC,"-- Number of References", INT, &mem_manager.charref[tempstr->tag]);
 							dbprint(MEMLIBC,"-- String/Character Address Given", LONG, (void*)&(mem_manager.char_address[tempstr->tag]));
 						}
@@ -863,7 +956,7 @@ void list_o_mem(boolcg SUPPRESS_EMPTY_HASH){
 				default: break;
 			}
 //			debugprint(2,"String/Character value", mem_manager.objbucket[i]);
-			dbprint(MEMLIBC,"-Object Number of References", INT &mem_manager.objref[i]);
+			dbprint(MEMLIBC,"-Object Number of References", INT, &mem_manager.objref[i]);
 			dbprint(MEMLIBC,"-Object Address Given", LONG, (void*)&(mem_manager.obj_address[i]));
 		}
 		else{
@@ -877,6 +970,7 @@ void list_mem(typecg intype, boolcg SUPPRESS_EMPTY_HASH){
 		case FLOAT: list_f_mem();break;
 		case STR:
 		case CHAR: list_cs_mem();break;
+		case GENERIC: list_g_mem();break;
 		case OBJ:	list_o_mem(SUPPRESS_EMPTY_HASH);break;
 		default:	break;
 	}

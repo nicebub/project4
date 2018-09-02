@@ -1,6 +1,8 @@
 #ifdef DEBUGON
+#ifdef COMMANDDEBUG
 #ifndef DEBUG
 #define DEBUG
+#endif
 #endif
 #endif
 #include "commandcg.h"

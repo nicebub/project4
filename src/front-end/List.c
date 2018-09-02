@@ -63,7 +63,7 @@ void deleteList(List * inList){
 			#endif
 			while(temp->nextnode != NULL){
 				#ifdef DEBUG
-				debugprint( "Deleting ", temp->val);
+				debugprint( "Deleting from list ", temp->val);
 				#endif
 				free(temp->val);
 				temp2 = temp;
@@ -72,7 +72,7 @@ void deleteList(List * inList){
 				temp2=NULL;
 			}
 			#ifdef DEBUG
-			debugprint( "Deleting ", temp->val);
+			debugprint( "Deleting from list ", temp->val);
 			#endif
 			free(temp->val);
 			free(temp);

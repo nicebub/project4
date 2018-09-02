@@ -20,6 +20,7 @@ MYUCC = "./ucc"
 
 
 #CFLAGS = -g  -ggdb -I/usr/local/opt/bison@2.7/include -D DEBUGON
+#CFLAGS = -g  -ggdb -D DEBUGOFF
 CFLAGS = -g  -ggdb -D DEBUGON
 
 #CFLAGS = -g
@@ -75,7 +76,7 @@ OBJS  = lex.yy.o  \
 	symtab.o \
 	List.o \
 	command.o \
-	trans.o
+	trans.o 
 
 
 sample$(NUM) : sample$(NUM).c

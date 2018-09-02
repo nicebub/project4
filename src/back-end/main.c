@@ -6,10 +6,12 @@ that the file opened on the command line arguments ends in a '.c'.  Which also b
 		./ucc < <filename_with.c>
 */
 #ifdef DEBUGON
+#ifdef MAINDEBUG
 #ifndef DEBUG
 #define DEBUG
 #endif
 int yydebug = 0;
+#endif
 #endif
 #include "debuglib.h"
 #include <stdio.h>

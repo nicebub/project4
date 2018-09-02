@@ -3,8 +3,10 @@
 */
 %{
 #ifdef DEBUGON
+#ifdef LEXERDEBUG
 #ifndef DEBUG
 #define DEBUG
+#endif
 #endif
 #endif
 #include "debuglib.h"
@@ -22,6 +24,8 @@
 #include "cg.l.h"
 #include "main.h"
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 //extern int Line_Number;
 int tag;
 int check_str_length_bf_input(char* input);
@@ -57,8 +61,8 @@ ADOF	"&"
 \" {	BEGIN(INITIAL);
 	if(check_str_length_bf_input("")){
 		*string_buf_ptr ='\0';
-		yylval.value.svalue = (char*) requestmem(strlen(string_buf)+1, STR, &tag);
-			if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
+		yylval.value.svalue = (char*) requestmem(strlen(string_buf)+1, STR, &tag);		
+		if(yylval.value.svalue == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}
 		strcpy(yylval.value.svalue,string_buf);
 		yylval.value.svalue[strlen(string_buf)] = '\0';
 		#ifdef DEBUG
@@ -242,7 +246,7 @@ alloc|enter|call {/* keyword alloc|enter|call */
 	}
 
 
-push(s|cI|a) { /*keyword pushs, pushcI and pusha */
+push(s|cI|a|ga) { /*keyword pushs, pushcI and pusha */
 	#ifdef DEBUG
 		debugprint(0,"Keyword pushs, pushcI, or pusha found with clear matching pattern ",yytext);
 	#endif

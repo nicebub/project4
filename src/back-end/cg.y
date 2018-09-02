@@ -3,8 +3,10 @@ Code Generator Bison Parser File
 */
 %{
 #ifdef DEBUGON
+#ifdef PARSERDEBUG
 #ifndef DEBUG
 #define DEBUG
+#endif
 #endif
 #endif
 #include "debuglib.h"
@@ -33,7 +35,7 @@ int mainlabel;
 Funcbcg* currentFunc;
 extern int yyerror(const char *);
 extern int yylex (void);
-extern int warning(char*,char*);
+extern int warning(int, char*,char*);
 extern int error(int which, char*,char*);
 %}
 //%expect 2
@@ -97,7 +99,6 @@ extern int error(int which, char*,char*);
 %type <value.cargvalue> command_args
 %type <value.transunitvalue> mainfunc
 %type <trans_list> tunits translation_units func
-//%type <trans_list> optional_extra_w_labels with_labels
 %type <value.svalue> returnft labelt
 
 %start starter
@@ -109,50 +110,43 @@ starter: zlines_eof {
 	#endif
 } 
 	| zlines {
-		gen_filename_comment();
-		gen_section_text();
-		gen_printf_dec();
-		gen_global_main();
-//		gen_prolog_macro();
-//		gen_epilog_macro();
-//		gen_set_stack();
+		if(founderror == FALSE){
+			gen_filename_comment();
+			gen_section_text();
+		}		
+	  } 
 		
-		
-//		gen_label("_bss");
-	} tunits  {
+	  tunits  {
 			if(founderror == FALSE){
 				#ifdef DEBUG
 				dbprint(PARSER,"All Translation Units Recognized and compacted into One",STR,"");
 				dbprint(PARSER,"Printing all commands",STR,"");
 				dbprint(PARSER,"",STR,"");
-//				dbprint(PARSER, "", STR, $3);
 				debugprintt(1,$3);
 				#endif
 
-				/*gen_label("main");
-				gen_instr_I("enter",0);
-				gen_instr_I("alloc",globalcount);
-				gen_instr_I("enter",0);
-				gen_call(genlabelu("main",mainlabel),0);
-				gen_instr("return");
-				*/
+				gen_end_prog();
+								
 			}
 	}
 ;
 tunits: translation_units mainfunc {
 	if($1 != NULL && $2 != NULL){
 		$$ = appendTransList($1,$2->name, $2->commandlist);
+		
+		
 		#ifdef DEBUG
 		dbprint(PARSER,"Main Function Translation Unit Recognized and added to Start of Translation Units",STR,"");
 		#endif
 	}
 }
 	| mainfunc {
-		$$ = mkTransList($1->name, $1->commandlist);
-		#ifdef DEBUG
-		dbprint(PARSER,"Main Function Translation Unit Recognized and added to Start of Translation Units",STR,"");
-		#endif
-	
+		if($1 != NULL){
+			$$ = mkTransList($1->name, $1->commandlist);
+			#ifdef DEBUG
+			dbprint(PARSER,"Main Function Translation Unit Recognized and added to Start of Translation Units",STR,"");
+			#endif
+		}
 	}
 translation_units: func {
 	if($1 != NULL){
@@ -201,12 +195,14 @@ mainfunc: maint lines commandlist {
 	}
 ;
 
-//func: Ident {gen_label(genlabelu($1, getlabel() )); } commandlist optional_extra_w_labels {
 
 func: Ident lines commandlist {
-//		gen_label(genlabelu($1, getlabel() )); 
 		commandlisttype *temp;
-		gen_label(genlabelu($1, getlabel() )); 
+		if(founderror == FALSE){
+//			check_and_gen_if_main((char*)$1);
+//			gen_label(genlabelu($1, getlabel() ));
+//			gen_func_prolog();
+		}
 		temp = NULL;
 		
 		if( $3 != NULL){
@@ -218,9 +214,7 @@ func: Ident lines commandlist {
 		if($1 != NULL && $3 != NULL){
 //			#ifdef DEBUG
 //			debugprinta2(1,"A List of Commands is being added to with another command and no arguments",$3, NULL);
-//			#endif
-//			$3 = appendcommandList((commandList*)$3, (char*)$3, (ListC*)NULL);
-			
+//			#endif			
 			
 			$$ = mkTransList($1, $3);
 
@@ -228,7 +222,6 @@ func: Ident lines commandlist {
 			dbprint(PARSER,"Function Translation Unit Recognized and added to Start of Translation Units",STR,"");
 			#endif
 
-//			$$ = prependTransList($4,$1, $3);
 
 			#ifdef DEBUG
 			dbprint(PARSER,"Function Translation Unit Recognized and added to existing Translation Units",STR,"");
@@ -240,124 +233,26 @@ func: Ident lines commandlist {
 //			$$->name = (char*)$1;
 //			$$->commandlist = $2;
 //			$$->next_trans_unit = NULL;
-			for(int i = 0; i < $<command_list>3->listsize && temp!=NULL; i++){
-				#ifdef DEBUG
-				dbprint(PARSER,"Generating Command ",INT, &i);
-				#endif
-				gen_instr(temp->name);
-				temp = temp->nextcommand;
+			if(founderror == FALSE){
+
+				check_and_gen_if_main((char*)$1);
+
+				gen_label(genlabelu($1, getlabel() ));
+
+				gen_func_prolog();
+
+				gen_set_stack(); 
+
+				gen_run_commands($3);
+
+				gen_reverse_stack();
+				
+				gen_func_epilog();
 			}
 		}
 		
 	}
-/* //	| Ident commandlist returnft {
-	| Ident commandlist {
-			gen_label(genlabelu($1, getlabel() ));
-			commandlisttype *temp;
-			temp = NULL;
-			if($2 != NULL){
-				temp = $2->list;
-				#ifdef DEBUG
-				dbprint(PARSER,"Counting and Generating Instructions before adding returnf: ",INT, &temp->length);
-				#endif
-			}
-		
-			if($1 != NULL && $2 != NULL){
-
-				#ifdef DEBUG
-				debugprinta2(1,"A List of Commands is being added to with another command and no arguments",$2, NULL);
-				#endif
-
-				$2 = appendcommandList((commandList*)$2, (char*)$2, (ListC*)NULL);
-
-				$$ = mkTransList($1, $2);
-
-				#ifdef DEBUG
-				dbprint(PARSER,"Function Translation Unit Recognized and added to Start of Translation Units",STR,"");
-				#endif
-
-			
-	//			$$->name = (char*)strdup($1);
-	//			$$->commandlist = $2;
-	//			$$->next_trans_unit = NULL;
-				for(int i = 0; i < $<command_list>2->listsize && temp!=NULL; i++){
-					#ifdef DEBUG
-					dbprint(PARSER,"Generating Command ",INT, &i);
-					#endif
-					gen_instr(temp->name);
-					temp = temp->nextcommand;
-				}
-			}
-			}*/
 ;
-
-/*optional_extra_w_labels: with_labels returnft {
-	translation_unit *temp;
-	temp = NULL;
-	if($1 != NULL){
-		temp = $1->list;
-		if(temp!=NULL){
-			temp = getlastUnit($1);
-			if(temp !=NULL){
-				appendcommandList((commandList*)temp->commandlist, (char*) $2, (ListC*) NULL);
-			}
-			else{
-				error(PARSER," deep inside with labels","");
-				return -1;
-			}
-		}
-		else{
-			error(PARSER,"inside with labels","");
-			return -1;
-		}
-//		$2 = appendcommandList((commandList*)$2, (char*)$3, (ListC*)NULL);
-	}	
-}
-;
-
-with_labels: labelt commandlist  {
-		gen_label(genlabelu($1, getlabel() ));
-		commandlisttype *temp;
-		temp = NULL;
-		if($2 != NULL){
-			temp = $2->list;
-			#ifdef DEBUG
-			dbprint(PARSER,"Counting and Generating Instructions before adding returnf: ",INT, &temp->length);
-			#endif
-		}
-		
-		if($1 != NULL && $2 != NULL){
-
-//			#ifdef DEBUG
-//			debugprinta2(1,"A List of Commands is being added to with another command and no arguments",$3, NULL);
-//			#endif
-
-//			$2 = appendcommandList((commandList*)$2, (char*)$3, (ListC*)NULL);
-
-			$$ = mkTransList($1, $2);
-
-			#ifdef DEBUG
-			dbprint(PARSER,"Function Translation Unit Recognized and added to Start of Translation Units",STR,"");
-			#endif
-
-			
-//			$$->name = (char*)strdup($1);
-//			$$->commandlist = $2;
-//			$$->next_trans_unit = NULL;
-			for(int i = 0; i < $<command_list>2->listsize && temp!=NULL; i++){
-				#ifdef DEBUG
-				dbprint(PARSER,"Generating Command ",INT, &i);
-				#endif
-				gen_instr(temp->name);
-				temp = temp->nextcommand;
-			}
-		}
-}
-	|	optional_extra_w_labels labelt commandlist  {
-
-}
-;
-*/
 
 
 commandlist: command_name lines {
@@ -430,7 +325,7 @@ command_args: Ident  {
 				$$ = appendListC($1, (char*)$3, STR);
 			}
 			else{
-				warning("Too many arguments given to original instruction","");
+				warning(PARSER, "Too many arguments given to original instruction","");
 			}
 		}
 	| command_args comma StrConstant {
@@ -441,7 +336,7 @@ command_args: Ident  {
 				$$ = appendListC($1, (char*)$3, STR);
 			}
 			else{
-				warning("Too many arguments given to original instruction","");
+				warning(PARSER, "Too many arguments given to original instruction","");
 			}
 		}
 	| command_args comma IntConstant {
@@ -452,7 +347,7 @@ command_args: Ident  {
 				$$ = appendListCi($1, (int)$3, INT);
 			}
 			else{
-				warning("Too many arguments given to original instruction","");
+				warning(PARSER, "Too many arguments given to original instruction","");
 			}
 
 		}
@@ -477,11 +372,5 @@ int yyerror(const char *s)
     return 0;
 }
 
-
-int warning(char *s1, char* s2)
-{
-	fprintf(stderr,"%s:%d:-> Warning: %s %s\n",filename,Line_Number,s1,s2);
-    return 0;
-}
 
 

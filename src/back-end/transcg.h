@@ -1,6 +1,7 @@
 #ifndef _MYTRANSCG
 #define _MYTRANSCG
 #include <stdio.h>
+#include "Listcg.h"
 
 typedef struct {
 	int one;
@@ -10,6 +11,8 @@ int tag;
 int globalcount;
 int localcount;
 int labelcounter;
+int currentsp;
+int local_total;
 extern FILE *infile;
 extern int error(int which, char*, char*);
 
@@ -25,6 +28,8 @@ void gen_instr_S(char *name, char* inS); 	//used for jump command
 void gen_instr_F(char* name, float arg);	//use for float
 void gen_call(char* funcname, int numargs);
 void gen_instr_tI(char* name, int arg1, int arg2);
+void gen_command(commandlisttype * inList);
+void gen_run_commands(commandList* inList);
 
 void gen_filename_comment();
 void gen_section_text();
@@ -34,6 +39,13 @@ void gen_prolog_macro();
 void gen_epilog_macro();
 void gen_set_stack();
 void gen_reverse_stack();
+void gen_end_prog();
+void gen_func_prolog();
+void gen_func_epilog();
+void check_and_gen_if_main(char * inName);
+
+
+char * cut_str(char* inchar);
 
 char* concat(char*, char*);	//concat 2 strings and return the answer, remember to free it when done
 void nullout(char* name, int length);

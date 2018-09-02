@@ -8,7 +8,7 @@
 #include "Listcg.h"
 #include "string.h"
 #include <stdlib.h>
-#include <stdio.h>
+//#include <stdio.h>
 
 int main(int argc, const char ** argv){
 	int * myint[6];
@@ -17,6 +17,7 @@ int main(int argc, const char ** argv){
 	int mytag;
 	int floattag, floattag2;
 	int strtag;
+	ListC * inList;
 	
 	int_m *i_obj[5];
 	float_m *f_obj[5];
@@ -28,6 +29,7 @@ int main(int argc, const char ** argv){
 	//char *myname = "scott";
 	
 	int *objtag;
+	inList = NULL;
 	init_mem_man();
 	for(int i = 0; i < 5; i++){
 		i_obj[i] = (int_m*)requestmemobj(1,INT);
@@ -40,6 +42,9 @@ int main(int argc, const char ** argv){
 		}
 		
 	}
+	
+	inList = (ListC*) requestmem(sizeof(ListC), GENERIC, &mytag);
+	
 	mem_cleanup();
 	return 0;	
 }
