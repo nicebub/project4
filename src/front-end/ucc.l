@@ -20,6 +20,7 @@ int Line_Number = 1;
 %}
 
 %option stack
+%option yylineno
 %s	initial
 %x	string
 %x	comment
@@ -283,15 +284,18 @@ char { /* keyword char*/
 #ifdef DEBUG
 void debugprint(char* s1, char*s2){
 	if(s1!=NULL && *s1 && s2!=NULL && *s2){
-			fprintf(stderr,"Debug:::%s:%d-> %s \"%s\"\n",filename,Line_Number,s1,s2);
+//			fprintf(stderr,"Debug:::%s:%d-> %s \"%s\"\n",filename,Line_Number,s1,s2);
+			fprintf(stderr,"Debug:::%s:%d yylineno-> %s \"%s\"\n",filename,yylineno,s1,s2);
 	}
 	else if(s1!=NULL && *s1 && s2==NULL){
-			fprintf(stderr,"Debug:::%s:%d-> %s\n",filename,Line_Number,s1);
+//			fprintf(stderr,"Debug:::%s:%d-> %s\n",filename,Line_Number,s1);
+			fprintf(stderr,"Debug:::%s:%d yylineno-> %s\n",filename,yylineno,s1);
 	}
 }
 void debugprintd(char* s1, int s2){
 	if(s1!=NULL && *s1){
-			fprintf(stderr,"Debug:::%s:%d-> %s \"%d\"\n",filename,Line_Number,s1, s2);
+//			fprintf(stderr,"Debug:::%s:%d-> %s \"%d\"\n",filename,Line_Number,s1, s2);
+			fprintf(stderr,"Debug:::%s:%d yylineno-> %s \"%d\"\n",filename,yylineno,s1, s2);
 	}
 }
 

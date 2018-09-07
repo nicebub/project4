@@ -13,6 +13,8 @@
 #include "ucc.l.h"
 #include <string.h>
 
+int offset_counter;
+
 //extern int error(char*,char*);
 void openmainscope(Symtab *symtab){
 	if(symtab->actualStacksize == symtab->Stacksize)

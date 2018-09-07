@@ -7,7 +7,7 @@ extern FILE *infile;
 extern char* filename;
 extern int globalcount;
 Symtab *mysymtab;
-int offset_counter;
+extern int offset_counter;
 int othercounter;
 int param_offset;
 int mainlocal;
