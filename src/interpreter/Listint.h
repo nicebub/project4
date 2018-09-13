@@ -1,9 +1,66 @@
-#ifndef _MYLISTCGH
-#define _MYLISTCGH
+#ifndef _MYLISTCG_H
+#define _MYLISTCG_H
 //#include "typeint.h"
 #include "exprint.h"
 
+
+
+#define SWITCH_CMD(incmd,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,rr,ss,t,u,v,w,x,y) \
+switch(incmd){\
+case ALLOC: a; break;\
+case ENTERR: b; break;\
+case PUSHS: c; break;\
+case CALL: d; break;\
+case POPI: e; break;\
+case PUSHGA: f; break;\
+case PUSHA: g; break;\
+case FETCHI: h; break;\
+case FETCHR: i; break;\
+case STOREI: j; break;\
+case STORER: k; break;\
+case PUSHCI: l; break;\
+case PUSHCR: m; break;\
+case SETRVI: n; break;\
+case SETRVR: o; break;\
+case RETURNF: p; break;\
+case RETURN: q; break;\
+case LTI: r; break;\
+case LTR: s; break;\
+case LEI: rr; break;\
+case LER: ss; break;\
+case JUMP: t; break;\
+case JUMPZ: u; break;\
+case MULI: v; break;\
+case MULR: w; break;\
+case ADDI: x; break;\
+case ADDR: y; break;\
+default: break;\
+}
+
 extern int tag;
+
+typedef enum _command_names command_names;
+enum _command_names {
+    ALLOC,ENTERR,PUSHS,CALL,POPI,PUSHGA,PUSHA,FETCHI,\
+    FETCHR,STOREI,STORER,PUSHCI,PUSHCR, SETRVI,SETRVR, \
+    RETURNF,RETURN, LTI,LTR,LEI, LER, JUMP,JUMPZ, MULI, MULR, \
+    ADDI, ADDR
+};
+
+const static char * command_name_strings[] = {
+    "alloc", "enter", "pushs", "call", "popI", "pushga", "pusha", "fetchI", \
+    "fetchR", "storeI", "storeR","pushcI", "pushcR", "setrvI", "setrvR", \
+    "returnf", "return", "ltI", "ltR", "leI","leR", "jump", "jumpz", "mulI", "mulR",
+    "addI", "addR"
+};
+
+struct command_st {
+    command_names cmd_name;
+    char* command_name_string;
+};
+
+extern struct command_st cmdinf[];
+
 
 typedef struct _listnodeE listnodeE;
 struct _listnodeE{
@@ -33,6 +90,7 @@ struct _ListC{
 typedef struct _commandlisttype commandlisttype;
 struct _commandlisttype{
 	char* name;
+    enum _command_names name_enm;
 	int length;
 	ListC *paramlist;
 	//struct ListCi *paramlisti;

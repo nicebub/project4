@@ -1,6 +1,38 @@
 #ifndef _DEBUGLIB_H
 #define _DEBUGLIB_H
 
+#define SWITCH(intype,forint,forfloat,forstr,fordef) \
+		switch(intype){ \
+			case INT: \
+						forint; break; \
+			case FLOAT: \
+						forfloat; break; \
+			case STR: \
+			case CHAR:	 \
+		 				forstr; break; \
+			case REFINT: \
+			case REFFLOAT: \
+			case REFSTR: \
+			case LONG: \
+			default: \
+						fordef; break; \
+		 }
+
+#define DBPRINT(in_value, intype, fmt) {\
+		 fmt; \
+		in_value = va_arg(arglist,intype); \
+		fprintf(stderr,"Debug::%s::%s:%d:%d-> %s \" %fmt \"\n",program,filename,Line_Number,current_char,s1, in_value);} \
+
+#define DBPRINT_HELPER(intype) \
+			SWITCH(intype, \
+			DBPRINT(intvalue,int,%d),\
+			DBPRINT(floatvalue,float,%.6f),\
+			DBPRINT(charvalue,char*,%s),\
+			DBPRINT(value,unsigned long*,%lu))
+
+
+
+
 #include "Listint.h"
 #include "typeint.h"
 
@@ -22,12 +54,14 @@ enum _which{
 	TRANSC,
 	LISTC,
 	SYMTABC,
-	REGLIBC
+	REGLIBC,
+    	VMLIBC
 };
 static const char *which_strings[] = {
-	":Lexer:", ":Parser", ":MEMMAN", "::Main:", "Command", "Translator", "::List:", ":Symtab", "Reglib.c"
+	":Lexer:", ":Parser", ":MEMMAN", "::Main:", "Command", "Translator", "::List:", ":Symtab", "Reglib.c", "vmlib.c"
 };
-void init_debug(void);
+
+void init_debug(char* in_filename);
 
 /*extern void dbprint(int which,const char* s1, int count, typecg intype, void *value);*/
 extern void dbprint(int which,const char* s1, int count, ...);

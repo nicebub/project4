@@ -8,7 +8,7 @@
 #include "Listint.h"
 #include <stddef.h>
 #include <stdlib.h>
-#define MAX_MEM 20000
+#define MAX_MEM 500
 
 #define REQUESTMEM(name,type,memtype, ...) name = (type *) requestmem(1 __VA_ARGS__, memtype, &tag);		\
 		if(name == NULL){ error(1,"OUT OF MEMORY",""); exit(-1);}

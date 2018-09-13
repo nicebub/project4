@@ -25,7 +25,7 @@ LD_FLAGS = -arch x86_64 -macosx_version_min 10.13
 
 
 #CFLAGS = -g  -O0 -ggdb -I/usr/local/opt/bison/include
-CFLAGS = -mmacosx-version-min=10.13 -g  -O0 -ggdb -D DEBUGON -D LEXERDEBUG
+CFLAGS = -mmacosx-version-min=10.13 -g  -O0 -ggdb -D DEBUGON
 
 #CFLAGS = -g -O0 -D DEBUGON
 #CFLAGS = -g -O0 -D DEBUGOFF
@@ -39,7 +39,7 @@ FLOP = -v -p -p -b -B --header-file=$(LEX_HEADER_FILE)
 BISOP = -vtd
 #LIBS = -lfl -lm
 #LIBS = -ll -lm
-LIBS = -L./ -lreglib -ldebuglib -lmemlib -ltrans -lcommand -llist -linterpreter
+LIBS = -L./ -lreglib -ldebuglib -lmemlib -ltrans -lcommand -llist -linterpreter -lvmlib
 
 
 #all: interpreter memlib reglib as_sample listc_driver debuglib transint_driver commandint_driver lex_driver yacc_driver
@@ -55,42 +55,48 @@ a.out: as_sample.s
 libs: libmemlib.dylib libdebuglib.dylib libreglib.dylib liblist.dylib libtrans.dylib libcommand.dylib libinterpreter.dylib libvmlib.dylib
 
 LIB_CFLAGS = -dynamic -shared -fpic
+
+#LIBMEM_CFLAGS = -D MEMDEBUG
 LIBMEM_LIBS = -L./ -ldebuglib
 libmemlib.dylib: memlib.c memlib.h libdebuglib.dylib
-	$(CC) $(CFLAGS) $(LIB_CFLAGS) $(LIBMEM_LIBS) memlib.c -o libmemlib.dylib
+	$(CC) $(CFLAGS) $(LIB_CFLAGS) $(LIBMEM_CFLAGS) $(LIBMEM_LIBS) memlib.c -o libmemlib.dylib
 
+#LIBDEB_CFLAGS = -D DEBUG
 libdebuglib.dylib: debuglib.c debuglib.h
-	$(CC) $(CFLAGS) $(LIB_CFLAGS) debuglib.c -o libdebuglib.dylib
+	$(CC) $(CFLAGS) $(LIBDEB_CFLAGS) $(LIB_CFLAGS) debuglib.c -o libdebuglib.dylib
 
+#LIBREG_CFLAGS = -D REGDEBUG
 LIBREG_LIBS = -L./ -lmemlib -ldebuglib
 libreglib.dylib: reglib.c reglib.h libmemlib.dylib libdebuglib.dylib
-	$(CC) $(CFLAGS) $(LIB_CFLAGS) $(LIBREG_LIBS) reglib.c -o libreglib.dylib
-LIST_CFLAGS = -D LISTDEBUG
+	$(CC) $(CFLAGS) $(LIB_CFLAGS) $(LIBREG_CFLAGS) $(LIBREG_LIBS) reglib.c -o libreglib.dylib
+#LIST_CFLAGS = -D LISTDEBUG
 LIST_LIBS = -L./ -lmemlib -ldebuglib
 liblist.dylib: Listint.c Listint.h libmemlib.dylib libdebuglib.dylib
 	$(CC) $(CFLAGS) $(LIST_CFLAGS) $(LIB_CFLAGS) $(LIST_LIBS) Listint.c -o liblist.dylib
 
+#TRANS_CFLAGS = -D TRANSDEBUG
 TRANS_LIBS = -L./ -lmemlib -ldebuglib
 libtrans.dylib: transint.c transint.h libdebuglib.dylib libmemlib.dylib
-	$(CC) $(CFLAGS) $(LIB_CFLAGS) $(TRANS_LIBS) transint.c -o libtrans.dylib
+	$(CC) $(CFLAGS) $(LIB_CFLAGS) $(TRANS_CFLAGS) $(TRANS_LIBS) transint.c -o libtrans.dylib
 
-INT_CFLAGS = -D PARSERDEBUG
+#INT_CFLAGS = -D LEXERDEBUG -DPARSERDEBUG
 INT_LIBS = -L./ -ldebuglib -lmemlib -llist -ltrans
+OUTFILE = -o libinterpreter.dylib
 libinterpreter.dylib: interpreter.tab.c interpreter.tab.h lex.yy.c liblist.dylib libtrans.dylib libdebuglib.dylib libmemlib.dylib
-	$(CC) $(CFLAGS) $(INT_CFLAGS) $(LIB_CFLAGS) $(INT_LIBS) interpreter.tab.c lex.yy.c -o libinterpreter.dylib
+	$(CC) $(CFLAGS) $(INT_CFLAGS) $(LIB_CFLAGS) $(INT_LIBS) interpreter.tab.c lex.yy.c $(OUTFILE)
 
-CMD_CFLAGS = -D COMMANDDEBUG
+#CMD_CFLAGS = -D COMMANDDEBUG
 CMD_LIB = -L./ -ldebuglib -lmemlib -ltrans
 libcommand.dylib: commandint.c commandint.h libmemlib.dylib libdebuglib.dylib libtrans.dylib
 	$(CC) $(CFLAGS) $(CMD_CFLAGS) $(LIB_CFLAGS) $(CMD_LIB) commandint.c -o libcommand.dylib 
 
-#VMLIB_CFLAGS = -D COMMANDDEBUG
+#VMLIB_CFLAGS = -D VMDEBUG
 VMLIB_LIB = -L./ -ldebuglib -lmemlib
 libvmlib.dylib: vm.c vm.h libmemlib.dylib libdebuglib.dylib
 	$(CC) $(CFLAGS) $(VMLIB_CFLAGS) $(LIB_CFLAGS) $(VMLIB_LIB) vm.c -o libvmlib.dylib 
 
 
-LISTC_CFLAGS = -D LISTDEBUG
+#LISTC_CFLAGS = -D LISTDEBUG
 LISTC_LIB = -L./ -ldebuglib -lmemlib -llist
 listc_driver: Listint_main.c libdebuglib.dylib libmemlib.dylib liblist.dylib
 	$(CC) $(CFLAGS) $(LISTC_CFLAGS) $(LISTC_LIB) -o listc_driver Listint_main.c
@@ -122,13 +128,13 @@ transint_driver:
 		
 commandint_driver: 
 
-lex.yy.c : interpreter.l interpreter.tab.c
+lex.yy.c : interpreter.l interpreter.tab.c interpreter.l.h
 	$(FLEX) $(FLOP) interpreter.l
 
 lex_driver:
 
 
-interpreter.tab.c : interpreter.y
+interpreter.tab.c : interpreter.y interpreter.y.h
 	$(BISON) $(BISOP) interpreter.y
 		
 yacc_driver: 
@@ -170,7 +176,8 @@ SRCS  = lex.yy.c \
 	transint.c \
 	debuglib.c \
 	memlib.c \
-	reglib.c
+	reglib.c \
+	vm.c
 
 OBJS  = lex.yy.o  \
 	interpreter.tab.o \
@@ -179,7 +186,8 @@ OBJS  = lex.yy.o  \
 	transint.o \
 	debuglib.c \
 	memlib.c \
-	reglib.c 
+	reglib.c \
+	vm.c
 	
 LIBRARYS = libreglib.dylib \
 	libmemlib.dylib \
@@ -187,7 +195,8 @@ LIBRARYS = libreglib.dylib \
 	libcommand.dylib \
 	liblist.dylib \
 	libtrans.dylib \
-	libinterpreter.dylib
+	libinterpreter.dylib \
+	libvmlib.dylib
 
 
 sample$(NUM) : sample$(NUM).c
@@ -201,11 +210,11 @@ cleanmore:
 
 drivers: listc_driver
 		
-#interpreter : $(OBJS) $(MAIN)
-#	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(OBJS) $(MAIN) 
-
-interpreter : $(MAIN) $(LIBRARYS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(LIBS) $(MAIN) 
+interpreter : $(OBJS) $(MAIN)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(OBJS) $(MAIN) 
+#MAIN_CFLAGS = -D MAINDEBUG
+#interpreter : $(MAIN) $(LIBRARYS)
+#	$(CC) $(CFLAGS) $(MAIN_CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(LIBS) $(MAIN) 
 
 example: $(OBJS) $(MAIN) symtab.o example.c List.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(LIBS) $(OBJS) example.c

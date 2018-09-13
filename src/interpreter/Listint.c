@@ -2,12 +2,12 @@
 #define DEBUG
 #endif
 
-#ifdef DEBUGON
-#ifndef LISTDEBUG
-#ifdef DEBUG
+#if defined(DEBUGON) && !defined(LISTDEBUG) && defined(DEBUG)
 #undef DEBUG
 #endif
-#endif
+
+#if !defined(DEBUGON) && defined(DEBUG)
+#undef DEBUG
 #endif
 
 #include "debuglib.h"
@@ -18,6 +18,45 @@
 #include <string.h>
 extern int tag;
 
+struct command_st cmdinf[] = {
+    { ALLOC,	 "alloc" },
+    { ENTERR,	 "enter" },
+    { PUSHS, 	"pushs" },
+    { CALL, 	"call" },
+    { POPI, 	"popI" },
+    { PUSHGA, "pushga" },
+    { PUSHA,	 "pusha" },
+    { FETCHI, "fetchI" },
+    { FETCHR, "fetchR" },
+    { STOREI, "storeI" },
+    { STORER, "storeR" },
+    { PUSHCI, "pushcI" },
+    { PUSHCR, "pushcR" },
+    { SETRVI, "setrvI" },
+    { SETRVR, "setrvR" },
+    { RETURNF, "returnf" },
+    { RETURN, "return" },
+    { LTI,	 "ltI" },
+    { LTR,	 "ltR" },
+    { LEI,	 "leI" },
+    { LER,	 "leR" },
+    { JUMP, 	"jump" },
+    { JUMPZ, 	"jumpz" },
+    { MULI, 	"mulI" },
+    { MULR, 	"mulR" },
+    { ADDI, 	"addI" },
+    { ADDR, 	"addR" }
+};
+
+#define FORCMD(instring, info,tempstring) for(int a =0; a < sizeof(cmdinf)/sizeof(command_names); a++){\
+	if(strcmp(instring, info[a].command_name_string) == 0){\
+		tempstring = info[a].cmd_name;\
+/*		dbprint(LISTC, "found something... ", 1, STR, command_name_strings[tempstring]);*/\
+/*		dbprint(LISTC, "also in the form of ...... ", 1, STR, info[a].command_name_string);*/\
+		break; \
+	}\
+}
+
 List * mklist(char * inVal){
 	List* temp;
     temp = NULL;
@@ -25,11 +64,8 @@ List * mklist(char * inVal){
 		REQUESTMEM(temp, List, GENERIC,*sizeof(List))
     	REQUESTMEM(temp->list, listnode, GENERIC, *sizeof(listnode))
 	    
-//		temp = (List*) requestmem(sizeof(List), GENERIC, &tag);
-//		temp->list = (listnode*) requestmem(sizeof(listnode), GENERIC, &tag);
 		temp->listsize=1;
 		REQUESTMEM(temp->list->val, char, STR,*strlen(inVal)+1)
-//	    temp->list->val = requestmem(strlen(inVal)+1, STR, &tag);
 	    strlcpy(temp->list->val,inVal, strlen(temp->list->val)+1);
 		temp->list->nextnode = NULL;
 		return temp;
@@ -45,8 +81,6 @@ trans_u_list* mkTransList(char* inName, commandList* inList){
 	if(inName != NULL && inList !=NULL){
 		REQUESTMEM(temp, trans_u_list, GENERIC,*sizeof(trans_u_list))
 		REQUESTMEM(temp_unit, translation_unit, GENERIC, *sizeof(translation_unit))
-//		temp = (trans_u_list*) requestmem(sizeof(trans_u_list), GENERIC, &tag);
-//		temp_unit = (translation_unit*) requestmem(sizeof(translation_unit), GENERIC, &tag);
 		temp->listsize=1;
 		temp->list = temp_unit;
 	    	REQUESTMEM(temp_unit->name, char, STR, *strlen(inName)+1)
@@ -61,18 +95,31 @@ trans_u_list* mkTransList(char* inName, commandList* inList){
 
 commandList * mkcommandList(char * inVal, ListC* inargs){
 	commandList* temp;
+#ifdef DEBUG
+    char * tempstring;
+	tempstring = NULL;
+	#endif
     temp = NULL;
 	if(inVal != NULL){
 		REQUESTMEM(temp, commandList, GENERIC, *sizeof(commandList))
+		temp->list = NULL;
 		REQUESTMEM(temp->list, commandlisttype, GENERIC, *sizeof(commandlisttype))
-//		temp = (commandList*) requestmem(sizeof(commandList), GENERIC, &tag);
-//		temp->list = (commandlisttype*) requestmem(sizeof(commandlisttype), GENERIC, &tag);
+	    
 		temp->listsize=1;
+		temp->list->name = NULL;
 		REQUESTMEM(temp->list->name, char, STR, *strlen(inVal)+1)
-//	    temp->list->name = requestmem(strlen(inVal)+1, STR, &tag);
-	    strlcpy(temp->list->name,inVal, strlen(temp->list->name)+1);
+	    strlcpy(temp->list->name, inVal, strlen(temp->list->name)+1);
+	    FORCMD(temp->list->name,cmdinf,temp->list->name_enm)
+		#ifdef DEBUG
+	    for(int a = 0; a<sizeof(command_name_strings);a++){
+		   if(strcmp(temp->list->name, command_name_strings[a]) == 0){
+			  tempstring = (char*) command_name_strings[a];
+			  dbprint(LISTC,"found something: ", 1,STR,tempstring);
+			  break;
+		   }
+	    }
+		#endif
 
-//	    temp->list->name = (char*) strdup(inVal);
 		if(inargs == NULL){
 			temp->list->length=0;
 		}
@@ -95,26 +142,23 @@ ListC * mklistC(char * inVal[2]){
     temp = NULL;
 	if(inVal != NULL){
 		REQUESTMEM(temp, ListC, GENERIC, *sizeof(ListC))
+	    temp->list = NULL;
 		REQUESTMEM(temp->list, listnodeC, GENERIC, *sizeof(listnodeC))
-//		temp = (ListC*) requestmem(sizeof(ListC), GENERIC, &tag);
-//		temp->list = (listnodeC*) requestmem(sizeof(listnodeC), GENERIC, &tag);
 		temp->listsize=1;
 		temp->list->argtype[0]=STR;
 		temp->list->argtype[1]=STR;
+	    temp->list->val[0] = NULL;
+	    temp->list->val[1] = NULL;
 	    if(inVal[0]!=NULL){
+
 		   REQUESTMEM(temp->list->val[0], char, STR,*strlen(inVal[0])+1)
-//		   temp->list->val[0] = requestmem(strlen(inVal[0])+1, STR, &tag);
 		   strlcpy(temp->list->val[0],inVal[0], strlen(temp->list->val[0])+1);
-//			temp->list->val[0] = (char*) strdup(inVal[0]);
 	    }
 		else
 			temp->list->val[0]=NULL;
 	    if(inVal[1]!=NULL){
  		   REQUESTMEM(temp->list->val[1], char, STR,*strlen(inVal[1])+1)
-//		   temp->list->val[1] = requestmem(strlen(inVal[1])+1, STR, &tag);
 		   strlcpy(temp->list->val[1],inVal[1], strlen(temp->list->val[1])+1);
-
-//			temp->list->val[1] = (char*) strdup(inVal[1]);
 	    }
 	   else
 			temp->list->val[1]=NULL;
@@ -131,8 +175,6 @@ ListC * mklistCi(int inVal[2]){
 	if(inVal != NULL){
 		REQUESTMEM(temp,ListC, GENERIC, *sizeof(ListC))
 	   REQUESTMEM(temp->list, listnodeC, GENERIC, *sizeof(listnodeC))
-//		temp = (ListC*) requestmem(sizeof(ListC), GENERIC, &tag);
-//		temp->list = (listnodeC*) requestmem(sizeof(listnodeC), GENERIC, &tag);
 		temp->listsize=1;
 		temp->list->argtype[0]=INT;
 		temp->list->argtype[1]=INT;
@@ -148,10 +190,8 @@ ListC * mklistCi(int inVal[2]){
 }
 
 List * appendList(List * inList, char * inVal){
-	//List * tempL;
 	listnode * tempN;
 	listnode * tempN2;
-	//char * tempC;
     tempN = NULL;
     tempN2 = NULL;
 	if(inList != NULL){
@@ -159,15 +199,10 @@ List * appendList(List * inList, char * inVal){
 			tempN = inList->list;
 			while(tempN->nextnode != NULL) tempN = (listnode*)tempN->nextnode;
 			REQUESTMEM(tempN2, listnode, GENERIC, *sizeof(listnode))
-//			tempN2 = (listnode*) requestmem(sizeof(listnode), GENERIC, &tag);
 			REQUESTMEM(tempN2->val, char, STR,*strlen(inVal)+1)
-//		    tempN2->val = requestmem(strlen(inVal)+1, STR, &tag);
 		    strlcpy(tempN2->val,inVal, strlen(tempN2->val)+1);
 
-//		    tempN2->val = (char*) strdup(inVal);
 			tempN2->nextnode = NULL;
-			//(listnode*)(tempN->nextnode) = (listnode*)tempN2;
-            //listnode * tNodeLL = (listnode *) tempN->nextnode;
 			listnode * tNodeLL = NULL;
 			tNodeLL = (listnode*)tempN2;
             tempN->nextnode = tNodeLL;
@@ -187,17 +222,11 @@ trans_u_list * prependTransList(trans_u_list* inTransList, char* inName, command
 			#ifdef DEBUG
 			debugprint(LISTC,"Appending Translation Unit to Trans_List","");
 			#endif
-			//temp = inTransList->list;
-			//while(temp->next_trans_unit != NULL) temp = temp->next_trans_unit;
 			REQUESTMEM(temp2, translation_unit, GENERIC, *sizeof(translation_unit))
-//			temp2 = (translation_unit*) requestmem(sizeof(translation_unit), GENERIC, &tag);
 	 		REQUESTMEM(temp2->name, char, STR,*strlen(inName)+1)
-//		    temp2->name = requestmem(strlen(inName)+1, STR, &tag);
 		    strlcpy(temp2->name,inName, strlen(temp2->name)+1);
-//		    temp2->name = (char*)strdup(inName);
 			temp2->commandlist = inList;
 			temp2->next_trans_unit = inTransList->list;
-			//temp->next_trans_unit = temp2;
 			inTransList->list = temp2;
 			inTransList->listsize +=1;
 				return inTransList;
@@ -219,12 +248,9 @@ trans_u_list * appendTransList(trans_u_list* inTransList, char* inName, commandL
 			temp = inTransList->list;
 			while(temp != NULL && temp->next_trans_unit != NULL) temp = temp->next_trans_unit;
 			REQUESTMEM(temp2, translation_unit, GENERIC, *sizeof(translation_unit))
-//			temp2 = (translation_unit*) requestmem(sizeof(translation_unit), GENERIC, &tag);
-	 		REQUESTMEM(temp2->name, char, STR,*strlen(inName)+1)				
-//		    temp2->name = requestmem(strlen(inName)+1, STR, &tag);
+	 		REQUESTMEM(temp2->name, char, STR,*strlen(inName)+1)
 		    strlcpy(temp2->name,inName, strlen(temp2->name)+1);
 
-//			temp2->name = (char*)strdup(inName);
 			temp2->commandlist = inList;
 			temp2->next_trans_unit = NULL;
 			temp->next_trans_unit = temp2;
@@ -237,10 +263,8 @@ trans_u_list * appendTransList(trans_u_list* inTransList, char* inName, commandL
 }
 
 commandList* appendcommandList(commandList * inList, char * inVal, ListC *inargs){
-	//List * tempL;
 	commandlisttype* tempN;
 	commandlisttype* tempN2;
-	//char * tempC;
     tempN = NULL;
     tempN2 = NULL;
 	if(inList != NULL){
@@ -252,10 +276,12 @@ commandList* appendcommandList(commandList * inList, char * inVal, ListC *inargs
 			while(tempN != NULL && tempN->nextcommand != NULL) tempN = (commandlisttype*)tempN->nextcommand;
 			REQUESTMEM(tempN2,commandlisttype,GENERIC, *sizeof(commandlisttype))
 				
-//			tempN2 = (commandlisttype*) requestmem(sizeof(commandlisttype), GENERIC, &tag);
 			REQUESTMEM(tempN2->name, char, STR, *strlen(inVal)+1)
 		    strlcpy(tempN2->name,inVal,strlen(tempN2->name)+1);
-			if(inargs!=NULL){
+		    FORCMD(tempN2->name,cmdinf,tempN2->name_enm)
+
+		    
+		    if(inargs!=NULL){
 				tempN2->length=inargs->listsize;
 			}
 			else{
@@ -263,8 +289,6 @@ commandList* appendcommandList(commandList * inList, char * inVal, ListC *inargs
 			}
 			tempN2->paramlist=inargs;
 			tempN2->nextcommand = NULL;
-			//(listnode*)(tempN->nextnode) = (listnode*)tempN2;
-            //listnode * tNodeLL = (listnode *) tempN->nextnode;
 			commandlisttype * tNodeLL = NULL;
 			tNodeLL = (commandlisttype*)tempN2;
             tempN->nextcommand = tNodeLL;
@@ -281,32 +305,15 @@ commandList* appendcommandList(commandList * inList, char * inVal, ListC *inargs
 
 
 ListC * appendListC(ListC * inList, char * inVal, typecg inType){
-	//List * tempL;
 	listnodeC * tempN;
-	//listnodeC * tempN2;
-	//char * tempC;
     tempN = NULL;
 	if(inList != NULL){
 		if(inList->list !=NULL){
 			tempN = inList->list;
 	 		REQUESTMEM(tempN->val[1], char, STR,*strlen(inVal)+1)
-//		    tempN->val[1] = requestmem(strlen(inVal)+1, STR, &tag);
 		    strlcpy(tempN->val[1],inVal, strlen(tempN->val[1])+1);
 
-//			tempN->val[1] = (char*) strdup(inVal);
 			tempN->argtype[1] = inType;
-			//while(tempN->nextnode != NULL) tempN = (listnodeC*)tempN->nextnode;
-			//tempN2 = (listnodeC*) requestmem(sizeof(listnodeC), GENERIC, &tag);
-			//tempN2->val[0] = (char*) strdup(inVal[0]);
-			//tempN2->val[1] = (char*) strdup(inVal[1]);
-			//tempN2->argtype[0] = inType[0];
-			//tempN2->argtype[1] = inType[1];
-			//tempN2->nextnode = NULL;
-			//(listnode*)(tempN->nextnode) = (listnode*)tempN2;
-            //listnode * tNodeLL = (listnode *) tempN->nextnode;
-//			listnodeC * tNodeLL = NULL;
-//			tNodeLL = (listnodeC*)tempN2;
- //           tempN->nextnode = tNodeLL;
 			inList->listsize += 1;
 			return inList;
 		}
@@ -315,29 +322,13 @@ ListC * appendListC(ListC * inList, char * inVal, typecg inType){
 }
 
 ListC * appendListCi(ListC * inList, int inVal, typecg inType){
-	//List * tempL;
 	listnodeC * tempN;
-	//listnodeC * tempN2;
-	//char * tempC;
     tempN= NULL;
 	if(inList != NULL){
 		if(inList->list !=NULL){
 			tempN = inList->list;
 			tempN->int_val[1] = inVal;
 			tempN->argtype[1] = inType;
-		    
-			//while(tempN->nextnode != NULL) tempN = (listnodeC*)tempN->nextnode;
-			//tempN2 = (listnodeC*) requestmem(sizeof(listnodeC), GENERIC, &tag);
-			//tempN2->val[0] = (char*) strdup(inVal[0]);
-			//tempN2->val[1] = (char*) strdup(inVal[1]);
-			//tempN2->argtype[0] = inType[0];
-			//tempN2->argtype[1] = inType[1];
-			//tempN2->nextnode = NULL;
-			//(listnode*)(tempN->nextnode) = (listnode*)tempN2;
-            //listnode * tNodeLL = (listnode *) tempN->nextnode;
-//			listnodeC * tNodeLL = NULL;
-//			tNodeLL = (listnodeC*)tempN2;
- //           tempN->nextnode = tNodeLL;
 			inList->listsize += 1;
 			return inList;
 		}
@@ -558,29 +549,23 @@ trans_u_list * concat_trans_unit_list(trans_u_list* front, trans_u_list* back){
 
 
 ListP * appendListP(ListP * inList, char * inVal, typecg inType){
-	//ListP * tempL;
 	listnodeP * tempN;
     tempN = NULL;
 	listnodeP * tempN2;
     tempN2 = NULL;
-	//char * tempC;
 
 	if(inList != NULL){
 		if(inList->list !=NULL){
 			tempN = inList->list;
 			while(tempN->nextnode != NULL) tempN = (listnodeP*)tempN->nextnode;
 			REQUESTMEM(tempN2, listnodeP, GENERIC, *sizeof(listnodeP))
-//			tempN2 = (listnodeP*) requestmem(sizeof(listnodeP), GENERIC, &tag);
 			REQUESTMEM(tempN2->val, char, STR, *strlen(inVal)+1)
 
-//		    tempN2->val = requestmem(strlen(inVal)+1, STR, &tag);
 		    strlcpy(tempN2->val,inVal, strlen(tempN2->val)+1);
 
-//			tempN2->val = (char*) strdup(inVal);
 			tempN2->nextnode = NULL;
 			tempN2->ttype = inType;
 			listnodeP * tNodeLL = NULL;
-			//(listnodeP*)(tempN->nextnode) = (listnodeP*) tempN2;
 			tNodeLL = (listnodeP*) tempN2;
             tempN->nextnode = tNodeLL;
 			inList->listsize += 1;
@@ -595,17 +580,13 @@ ListP * mklistP(char * inVal, typecg inType){
     temp = NULL;
     if(inVal != NULL){
 		REQUESTMEM(temp, ListP, GENERIC, *sizeof(ListP))
-//		temp = (ListP*) requestmem(sizeof(ListP), GENERIC, &tag);
         temp->list=NULL;
 		REQUESTMEM(temp->list, listnodeP, GENERIC,*sizeof(listnodeP))
-//		temp->list = (listnodeP*) requestmem(sizeof(listnodeP), GENERIC, &tag);
-        
+	   
 		temp->listsize=1;
 		REQUESTMEM(temp->list->val, char, STR, *strlen(inVal)+1)
-//	   temp->list->val = requestmem(strlen(inVal)+1, STR, &tag);
 	   strlcpy(temp->list->val,inVal, strlen(temp->list->val)+1);
 
-//	   temp->list->val = (char*) strdup(inVal);
 		temp->list->ttype = inType;
 		temp->list->nextnode = NULL;
 		return temp;
@@ -653,10 +634,8 @@ ListE * mklistE(exprtype* inVal){
     temp = NULL;
         if(inVal != NULL){
 			REQUESTMEM(temp, ListE, GENERIC, *sizeof(ListE))
-//                temp = (ListE*) requestmem(sizeof(ListE), GENERIC, &tag);
             temp->list = NULL;
 			REQUESTMEM(temp->list, listnodeE, GENERIC, *sizeof(listnodeE))
-//                temp->list = (listnodeE*) requestmem(sizeof(listnodeE), GENERIC, &tag);
                 temp->listsize=1;
 		#ifdef DEBUG
 		dbprint(LISTC, "inVal in mklistE is of type: ", 1, STR,(void*) typecg_strings[inVal->type]);
@@ -675,10 +654,8 @@ ListE * mklistE(exprtype* inVal){
 }
 
 ListE * appendListE(ListE * inList, exprtype * inexpr){
-        //ListE * tempL;
         listnodeE * tempN;
         listnodeE * tempN2;
-        //char * tempC;
     tempN = NULL;
     tempN2 = NULL;
 
@@ -687,7 +664,6 @@ ListE * appendListE(ListE * inList, exprtype * inexpr){
                         tempN = inList->list;
                         while(tempN->nextnode != NULL) tempN = (listnodeE*)tempN->nextnode;
 						REQUESTMEM(tempN2, listnodeE, GENERIC, *sizeof(listnodeE))
-//                        tempN2 = (listnodeE*) requestmem(sizeof(listnodeE), GENERIC, &tag);
 			tempN2->expr = inexpr;
 			#ifdef DEBUG
 			dbprint(LISTC,"in appendlistE inexpr has type: ", 1, STR,(void*) typecg_strings[inexpr->type]);
@@ -695,7 +671,6 @@ ListE * appendListE(ListE * inList, exprtype * inexpr){
 			#endif
                         tempN2->nextnode = NULL;
 						listnodeE * tNodeLL = NULL;
-                        //(listnodeE*)(tempN->nextnode) = (listnodeE*)tempN2;
                         tNodeLL = (listnodeE*)tempN2;
                     tempN->nextnode = tNodeLL;
                         inList->listsize += 1;

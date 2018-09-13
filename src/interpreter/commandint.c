@@ -1,10 +1,16 @@
-#ifdef DEBUGON
-#ifdef COMMANDDEBUG
-#ifndef DEBUG
+#if defined(DEBUGON) && defined(COMMANDDEBUG) && !defined(DEBUG)
 #define DEBUG
 #endif
+
+#if defined(DEBUGON) && !defined(COMMANDDEBUG) && defined(DEBUG)
+#undef DEBUG
 #endif
+
+#if !defined(DEBUGON) && defined(DEBUG)
+#undef DEBUG
 #endif
+
+
 #include "commandint.h"
 #include "memlib.h"
 #include "debuglib.h"

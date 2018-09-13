@@ -1,25 +1,15 @@
 #ifndef VMS_H
 #define VMS_H
-#define STACKSIZE 800
 #include "typeint.h"
-#define MEMORY_SIZE 500
+#include "Listint.h"
+#define MEMORY_SIZE 100
+#define STACKSIZE 100
+#define SCOPE_SIZE 10
 
-#define PUSH(intype, cgintyp, value)  \
-		vm_stack.stacksize += 1; \
-		SWITCH(cgintyp,	\
-			REQUESTMEM(vm_stack.top[vm_stack.stacksize-1], intype, cgintyp), \
-			REQUESTMEM(vm_stack.top[vm_stack.stacksize-1], intype, cgintyp), \
-			REQUESTMEM(vm_stack.top[vm_stack.stacksize-1], intype, cgintyp, \
-				*strlen((char*)value)+1), \
-			REQUESTMEM(vm_stack.top[vm_stack.stacksize-1], intype, GENERIC)) \
-		temp = vm_stack.top[vm_stack.stacksize-1]; \
-		if(cgintyp == STR || cgintyp == CHAR) \
-			strlcpy((char*)temp, (char*)value, sizeof(intype)*strlen((char*)value)+1); \
-		else \
-			*(intype*)temp =  *(intype*)value; \
-		vm_stack.type[vm_stack.stacksize-1] = cgintyp; 
+extern typecg  *used_type1, *used_type2, *used_type3;
+//typecg used_type4;
 
-#define SWITCH(intype,forint,forfloat,forstr,fordef) \
+		/*#define SWITCH(intype,forint,forfloat,forstr,fordef) \
 		switch(intype){ \
 			case INT: \
 						forint; break; \
@@ -34,16 +24,21 @@
 			case LONG: \
 			default: \
 						fordef; break; \
-		 }
-
+		 }*/
 
 
 typedef struct _memory memory;
 struct _memory{
-	int tag[MEMORY_SIZE];
-	unsigned long address[MEMORY_SIZE];
-	int offset[MEMORY_SIZE];
-	int leveldiff[MEMORY_SIZE];
+    int tag[MEMORY_SIZE];
+    unsigned long address[MEMORY_SIZE];
+    int offset[MEMORY_SIZE];
+    int leveldiff[MEMORY_SIZE];
+    void *yourmem[SCOPE_SIZE][MEMORY_SIZE];
+    int set[SCOPE_SIZE][MEMORY_SIZE];
+    int current_set_offset[SCOPE_SIZE];
+    typecg type[SCOPE_SIZE][MEMORY_SIZE];
+    int current_scope;
+    int total_scopes;
 };
 
 typedef struct _stack stack;
@@ -56,9 +51,24 @@ struct _stack {
 extern stack vm_stack;
 extern memory vm_memory;
 
+
+
 void push(typecg intype, void* value, ...);
 void* pop(typecg *intype, int number);
 void showstack(void);
+
+void allocate(int inscope );
+void enter(int inscope);
+void store(void* value, typecg intype, int inscope,int *offset);
+void fetch(typecg intype);
+//void* multiply(typecg intype);
+//void* add(typecg);
+void * operate(char operator, typecg intype);
+void * relationship(char *relation, typecg intype);
+void call(char * inname, int count, ...);
+void call_other(char * inname, int count, ...);
+
 void initialize_machine(void);
+void run_virtual_machine(translation_unit*,translation_unit**,int);
 
 #endif

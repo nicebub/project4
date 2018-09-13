@@ -14,12 +14,20 @@ int current_char = 1;
 char *filename = (char*) NULL;
 boolcg founderror = FALSE;
 
-void init_debug(){
+void init_debug(char * in_filename){
 	Line_Number = 1;
 	current_char = 1;
 	filename = (char*) NULL;
-    filename = (char*) malloc(sizeof("debuglib.c")+1);
-    strlcpy(filename, "debuglib.c", sizeof("debuglib.c")+1);
+    if(in_filename ==NULL){
+	   in_filename = "debuglib.c";
+	   filename = (char*) malloc(sizeof(char)*strlen("debuglib.c")+1);
+    }
+	else
+	    filename = (char*) malloc(sizeof(char)*strlen(in_filename)+1);
+    for(int j = 0; j<strlen(in_filename)+1;j++)
+	   filename[j]=' ';
+    filename[strlen(in_filename)] = '\0';
+    strlcpy(filename, in_filename, strlen(filename)+1);
 	founderror = FALSE;
 }
 char * which_program(int which){
@@ -125,7 +133,7 @@ void dbprint(int which,const char * s1,int count, ...){
 	void * value = NULL;
 	int  intvalue;
 	double floatvalue;
-	char * charvalue;
+	void * charvalue;
 	intvalue = -1;
 	floatvalue =-1.1;
 	charvalue = NULL;
@@ -139,6 +147,12 @@ void dbprint(int which,const char * s1,int count, ...){
 	va_start(arglist,count);
 	for(int i=count;i>0;i--){
 		intype = va_arg(arglist,typecg);
+		
+/*		SWITCH(intype, \
+		DBPRINT(intvalue,int,d),\
+		DBPRINT(floatvalue,float,.6f),\
+		DBPRINT(charvalue,char*,s),\
+		DBPRINT(value,unsigned long*,lu))*/
 		switch(intype){
 			case INT:
 						intvalue = va_arg(arglist,int);
@@ -158,7 +172,7 @@ void dbprint(int which,const char * s1,int count, ...){
 			case REFFLOAT:
 			case LONG:
 						value = va_arg(arglist,unsigned long*);
-						fprintf(stderr,"Debug::%s::%s:%d:%d-> %s \"%lu\"\n",program,filename,Line_Number,current_char,s1, *(unsigned long*)value);
+						fprintf(stderr,"Debug::%s::%s:%d:%d-> %s \"%#lx\"\n",program,filename,Line_Number,current_char,s1, *(unsigned long*)value);
 						break;
 			default:
 			break;

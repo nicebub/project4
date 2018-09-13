@@ -30,21 +30,21 @@
 		D283AFA720ADF5BA00B07C08 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = D2CB13C320AD00A7006987E5 /* main.c */; };
 		D283AFA820ADF5BF00B07C08 /* symtab.c in Sources */ = {isa = PBXBuildFile; fileRef = D2CB13BF20AD00A6006987E5 /* symtab.c */; };
 		D283AFA920ADF5C200B07C08 /* trans.c in Sources */ = {isa = PBXBuildFile; fileRef = D2CB13CA20AD00A7006987E5 /* trans.c */; };
-		E285CCBD2141B79E008A5C77 /* vm.c in Sources */ = {isa = PBXBuildFile; fileRef = E285CCA72141B79C008A5C77 /* vm.c */; };
-		E285CCBE2141B79E008A5C77 /* transint.c in Sources */ = {isa = PBXBuildFile; fileRef = E285CCA92141B79C008A5C77 /* transint.c */; };
-		E285CCBF2141B79E008A5C77 /* commandint.c in Sources */ = {isa = PBXBuildFile; fileRef = E285CCAB2141B79C008A5C77 /* commandint.c */; };
-		E285CCC02141B79E008A5C77 /* reglib.c in Sources */ = {isa = PBXBuildFile; fileRef = E285CCB02141B79C008A5C77 /* reglib.c */; };
-		E285CCC12141B79E008A5C77 /* Listint.c in Sources */ = {isa = PBXBuildFile; fileRef = E285CCB22141B79D008A5C77 /* Listint.c */; };
-		E285CCC22141B79E008A5C77 /* memlib.c in Sources */ = {isa = PBXBuildFile; fileRef = E285CCB42141B79D008A5C77 /* memlib.c */; };
-		E285CCC42141B79E008A5C77 /* debuglib.c in Sources */ = {isa = PBXBuildFile; fileRef = E285CCB62141B79D008A5C77 /* debuglib.c */; };
-		E285CCC52141B79E008A5C77 /* symtabint.c in Sources */ = {isa = PBXBuildFile; fileRef = E285CCB72141B79D008A5C77 /* symtabint.c */; };
-		E285CCC72141B79E008A5C77 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = E285CCB92141B79D008A5C77 /* main.c */; };
+		E27431A921437B9700D68F1F /* debuglib.c in Sources */ = {isa = PBXBuildFile; fileRef = E274319021437B9500D68F1F /* debuglib.c */; };
+		E27431AA21437B9700D68F1F /* interpreter.y in Sources */ = {isa = PBXBuildFile; fileRef = E274319321437B9500D68F1F /* interpreter.y */; };
+		E27431AB21437B9700D68F1F /* vm.c in Sources */ = {isa = PBXBuildFile; fileRef = E274319421437B9500D68F1F /* vm.c */; };
+		E27431AC21437B9700D68F1F /* interpreter.l in Sources */ = {isa = PBXBuildFile; fileRef = E274319521437B9500D68F1F /* interpreter.l */; };
+		E27431AD21437B9700D68F1F /* transint.c in Sources */ = {isa = PBXBuildFile; fileRef = E274319721437B9500D68F1F /* transint.c */; };
+		E27431AE21437B9700D68F1F /* memlib.c in Sources */ = {isa = PBXBuildFile; fileRef = E274319821437B9500D68F1F /* memlib.c */; };
+		E27431AF21437B9700D68F1F /* Listint.c in Sources */ = {isa = PBXBuildFile; fileRef = E274319C21437B9600D68F1F /* Listint.c */; };
+		E27431B021437B9700D68F1F /* symtabint.c in Sources */ = {isa = PBXBuildFile; fileRef = E274319E21437B9600D68F1F /* symtabint.c */; };
+		E27431B121437B9700D68F1F /* commandint.c in Sources */ = {isa = PBXBuildFile; fileRef = E27431A221437B9600D68F1F /* commandint.c */; };
+		E27431B221437B9700D68F1F /* reglib.c in Sources */ = {isa = PBXBuildFile; fileRef = E27431A421437B9700D68F1F /* reglib.c */; };
+		E27431B421437B9700D68F1F /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = E27431A621437B9700D68F1F /* main.c */; };
 		E285CCC92141B9FB008A5C77 /* ucc.tab.h in Headers */ = {isa = PBXBuildFile; fileRef = D2CB13D520AD0218006987E5 /* ucc.tab.h */; };
 		E285CCCA2141BA0C008A5C77 /* type.h in Headers */ = {isa = PBXBuildFile; fileRef = D2CB13BA20AD00A6006987E5 /* type.h */; };
 		E285CCCB2141BA65008A5C77 /* libl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D283AFB020ADF97A00B07C08 /* libl.a */; };
 		E285CCCC2141BA65008A5C77 /* liby.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D283AFB120ADF97A00B07C08 /* liby.a */; };
-		E2A84795214240F100642035 /* interpreter.l in Sources */ = {isa = PBXBuildFile; fileRef = E285CCB52141B79D008A5C77 /* interpreter.l */; };
-		E2A84796214240F400642035 /* interpreter.y in Sources */ = {isa = PBXBuildFile; fileRef = E285CCB82141B79D008A5C77 /* interpreter.y */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -178,36 +178,32 @@
 		D2CB13D420AD0218006987E5 /* ucc.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = ucc.dSYM; path = "../../src/front-end/ucc.dSYM"; sourceTree = "<group>"; };
 		D2CB13D520AD0218006987E5 /* ucc.tab.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ucc.tab.h; path = "../../src/front-end/ucc.tab.h"; sourceTree = "<group>"; };
 		D2CB13D620AD0219006987E5 /* List.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = List.o; path = "../../src/front-end/List.o"; sourceTree = "<group>"; };
+		E274318F21437B9500D68F1F /* transint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = transint.h; path = ../src/interpreter/transint.h; sourceTree = "<group>"; };
+		E274319021437B9500D68F1F /* debuglib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = debuglib.c; path = ../src/interpreter/debuglib.c; sourceTree = "<group>"; };
+		E274319121437B9500D68F1F /* debuglib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = debuglib.h; path = ../src/interpreter/debuglib.h; sourceTree = "<group>"; };
+		E274319221437B9500D68F1F /* vm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vm.h; path = ../src/interpreter/vm.h; sourceTree = "<group>"; };
+		E274319321437B9500D68F1F /* interpreter.y */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; name = interpreter.y; path = ../src/interpreter/interpreter.y; sourceTree = "<group>"; };
+		E274319421437B9500D68F1F /* vm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vm.c; path = ../src/interpreter/vm.c; sourceTree = "<group>"; };
+		E274319521437B9500D68F1F /* interpreter.l */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; name = interpreter.l; path = ../src/interpreter/interpreter.l; sourceTree = "<group>"; };
+		E274319621437B9500D68F1F /* symtabint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = symtabint.h; path = ../src/interpreter/symtabint.h; sourceTree = "<group>"; };
+		E274319721437B9500D68F1F /* transint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = transint.c; path = ../src/interpreter/transint.c; sourceTree = "<group>"; };
+		E274319821437B9500D68F1F /* memlib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = memlib.c; path = ../src/interpreter/memlib.c; sourceTree = "<group>"; };
+		E274319921437B9600D68F1F /* reglib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reglib.h; path = ../src/interpreter/reglib.h; sourceTree = "<group>"; };
+		E274319A21437B9600D68F1F /* exprint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = exprint.h; path = ../src/interpreter/exprint.h; sourceTree = "<group>"; };
+		E274319B21437B9600D68F1F /* interpreter.y.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interpreter.y.h; path = ../src/interpreter/interpreter.y.h; sourceTree = "<group>"; };
+		E274319C21437B9600D68F1F /* Listint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Listint.c; path = ../src/interpreter/Listint.c; sourceTree = "<group>"; };
+		E274319D21437B9600D68F1F /* typeint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = typeint.h; path = ../src/interpreter/typeint.h; sourceTree = "<group>"; };
+		E274319E21437B9600D68F1F /* symtabint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = symtabint.c; path = ../src/interpreter/symtabint.c; sourceTree = "<group>"; };
+		E274319F21437B9600D68F1F /* interpreter.l.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interpreter.l.h; path = ../src/interpreter/interpreter.l.h; sourceTree = "<group>"; };
+		E27431A021437B9600D68F1F /* dataint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dataint.h; path = ../src/interpreter/dataint.h; sourceTree = "<group>"; };
+		E27431A121437B9600D68F1F /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = main.h; path = ../src/interpreter/main.h; sourceTree = "<group>"; };
+		E27431A221437B9600D68F1F /* commandint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = commandint.c; path = ../src/interpreter/commandint.c; sourceTree = "<group>"; };
+		E27431A321437B9600D68F1F /* commandint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = commandint.h; path = ../src/interpreter/commandint.h; sourceTree = "<group>"; };
+		E27431A421437B9700D68F1F /* reglib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = reglib.c; path = ../src/interpreter/reglib.c; sourceTree = "<group>"; };
+		E27431A621437B9700D68F1F /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = ../src/interpreter/main.c; sourceTree = "<group>"; };
+		E27431A721437B9700D68F1F /* Listint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Listint.h; path = ../src/interpreter/Listint.h; sourceTree = "<group>"; };
+		E27431A821437B9700D68F1F /* memlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = memlib.h; path = ../src/interpreter/memlib.h; sourceTree = "<group>"; };
 		E285CC9B2141B5ED008A5C77 /* interpreter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = interpreter; sourceTree = BUILT_PRODUCTS_DIR; };
-		E285CCA52141B79C008A5C77 /* symtabint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = symtabint.h; path = ../../src/interpreter/symtabint.h; sourceTree = "<group>"; };
-		E285CCA62141B79C008A5C77 /* transint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = transint.h; path = ../../src/interpreter/transint.h; sourceTree = "<group>"; };
-		E285CCA72141B79C008A5C77 /* vm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vm.c; path = ../../src/interpreter/vm.c; sourceTree = "<group>"; };
-		E285CCA82141B79C008A5C77 /* vm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vm.h; path = ../../src/interpreter/vm.h; sourceTree = "<group>"; };
-		E285CCA92141B79C008A5C77 /* transint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = transint.c; path = ../../src/interpreter/transint.c; sourceTree = "<group>"; };
-		E285CCAA2141B79C008A5C77 /* memlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = memlib.h; path = ../../src/interpreter/memlib.h; sourceTree = "<group>"; };
-		E285CCAB2141B79C008A5C77 /* commandint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = commandint.c; path = ../../src/interpreter/commandint.c; sourceTree = "<group>"; };
-		E285CCAC2141B79C008A5C77 /* debuglib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = debuglib.h; path = ../../src/interpreter/debuglib.h; sourceTree = "<group>"; };
-		E285CCAD2141B79C008A5C77 /* Listint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Listint.h; path = ../../src/interpreter/Listint.h; sourceTree = "<group>"; };
-		E285CCAE2141B79C008A5C77 /* typeint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = typeint.h; path = ../../src/interpreter/typeint.h; sourceTree = "<group>"; };
-		E285CCAF2141B79C008A5C77 /* exprint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = exprint.h; path = ../../src/interpreter/exprint.h; sourceTree = "<group>"; };
-		E285CCB02141B79C008A5C77 /* reglib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = reglib.c; path = ../../src/interpreter/reglib.c; sourceTree = "<group>"; };
-		E285CCB12141B79D008A5C77 /* commandint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = commandint.h; path = ../../src/interpreter/commandint.h; sourceTree = "<group>"; };
-		E285CCB22141B79D008A5C77 /* Listint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Listint.c; path = ../../src/interpreter/Listint.c; sourceTree = "<group>"; };
-		E285CCB32141B79D008A5C77 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = main.h; path = ../../src/interpreter/main.h; sourceTree = "<group>"; };
-		E285CCB42141B79D008A5C77 /* memlib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = memlib.c; path = ../../src/interpreter/memlib.c; sourceTree = "<group>"; };
-		E285CCB52141B79D008A5C77 /* interpreter.l */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; name = interpreter.l; path = ../../src/interpreter/interpreter.l; sourceTree = "<group>"; };
-		E285CCB62141B79D008A5C77 /* debuglib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = debuglib.c; path = ../../src/interpreter/debuglib.c; sourceTree = "<group>"; };
-		E285CCB72141B79D008A5C77 /* symtabint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = symtabint.c; path = ../../src/interpreter/symtabint.c; sourceTree = "<group>"; };
-		E285CCB82141B79D008A5C77 /* interpreter.y */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; name = interpreter.y; path = ../../src/interpreter/interpreter.y; sourceTree = "<group>"; };
-		E285CCB92141B79D008A5C77 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = ../../src/interpreter/main.c; sourceTree = "<group>"; };
-		E285CCBA2141B79D008A5C77 /* dataint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dataint.h; path = ../../src/interpreter/dataint.h; sourceTree = "<group>"; };
-		E285CCBB2141B79D008A5C77 /* reglib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reglib.h; path = ../../src/interpreter/reglib.h; sourceTree = "<group>"; };
-		E285CCBC2141B79E008A5C77 /* interpreter.l.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interpreter.l.h; path = ../../src/interpreter/interpreter.l.h; sourceTree = "<group>"; };
-		E2A8478E2142367D00642035 /* lex.yy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lex.yy.h; path = ../../../src/interpreter/lex.yy.h; sourceTree = "<group>"; };
-		E2A8478F2142367E00642035 /* interpreter.output */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = interpreter.output; path = ../../../src/interpreter/interpreter.output; sourceTree = "<group>"; };
-		E2A847902142367E00642035 /* lex.yy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lex.yy.c; path = ../../../src/interpreter/lex.yy.c; sourceTree = "<group>"; };
-		E2A847912142367E00642035 /* interpreter.tab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interpreter.tab.h; path = ../../../src/interpreter/interpreter.tab.h; sourceTree = "<group>"; };
-		E2A847922142367E00642035 /* interpreter.tab.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = interpreter.tab.c; path = ../../../src/interpreter/interpreter.tab.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -373,45 +369,33 @@
 		E285CC9C2141B5ED008A5C77 /* interpreter */ = {
 			isa = PBXGroup;
 			children = (
-				E285CCD22141F277008A5C77 /* generated files */,
-				E285CCAB2141B79C008A5C77 /* commandint.c */,
-				E285CCB12141B79D008A5C77 /* commandint.h */,
-				E285CCBA2141B79D008A5C77 /* dataint.h */,
-				E285CCB62141B79D008A5C77 /* debuglib.c */,
-				E285CCAC2141B79C008A5C77 /* debuglib.h */,
-				E285CCAF2141B79C008A5C77 /* exprint.h */,
-				E285CCB52141B79D008A5C77 /* interpreter.l */,
-				E285CCBC2141B79E008A5C77 /* interpreter.l.h */,
-				E285CCB82141B79D008A5C77 /* interpreter.y */,
-				E285CCB22141B79D008A5C77 /* Listint.c */,
-				E285CCAD2141B79C008A5C77 /* Listint.h */,
-				E285CCB92141B79D008A5C77 /* main.c */,
-				E285CCB32141B79D008A5C77 /* main.h */,
-				E285CCB42141B79D008A5C77 /* memlib.c */,
-				E285CCAA2141B79C008A5C77 /* memlib.h */,
-				E285CCB02141B79C008A5C77 /* reglib.c */,
-				E285CCBB2141B79D008A5C77 /* reglib.h */,
-				E285CCB72141B79D008A5C77 /* symtabint.c */,
-				E285CCA52141B79C008A5C77 /* symtabint.h */,
-				E285CCA92141B79C008A5C77 /* transint.c */,
-				E285CCA62141B79C008A5C77 /* transint.h */,
-				E285CCAE2141B79C008A5C77 /* typeint.h */,
-				E285CCA72141B79C008A5C77 /* vm.c */,
-				E285CCA82141B79C008A5C77 /* vm.h */,
+				E27431A221437B9600D68F1F /* commandint.c */,
+				E27431A321437B9600D68F1F /* commandint.h */,
+				E27431A021437B9600D68F1F /* dataint.h */,
+				E274319021437B9500D68F1F /* debuglib.c */,
+				E274319121437B9500D68F1F /* debuglib.h */,
+				E274319A21437B9600D68F1F /* exprint.h */,
+				E274319521437B9500D68F1F /* interpreter.l */,
+				E274319F21437B9600D68F1F /* interpreter.l.h */,
+				E274319321437B9500D68F1F /* interpreter.y */,
+				E274319B21437B9600D68F1F /* interpreter.y.h */,
+				E274319C21437B9600D68F1F /* Listint.c */,
+				E27431A721437B9700D68F1F /* Listint.h */,
+				E27431A621437B9700D68F1F /* main.c */,
+				E27431A121437B9600D68F1F /* main.h */,
+				E274319821437B9500D68F1F /* memlib.c */,
+				E27431A821437B9700D68F1F /* memlib.h */,
+				E27431A421437B9700D68F1F /* reglib.c */,
+				E274319921437B9600D68F1F /* reglib.h */,
+				E274319E21437B9600D68F1F /* symtabint.c */,
+				E274319621437B9500D68F1F /* symtabint.h */,
+				E274319721437B9500D68F1F /* transint.c */,
+				E274318F21437B9500D68F1F /* transint.h */,
+				E274319D21437B9600D68F1F /* typeint.h */,
+				E274319421437B9500D68F1F /* vm.c */,
+				E274319221437B9500D68F1F /* vm.h */,
 			);
-			path = interpreter;
-			sourceTree = "<group>";
-		};
-		E285CCD22141F277008A5C77 /* generated files */ = {
-			isa = PBXGroup;
-			children = (
-				E2A8478F2142367E00642035 /* interpreter.output */,
-				E2A847922142367E00642035 /* interpreter.tab.c */,
-				E2A847912142367E00642035 /* interpreter.tab.h */,
-				E2A847902142367E00642035 /* lex.yy.c */,
-				E2A8478E2142367D00642035 /* lex.yy.h */,
-			);
-			path = "generated files";
+			name = interpreter;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -673,17 +657,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E285CCC72141B79E008A5C77 /* main.c in Sources */,
-				E285CCBE2141B79E008A5C77 /* transint.c in Sources */,
-				E285CCC42141B79E008A5C77 /* debuglib.c in Sources */,
-				E285CCBF2141B79E008A5C77 /* commandint.c in Sources */,
-				E285CCC12141B79E008A5C77 /* Listint.c in Sources */,
-				E285CCC22141B79E008A5C77 /* memlib.c in Sources */,
-				E285CCC52141B79E008A5C77 /* symtabint.c in Sources */,
-				E2A84795214240F100642035 /* interpreter.l in Sources */,
-				E2A84796214240F400642035 /* interpreter.y in Sources */,
-				E285CCC02141B79E008A5C77 /* reglib.c in Sources */,
-				E285CCBD2141B79E008A5C77 /* vm.c in Sources */,
+				E27431AA21437B9700D68F1F /* interpreter.y in Sources */,
+				E27431B121437B9700D68F1F /* commandint.c in Sources */,
+				E27431AF21437B9700D68F1F /* Listint.c in Sources */,
+				E27431AB21437B9700D68F1F /* vm.c in Sources */,
+				E27431B221437B9700D68F1F /* reglib.c in Sources */,
+				E27431AD21437B9700D68F1F /* transint.c in Sources */,
+				E27431AE21437B9700D68F1F /* memlib.c in Sources */,
+				E27431B421437B9700D68F1F /* main.c in Sources */,
+				E27431A921437B9700D68F1F /* debuglib.c in Sources */,
+				E27431AC21437B9700D68F1F /* interpreter.l in Sources */,
+				E27431B021437B9700D68F1F /* symtabint.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -957,6 +941,7 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_PASCAL_STRINGS = NO;
 				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1016,6 +1001,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_ENABLE_PASCAL_STRINGS = NO;
 				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -1076,7 +1062,7 @@
 					"-D",
 					DEBUGON,
 					"-D",
-					LISTDEBUG,
+					VMLIBDEBUG,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -1093,6 +1079,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 78XPJAU3A2;
+				GCC_ENABLE_PASCAL_STRINGS = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;

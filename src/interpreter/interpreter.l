@@ -2,19 +2,23 @@
 	Intermediate code interpreter
 */
 %{
-    
+//    #define LEXERDEBUG
 #if defined(DEBUGON) && defined(LEXERDEBUG) && !defined(DEBUG)
 #define DEBUG
 #define YYDEBUG 1
-int yydebug = 0;
+//extern int yydebug = 1;
 #endif
 
-#ifdef DEBUGON
-#ifndef LEXERDEBUG
-#ifdef DEBUG
+#if defined(DEBUGON) && !defined(LEXERDEBUG) && defined(DEBUG)
 #undef DEBUG
+//#define YYDEBUG 1
+//extern int yydebug = 1;
 #endif
-#endif
+
+#if !defined(DEBUGON) && defined(DEBUG)
+#undef DEBUG
+//#define YYDEBUG 1
+//extern int yydebug = 1;
 #endif
 
 #include "debuglib.h"
@@ -97,13 +101,13 @@ VARIOUS_CHARS [&@$\%^/,.+'-\[\]{}();~`|=#\!:<>]
 
 	if(check_str_length_bf_input("")){
 
-		int string_length = strlen(string_buf);
+		size_t string_length = strlen(string_buf);
 		*string_buf_ptr ='\0';
  
 		DUPLICATE_YYTEXT(string_buf)
 
 		#ifdef DEBUG
-			debugprint(0,"End of string being processed - returning\n","");
+			dbprint(0,"End of string being processed - returning with ",1, STR, string_buf);
 		#endif
 
 		++current_char;
@@ -136,20 +140,20 @@ VARIOUS_CHARS [&@$\%^/,.+'-\[\]{}();~`|=#\!:<>]
 {EOLN} {
 	if(check_str_length_bf_input(yytext)){
 
-		*string_buf_ptr++ = '\\';
-		*string_buf_ptr++ = 'n';
+		*string_buf_ptr++ = '\n';
+//		*string_buf_ptr++ = 'n';
 
 		#ifdef DEBUG
 			debugprint(0,"Matched character Escaped n double backslash n in processing string ",yytext);
 		#endif
 
-		current_char += 2;
+		current_char += 1;
 	}
 	else {
 		
 		register int c;
 		BEGIN(INITIAL);
-		current_char +=2;
+		current_char +=1;
 
 		#ifdef DEBUG
 			debugprint(0,"Matched character Escaped n but pattern string too large - absorbing ",yytext);
@@ -209,20 +213,14 @@ VARIOUS_CHARS [&@$\%^/,.+'-\[\]{}();~`|=#\!:<>]
 		}
 
 (({DBLBACKSLASH}{SPACE}+)*|{VARIOUS_CHARS}*|{LETTER}|{DIGIT}|{PERCENT}|{SPACE}|{BEGCOM}|{ENDCOM}|{QUESTION})* {
-	if(check_str_length_bf_input(yytext)){
+	if(check_str_length_bf_input(yytext+1)){
 
-		int string_length = strlen(yytext);
-
-		strlcat(string_buf_ptr, yytext,strlen(string_buf_ptr));
-
-		current_char += string_length;
-
-/*		char *yptr = yytext;
+		char *yptr = yytext;
 
 		while((yptr != NULL) && *yptr){
 			*string_buf_ptr++ = *yptr++;
 			++current_char; 
-			}*/
+		}
 
 		#ifdef DEBUG
 			debugprint(0,"Matching string pattern to current string ",yytext);
@@ -272,7 +270,7 @@ VARIOUS_CHARS [&@$\%^/,.+'-\[\]{}();~`|=#\!:<>]
 
 {COMMAND_SET1}|{COMMAND_SET2} {/* keywords  */
 
-	int string_length = strlen(yytext);
+	size_t string_length = strlen(yytext);
 
 	#ifdef DEBUG
 		debugprint(0,"Keyword found with clear matching pattern ",yytext);
@@ -298,55 +296,11 @@ VARIOUS_CHARS [&@$\%^/,.+'-\[\]{}();~`|=#\!:<>]
 	dbprint(0,"yytext as an STR ", 1, STR, yytext);
 	#endif	
 
-//		if(strcmp(yytext,"(") == 0)	return(lpar);
-//		else if(strcmp(yytext,")") == 0)	return(rpar);
-//		else if(strcmp(yytext,"{") == 0)	return(lcbra);
-//		else if(strcmp(yytext,"}") == 0)	return(rcbra);
-//		else if(strcmp(yytext,";") == 0)	return(semi);
 		if(strcmp(yytext,",") == 0)	return(comma);
-/*		else if(strcmp(yytext,"<") == 0){
-				yylval.value.relopvalue = LES; return(lesst);
-		}
-		else if(strcmp(yytext,">") == 0){
-				yylval.value.relopvalue = GRE; return(greatt);
-		}
-		else if(strcmp(yytext,"=") == 0)	return(equal);
-		else if(strcmp(yytext,"+") == 0){
-				yylval.value.addopvalue = PLS; return(plus);
-		}
-		else if(strcmp(yytext,"-") == 0){
-				yylval.value.addopvalue = MIN; return(minus);
-		}
-		else if(strcmp(yytext,"/") == 0){
-				yylval.value.multopvalue = DIV; return(divide);
-		}
-		else if(strcmp(yytext,"*") == 0){
-				yylval.value.multopvalue = MULT; return(star);
-		}*/
 	
 }
 
 {GEQ}|{LEQ}|{NEQ}|{EQUEQU} {
-/*	#ifdef DEBUG
-		debugprint(0,"Character set found with clear matching pattern ",yytext);
-	#endif
-	current_char += 2;
-	if(strcmp(">=", yytext)){
-		yylval.value.relopvalue = GEQ;
-		return(geq);
-	}
-	else if(strcmp("<=", yytext)){
-		yylval.value.relopvalue = LEQ;
-		return(leq);		
-	}
-	else if(strcmp("!=", yytext)){
-		yylval.value.eqopvalue = NEQ;
-		return(neq);		
-	}
-	else if(strcmp("==", yytext)){
-		yylval.value.eqopvalue = EQEQ;
-		return(equequ);		
-		}*/
 }
 
 {ADOF} {/*
@@ -360,7 +314,7 @@ VARIOUS_CHARS [&@$\%^/,.+'-\[\]{}();~`|=#\!:<>]
 
 {DLLRSN}({LETTER}|{DIGIT})+{DIGIT}*	{ /* identifier / label */
 
-				int string_length = strlen(yytext);;
+				size_t string_length = strlen(yytext);;
 				yylval.ttype = STR;
 				#ifdef DEBUG
 					debugprint(0,"Identifier found with matching pattern ",yytext);

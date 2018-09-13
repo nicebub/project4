@@ -2,12 +2,12 @@
 #define DEBUG
 #endif
 
-#ifdef DEBUGON
-#ifndef TRANSDEBUG
-#ifdef DEBUG
+#if defined(DEBUGON) && !defined(TRANSDEBUG) && defined(DEBUG)
 #undef DEBUG
 #endif
-#endif
+
+#if !defined(DEBUGON) && defined(DEBUG)
+#undef DEBUG
 #endif
 
 #include "transint.h"
@@ -149,16 +149,16 @@ void gen_printf_dec(){
 }
 void gen_global_main(){
 #ifdef DEBUG
-dbprint(TRANSC,"generating global main ",STR,"");
+dbprint(TRANSC,"generating global main ",0);
 #endif
 	
 //	fprintf(infile, "	.globl _main		## -- BEGIN MAIN FUNCTION\n");
 #ifdef DEBUG
-dbprint(TRANSC,"generating p2aligning ",STR,"");
+dbprint(TRANSC,"generating p2aligning ",0);
 #endif
 //	fprintf(infile, "	.p2align 	4, 0x90\n");
 #ifdef DEBUG
-dbprint(TRANSC,"done ",STR,"");
+dbprint(TRANSC,"done ",0);
 #endif
 	
 }
@@ -235,7 +235,7 @@ void check_and_gen_if_main(char * name){
 	if(name != NULL){
 		if(strcmp("$main1", name) == 0){
 			#ifdef DEBUG
-			dbprint(TRANSC, "matched main func ", STR, name);
+			dbprint(TRANSC, "matched main func ", 1, STR, name);
 			#endif
 			gen_global_main();
 		}
@@ -254,231 +254,221 @@ void gen_command(commandlisttype * inList){
 		length = inList->length;
 		name = inList->name;
 		paramlist = inList->paramlist;
-		
-		if(strcmp(name,"alloc") == 0){
-			#ifdef DEBUG
-			dbprint(TRANSC, "found an alloc", STR, "");
-			#endif
-			if(paramlist != NULL && length == 1){
-				if(paramlist->list->argtype[0] == INT && paramlist->list->int_val[0] != 0){
-					#ifdef DEBUG
-					dbprint(TRANSC, "first arg value ", INT, &paramlist->list->int_val[0]);
-					#endif
-					if (paramlist->list->int_val[0] > 0){
-//						fprintf(infile, "	subq $%d, %%rsp\n", 4*paramlist->list->int_val[0]);
-						currentsp = 4*paramlist->list->int_val[0];
-						local_total = currentsp;
-					}
-					else {
-						
-					}
-					
+	    SWITCH_CMD(inList->name_enm,
+    {/* ALLOC */
+		#ifdef DEBUG
+	   dbprint(TRANSC, "found an alloc ", 0);
+		#endif
+
+		  if(paramlist != NULL && length == 1){
+					   if(paramlist->list->argtype[0] == INT && paramlist->list->int_val[0] != 0){
+							#ifdef DEBUG
+						  dbprint(TRANSC, "first arg value ", 1, INT, &paramlist->list->int_val[0]);
+							#endif
+						  if (paramlist->list->int_val[0] > 0){
+							 currentsp = 4*paramlist->list->int_val[0];
+							 local_total = currentsp;
+						  }
+						  else {
+							 
+						  }
+						  
+					   }
+					   else{
+							#ifdef DEBUG
+						  dbprint(TRANSC, "first arg value that is either not an int or equal to 0 ", 1, INT, &paramlist->list->int_val[0]);
+						  dbprint(TRANSC,"either not an int or equal to 0", 0);
+							#endif
+						  
+						  if( paramlist->list->int_val[0] == 0){
+						  }
+					   }
+				    }
+				    else{
+					   if(paramlist != NULL){
+							#ifdef DEBUG
+						  dbprint(TRANSC, "first arg value and more arguments ", 1, INT, &paramlist->list->int_val[0]);
+							#endif
+					   }
+				    }
+	   },
+	   /* ENTER */,
+	/* PUSHS */,
+		/* CALL*/,
+	   { /* POPI */
+				#ifdef DEBUG
+				dbprint(TRANSC, "found an popI", 0);
+				#endif
+				if(paramlist == NULL && length == 0){
+				    local_total = 0;
+				    currentsp = 0;
 				}
 				else{
 					#ifdef DEBUG
-					dbprint(TRANSC, "first arg value that is either not an int or equal to 0 ", INT, &paramlist->list->int_val[0]);
-					dbprint(TRANSC,"either not an int or equal to 0", STR, "");
-					#endif						
-
-					if( paramlist->list->int_val[0] == 0){
-					}
-				}
-			}
-			else{
-				if(paramlist != NULL){
-				#ifdef DEBUG
-					dbprint(TRANSC, "first arg value and more arguments ", INT, &paramlist->list->int_val[0]);
-//				fprintf(stdout,"parameter list either null or length > 1\n");
-				#endif
-				}
-			}
-			
-		}
-		else if(strcmp(name,"pushcI") == 0){
-			#ifdef DEBUG
-			dbprint(TRANSC, "found an pushcI", STR, "");
-			#endif
-			if(paramlist != NULL && length == 1){
-				if(paramlist->list->argtype[0] == INT && paramlist->list->int_val[0] != 0){
-					#ifdef DEBUG
-					dbprint(TRANSC,"so far so good", STR, "");
+				    dbprint(TRANSC,"parameter list not null or length > 0", 0);
 					#endif
-					if(currentsp != 0){
-//						fprintf(infile,"	movl $%d, %d(%%rsp)\n", paramlist->list->int_val[0], currentsp);
-						currentsp -= 4;
-					}
-					else{
-						#ifdef DEBUG
-						dbprint(TRANSC,"stack has no memory or stack pointer hasn't been moved", STR, "");
-						#endif
-					}
-				}
-				else{
-					#ifdef DEBUG
-					dbprint(TRANSC,"either not an int or equal to 0", STR, "");
-					#endif
-					if( paramlist->list->int_val[0] == 0){
-						
-					}
-				}
-			}
-			else{
-				#ifdef DEBUG
-				dbprint(TRANSC,"parameter list either null or length > 1", STR, "");
-				#endif
-			}
-			
-		}
-		else if(strcmp(name,"setrvI") == 0){
-			listnodeC * templistn;
-			templistn = NULL;
-			#ifdef DEBUG
-			dbprint(TRANSC, "found an setrvI", STR, "");
-			#endif
-			if(paramlist == NULL && length == 0){
-				currentsp += 4;
-//				fprintf(infile, "	movl %d(%%rsp), %%eax\n", currentsp);
-//				fprintf(infile, "	movl (%%eax), %%eax\n");
-//				fprintf(infile, "	addq $%d, %%rsp\n", currentsp);
-
-//				fprintf(infile,"	xorl %%eax, %%eax\n");
-			}
-			else if( paramlist != NULL && length == 0){
-			}
-			else if (length > 0){
-				#ifdef DEBUG
-				dbprint(TRANSC,"length > 0", STR, "");
-				#endif
-				if(paramlist !=NULL){
-					templistn = paramlist->list;
-					if(templistn != NULL){
-						switch(templistn->argtype[0]){
-							case INT:
-							warning(TRANSC, "setrvI takes an integer as a parameter, instead found a ", (void*)typecg_strings[templistn->argtype[0]]);
-							break;
-
-							case FLOAT:
-							case STR:
-							default: 
-							warning(TRANSC, "setrvI takes an integer as a parameter, instead found a ", (void*)typecg_strings[templistn->argtype[0]]);
-							break;
-							
-						}
-					}
 				}
 				
-			}
-			
-		}
-		else if(strcmp(name,"returnf") == 0){
-			#ifdef DEBUG
-			dbprint(TRANSC, "found an returnf", STR, "");
-			#endif
-			if(paramlist == NULL && length == 0){
-//				fprintf(infile,"	addq $%d, %%rsp\n", local_total);
-				local_total = 0;
-				currentsp = 0;
-			}
-			else{
+	   },
+	   { /* PUSHGA*/},
+	   { /* PUSHA */
+					#ifdef DEBUG
+				    dbprint(TRANSC, "found an pusha", 0);
+					#endif
+				    if(paramlist == NULL && length == 0){
+					   local_total = 0;
+					   currentsp = 0;
+				    }
+				    else{
+						#ifdef DEBUG
+					   dbprint(TRANSC,"parameter list not null or length > 0", 0);
+						#endif
+				    }
+				    
+	   },
+	   {/* FETCHI */
 				#ifdef DEBUG
-				dbprint(TRANSC,"parameter list not null or length > 0", STR, "");
+				dbprint(TRANSC, "found an fetchI", 0);
 				#endif
-			}
-			
-		}
-		else if(strcmp(name,"pusha") == 0){
-			#ifdef DEBUG
-			dbprint(TRANSC, "found an pusha", STR, "");
-			#endif
-			if(paramlist == NULL && length == 0){
-//				fprintf(infile,"	addq $%d, %%rsp\n", local_total);
-				local_total = 0;
-				currentsp = 0;
-			}
-			else{
+				if(paramlist == NULL && length == 0){
+				    local_total = 0;
+				    currentsp = 0;
+				}
+				else{
+					#ifdef DEBUG
+				    dbprint(TRANSC,"parameter list not null or length > 0", 0);
+					#endif
+				}
+				
+	   },
+	   /* FETCHR */,
+	   {/* STOREI */
 				#ifdef DEBUG
-				dbprint(TRANSC,"parameter list not null or length > 0", STR, "");
+				dbprint(TRANSC, "found an storeI", 0);
 				#endif
-			}			
-			
-		}
-		else if(strcmp(name,"popI") == 0){
+				if(paramlist == NULL && length == 0){
+				    local_total = 0;
+				    currentsp = 0;
+				}
+				else{
+					#ifdef DEBUG
+				    dbprint(TRANSC,"parameter list not null or length > 0", 0);
+					#endif
+				}
+				
+	   },
+	   /* STORER */,
+	   {
 			#ifdef DEBUG
-			dbprint(TRANSC, "found an popI", STR, "");
+		   dbprint(TRANSC, "found an pushcI", 0);
 			#endif
-			if(paramlist == NULL && length == 0){
-//				fprintf(infile,"	addq $%d, %%rsp\n", local_total);
-				local_total = 0;
-				currentsp = 0;
-			}
-			else{
-			#ifdef DEBUG
-				dbprint(TRANSC,"parameter list not null or length > 0", STR, "");
-			#endif
-			}
-			
-		}	
-		else if(strcmp(name,"storeI") == 0){
-			#ifdef DEBUG
-			dbprint(TRANSC, "found an storeI", STR, "");
-			#endif
-			if(paramlist == NULL && length == 0){
-//				fprintf(infile,"	addq $%d, %%rsp\n", local_total);
-				local_total = 0;
-				currentsp = 0;
-			}
-			else{
+		   if(paramlist != NULL && length == 1){
+			  if(paramlist->list->argtype[0] == INT && paramlist->list->int_val[0] != 0){
+					#ifdef DEBUG
+				 dbprint(TRANSC,"so far so good", 0);
+					#endif
+				 if(currentsp != 0){
+					currentsp -= 4;
+				 }
+				 else{
+				    #ifdef DEBUG
+					dbprint(TRANSC,"stack has no memory or stack pointer hasn't been moved", 0);
+					#endif
+				 }
+			  }
+			  else{
+					#ifdef DEBUG
+				 dbprint(TRANSC,"either not an int or equal to 0", 0);
+					#endif
+				 if( paramlist->list->int_val[0] == 0){
+					
+				 }
+			  }
+		   }
+		   else{
 				#ifdef DEBUG
-				dbprint(TRANSC,"parameter list not null or length > 0", STR, "");
+			  dbprint(TRANSC,"parameter list either null or length > 1", 0);
 				#endif
-			}
-			
-		}	
-		else if(strcmp(name,"fetchI") == 0){
-			#ifdef DEBUG
-			dbprint(TRANSC, "found an fetchI", STR, "");
-			#endif
-			if(paramlist == NULL && length == 0){
-//				fprintf(infile,"	addq $%d, %%rsp\n", local_total);
-				local_total = 0;
-				currentsp = 0;
-			}
-			else{
+		   }
+		   
+	    },
+	/* PUSHCR */,
+	   {
+				    listnodeC * templistn;
+				    templistn = NULL;
+					#ifdef DEBUG
+				    dbprint(TRANSC, "found an setrvI", 0);
+					#endif
+				    if(paramlist == NULL && length == 0){
+					   currentsp += 4;
+				    }
+				    else if( paramlist != NULL && length == 0){
+				    }
+				    else if (length > 0){
+						#ifdef DEBUG
+					   dbprint(TRANSC,"length > 0", 0);
+						#endif
+					   if(paramlist !=NULL){
+						  templistn = paramlist->list;
+						  if(templistn != NULL){
+							 switch(templistn->argtype[0]){
+								case INT:
+								    warning(TRANSC, "setrvI takes an integer as a parameter, instead found a ", (void*)typecg_strings[templistn->argtype[0]]);
+								    break;
+								    
+								case FLOAT:
+								case STR:
+								default:
+								    warning(TRANSC, "setrvI takes an integer as a parameter, instead found a ", (void*)typecg_strings[templistn->argtype[0]]);
+								    break;
+								    
+							 }
+						  }
+					   }
+					   
+				    }
+				    
+	   },
+	 /* SETRVR */,
+	   {
+					#ifdef DEBUG
+				    dbprint(TRANSC, "found an returnf", 0);
+					#endif
+				    if(paramlist == NULL && length == 0){
+					   local_total = 0;
+					   currentsp = 0;
+				    }
+				    else{
+						#ifdef DEBUG
+					   dbprint(TRANSC,"parameter list not null or length > 0", 0);
+						#endif
+				    }
+				    
+	   },
+	   /* RETURN */,
+	   {/* LTI*/},
+	   {/* LTR */},
+	   {/* LEI*/},
+	   {/* LER */},
+	   {/* JUMP */},
+	   /* JUMPZ */,
+	   /* MULI */,
+	   /* MULR */,
+	{  /* ADDI */
 				#ifdef DEBUG
-				dbprint(TRANSC,"parameter list not null or length > 0", STR, "");
+				dbprint(TRANSC, "found an addI", 0);
 				#endif
-			}
-			
-		}	
-		else if(strcmp(name,"addI") == 0){
-			#ifdef DEBUG
-			dbprint(TRANSC, "found an addI", STR, "");
-			#endif
-			if(paramlist == NULL && length == 0){
-//				fprintf(infile,"	addq $%d, %%rsp\n", local_total);
-//				local_total = 0;
-//				currentsp = 0;
-			}
-			else{
-				#ifdef DEBUG
-				dbprint(TRANSC,"parameter list not null or length > 0", STR, "");
-				#endif
-			}
-			
-		}	
-/*		else if(strcmp(name,"pusha") == 0){
-			
-		}	
-		else if(strcmp(name,"pusha") == 0){
-			
-		}	
-		else if(strcmp(name,"pusha") == 0){
-			
-		}	
-		else if(strcmp(name,"pusha") == 0){
-			
-		}*/	
-		
+				if(paramlist == NULL && length == 0){
+				}
+				else{
+					#ifdef DEBUG
+				    dbprint(TRANSC,"parameter list not null or length > 0", 0);
+					#endif
+				}
+				
+    },
+	{/* ADDR */})
+
 	}
 }
 
@@ -494,7 +484,7 @@ void gen_run_commands(commandList* inList){
 //			temptype = inList->list;
 			for(int i = 0; i < templist->listsize; i++){
 				#ifdef DEBUG
-				dbprint(TRANSC,"Generating Command ",INT, &i);
+				dbprint(TRANSC,"Generating Command ",1, INT, &i);
 				#endif
 				
 				gen_command(temptype);

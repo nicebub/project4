@@ -2,98 +2,63 @@
 Code Generator Bison Parser File
 */
 %{
-#ifdef DEBUGON
-#ifndef PARSERDEBUG
-#ifdef DEBUG
+    
+//    #define PARSERDEBUG
+#if defined(DEBUGON) && !defined(PARSERDEBUG) && defined(DEBUG)
 #undef DEBUG
 #endif
-#endif
+
+#if defined(DEBUGON) && defined(PARSERDEBUG) && !defined(DEBUG)
+#define DEBUG
+#define YYDEBUG 1
+//extern int yydebug = 1;
 #endif
 
+#if !defined(DEBUGON) && defined(DEBUG)
+#undef DEBUG
+//#define YYDEBUG 1
+//extern int yydebug = 1;
+#endif
+
+
+#include "interpreter.y.h"
 #include "debuglib.h"
 #include "typeint.h"
 #include "Listint.h"
-
-//#include "symtabint.h"
-
 #include "dataint.h"
 #include "transint.h"
 #include "memlib.h"
+
+//#include "symtabint.h"
+
 #include <stdio.h>
-
-//#define yyerrok
-
-#define YYDEBUG 1
-#define YYERROR_VERBOSE 1
-
-//#define YYSTYPE data
-
-typedef data YYSTYPE;
-#define YYSTYPE_IS_DECLARED 1
-
 #include <string.h>
 
-extern int Line_Number;
-extern boolcg founderror;
-extern int globalcount;
-extern int mainlocal;
-extern int othercounter;
-extern int param_offset;
-extern int offset_counter;
-//extern Symtab* mysymtab;
+#define ARGS_CMD_PARSE(intype,newlist,invalue,if_nt ,...) {\
+intype vals[2];\
+vals[0] = (intype)invalue;\
+vals[1] = (intype)NULL;\
+newlist = mklistC##if_nt(vals);}
+
+
 
 int mainlabel;
 Funcbcg* currentFunc;
 trans_u_list *All_T_Units;
-
-extern int yyerror(const char *);
-extern int yylex (void);
-extern int warning(int, char*,char*);
-extern int error(int which, char*,char*);
+translation_unit *trans_array[MAX_FUNCTIONS];
+int translation_unit_amount;
 %}
-//%expect 2
 
 %token Ident
 %token IntConstant
 %token FloatConstant
 %token StrConstant
 %token CommandName
-//%token returnft
-//%token labelt
-//%token chart
-//%token intt
 %token maint
-//%token equequ
-//%token neq
-//%token leq
-//%token geq
-//%token adof
-//%token elip
-//%token lpar
-//%token rpar
-//%token lcbra
-//%token rcbra
-//%token semi
 %token comma
-//%token lesst
-//%token greatt
-//%token equal
-//%token plus
-//%token minus
-//%token divide
-//%token star
 %token uminus
 %token newlinet
-//%token eoft
 
-//%token uplus
-
-//%right equequ neq
-//%right lesst greatt
-//%left leq geq
-//%left plus minus
-//%left divide star
-//%right adof
 %right uminus
 
 
@@ -101,23 +66,14 @@ extern int error(int which, char*,char*);
 %type <value.ivalue> IntConstant
 %type <value.fvalue> FloatConstant
 %type <value.svalue> StrConstant command_name CommandName
-//%type <value.ivalue> intt
-//%type <value.ivalue> adof elip lpar rpar lcbra rcbra semi comma equal
 
 %type <value.ivalue> comma
-
-//%type <value.relopvalue> lesst greatt leq geq
-//%type <value.addopvalue> plus minus
-//%type <value.eqopvalue> equequ neq
-//%type <value.multopvalue> divide star
 
 %type <value.ivalue> uminus
 %type <command_list> commandlist
 %type <value.cargvalue> command_args
-//%type <value.transunitvalue> mainfunc
 %type <trans_list> tunits translation_units func starter mainfunc
 
-//%type <value.svalue> returnft labelt
 
 %start starter
 %%
@@ -140,14 +96,12 @@ starter: zlines_eof {
 	  tunits  {
 		  $$ = $3;
 		  All_T_Units = (trans_u_list*) $3;
-//		  printTransList(All_T_Units);
 		  
 			if(founderror == FALSE){
 				#ifdef DEBUG
 				dbprint(PARSER,"All Translation Units Recognized and compacted into One",0);
 				dbprint(PARSER,"Printing all commands",0);
 				dbprint(PARSER,"-----------------------",0);
-//				debugprintt(1,$3);
 				#endif
 
 				gen_end_prog();
@@ -157,6 +111,8 @@ starter: zlines_eof {
 ;
 tunits: translation_units mainfunc {
 	if($1 != NULL && $2 != NULL){
+		ADD_TO_TRANS_ARRAY($2)
+
 		$$ = concat_trans_unit_list($1,$2);
 		
 		#ifdef DEBUG
@@ -166,17 +122,23 @@ tunits: translation_units mainfunc {
 }
 	| mainfunc {
 		if($1 != NULL){
+
+			ADD_TO_TRANS_ARRAY($1)
+
 			$$ = $1;
 			#ifdef DEBUG
 			dbprint(PARSER,"Main Function Translation Unit Recognized and added to Start of Translation Units",0);
 			#endif
 		}
 	}
+	
 translation_units: func {
 	if($1 != NULL){
 			#ifdef DEBUG
 			dbprint(PARSER,"Function Translation Unit Recognized and added to Start of Translation Units",0);
 			#endif
+
+			ADD_TO_TRANS_ARRAY($1)
 
 			$$ = $1;
 	}
@@ -186,6 +148,9 @@ translation_units: func {
 	| translation_units func {
 		if($1 != NULL){
 			if($2 != NULL ){
+
+				ADD_TO_TRANS_ARRAY($2)
+
 				$$ = concat_trans_unit_list($1,$2);
 			}
 		#ifdef DEBUG
@@ -196,34 +161,27 @@ translation_units: func {
 ;
 
 mainfunc: maint lines commandlist {
+    commandlisttype *temp;
+    translation_unit *temp_unit;
+    char * pointer;
+    temp = NULL;
+    pointer = NULL;
+    temp_unit = NULL;
 	if($3 != NULL){
 		#ifdef DEBUG
 		debugprintc(1,"Proccessing the main function at the bottom of the file with the List of Commands",$3);
 		#endif
-		commandlisttype *temp;
-		translation_unit *temp_unit;
-		char * pointer;
-		temp = NULL;
-		pointer = NULL;
-		temp_unit = NULL;
+		
 		temp = $3->list;
+		
 		if( $3 != NULL){
+		    
 		    pointer = $<value.svalue>1;
 		    REQUESTMEM(temp_unit, translation_unit, GENERIC, *sizeof(translation_unit))
 		    REQUESTMEM(temp_unit->name, char, STR, *strlen(pointer)+1)
 		    strlcpy(temp_unit->name,pointer, strlen(temp_unit->name)+1);
-//			$$->name = $<value.svalue>1;
-			//temp_unit->commandlist = (commandList*)$<value.commandlistvalue>3;
 			temp_unit->next_trans_unit = NULL;
 			$$= mkTransList($<value.svalue>1,$3);
-//			$$ = temp_unit;
-//			for(int i = 0; i < $<command_list>3->listsize && temp!=NULL; i++){
-//				#ifdef DEBUG
-//				dbprint(PARSER,"Generating Command ",1, INT, i);
-//				#endif
-//				gen_instr(temp->name);
-//				temp = temp->nextcommand;
-//			}
 		}
 	}
 	}
@@ -317,32 +275,26 @@ command_name: CommandName  {
 ;
 
 
+
 command_args: Ident  {
-			char *vals[2];
-			vals[0] = (char*)$1;
-			vals[1] = NULL;
-			$$ = mklistC(vals);
-			#ifdef DEBUG
-			dbprint(PARSER,"Ident inside command_args",1, STR,vals[0]);
-			#endif
-		}
-	| StrConstant  {
-			char *vals[2];
-			vals[0] = (char*)$1;
-			vals[1] = NULL;
-			$$ = mklistC(vals);
-			#ifdef DEBUG
-			dbprint(PARSER,"StrConstant inside command_args",0);
-			#endif
+    ARGS_CMD_PARSE(char*, $$,$1, ,1, STR,vals[0])
+    #ifdef DEBUG
+  //  dbprint(PARSER,"Ident inside command_args",1, STR,vals[0]);
+    #endif
+}
+	| StrConstant{
+
+	    ARGS_CMD_PARSE(char*, $$,$1, ,0)
+	    #ifdef DEBUG
+	    dbprint(PARSER,"StrConstant inside command_args",0);
+	    #endif
 		}
 	| IntConstant {
-			int vals[2];
-			vals[0] = (int)$1;
-			vals[1] = (int)0;
-			$$ = mklistCi(vals);
-			#ifdef DEBUG
-			dbprint(PARSER,"IntConstant inside command_args",1, INT, $1);
-			#endif
+
+		ARGS_CMD_PARSE(int, $$,$1,i ,1, INT, $1)
+		#ifdef DEBUG
+		dbprint(PARSER,"IntConstant inside command_args",1, INT, $1);
+		#endif
 		}
 	| command_args comma Ident {
 			if($1!=NULL && $1->list !=NULL && $1->list->val[1]==NULL){
@@ -367,9 +319,13 @@ command_args: Ident  {
 			}
 		}
 	| command_args comma IntConstant {
+	    #ifdef DEBUG
+	    dbprint(PARSER,"found another int constant argument", 1, INT, $<value.ivalue>3);
+	    dbprint(PARSER, "", 0);
+	    #endif
 			if($1!=NULL && $1->list !=NULL && $1->list->val[1]==NULL){
 				#ifdef DEBUG
-				dbprint(PARSER,"IntConstant inside command_args list version",1, INT, $3);
+				dbprint(PARSER,"IntConstant inside command_args list version",1, INT, $<value.ivalue>3);
 				#endif
 				$$ = appendListCi($1, (int)$3, INT);
 			}
@@ -396,5 +352,7 @@ int yyerror(const char *s)
     return 0;
 }
 
-
-
+extern void init_trans_array(void){
+	for(int i = 0; i < MAX_FUNCTIONS; i++) trans_array[i] = NULL; 
+	translation_unit_amount =0;
+}
