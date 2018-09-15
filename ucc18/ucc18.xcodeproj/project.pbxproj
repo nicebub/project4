@@ -32,7 +32,6 @@
 		D283AFA920ADF5C200B07C08 /* trans.c in Sources */ = {isa = PBXBuildFile; fileRef = D2CB13CA20AD00A7006987E5 /* trans.c */; };
 		E27431A921437B9700D68F1F /* debuglib.c in Sources */ = {isa = PBXBuildFile; fileRef = E274319021437B9500D68F1F /* debuglib.c */; };
 		E27431AA21437B9700D68F1F /* interpreter.y in Sources */ = {isa = PBXBuildFile; fileRef = E274319321437B9500D68F1F /* interpreter.y */; };
-		E27431AB21437B9700D68F1F /* vm.c in Sources */ = {isa = PBXBuildFile; fileRef = E274319421437B9500D68F1F /* vm.c */; };
 		E27431AC21437B9700D68F1F /* interpreter.l in Sources */ = {isa = PBXBuildFile; fileRef = E274319521437B9500D68F1F /* interpreter.l */; };
 		E27431AD21437B9700D68F1F /* transint.c in Sources */ = {isa = PBXBuildFile; fileRef = E274319721437B9500D68F1F /* transint.c */; };
 		E27431AE21437B9700D68F1F /* memlib.c in Sources */ = {isa = PBXBuildFile; fileRef = E274319821437B9500D68F1F /* memlib.c */; };
@@ -45,6 +44,23 @@
 		E285CCCA2141BA0C008A5C77 /* type.h in Headers */ = {isa = PBXBuildFile; fileRef = D2CB13BA20AD00A6006987E5 /* type.h */; };
 		E285CCCB2141BA65008A5C77 /* libl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D283AFB020ADF97A00B07C08 /* libl.a */; };
 		E285CCCC2141BA65008A5C77 /* liby.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D283AFB120ADF97A00B07C08 /* liby.a */; };
+		E2A8A824214CB6540074FBB4 /* printf.c in Sources */ = {isa = PBXBuildFile; fileRef = E2A8A822214CB6530074FBB4 /* printf.c */; };
+		E2BD2AF4214A6610002E5E36 /* initialize.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AD5214A660E002E5E36 /* initialize.c */; };
+		E2BD2AF5214A6610002E5E36 /* allocate.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AD6214A660E002E5E36 /* allocate.c */; };
+		E2BD2AF6214A6610002E5E36 /* pop.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2ADC214A660E002E5E36 /* pop.c */; };
+		E2BD2AF7214A6610002E5E36 /* fetch.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2ADD214A660E002E5E36 /* fetch.c */; };
+		E2BD2AF8214A6610002E5E36 /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2ADF214A660E002E5E36 /* memory.c */; };
+		E2BD2AF9214A6610002E5E36 /* push.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AE0214A660E002E5E36 /* push.c */; };
+		E2BD2AFA214A6610002E5E36 /* status.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AE1214A660F002E5E36 /* status.c */; };
+		E2BD2AFB214A6610002E5E36 /* call.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AE3214A660F002E5E36 /* call.c */; };
+		E2BD2AFC214A6610002E5E36 /* return.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AE5214A660F002E5E36 /* return.c */; };
+		E2BD2AFD214A6610002E5E36 /* jump.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AE7214A660F002E5E36 /* jump.c */; };
+		E2BD2AFE214A6610002E5E36 /* operator.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AE9214A660F002E5E36 /* operator.c */; };
+		E2BD2AFF214A6610002E5E36 /* enter.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AEA214A660F002E5E36 /* enter.c */; };
+		E2BD2B00214A6610002E5E36 /* store.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AEC214A660F002E5E36 /* store.c */; };
+		E2BD2B01214A6610002E5E36 /* vm.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AEE214A6610002E5E36 /* vm.c */; };
+		E2BD2B02214A6610002E5E36 /* stack.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AEF214A6610002E5E36 /* stack.c */; };
+		E2BD2B07214B3D71002E5E36 /* change.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2B05214B3D71002E5E36 /* change.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -181,9 +197,7 @@
 		E274318F21437B9500D68F1F /* transint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = transint.h; path = ../src/interpreter/transint.h; sourceTree = "<group>"; };
 		E274319021437B9500D68F1F /* debuglib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = debuglib.c; path = ../src/interpreter/debuglib.c; sourceTree = "<group>"; };
 		E274319121437B9500D68F1F /* debuglib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = debuglib.h; path = ../src/interpreter/debuglib.h; sourceTree = "<group>"; };
-		E274319221437B9500D68F1F /* vm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vm.h; path = ../src/interpreter/vm.h; sourceTree = "<group>"; };
 		E274319321437B9500D68F1F /* interpreter.y */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; name = interpreter.y; path = ../src/interpreter/interpreter.y; sourceTree = "<group>"; };
-		E274319421437B9500D68F1F /* vm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vm.c; path = ../src/interpreter/vm.c; sourceTree = "<group>"; };
 		E274319521437B9500D68F1F /* interpreter.l */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; name = interpreter.l; path = ../src/interpreter/interpreter.l; sourceTree = "<group>"; };
 		E274319621437B9500D68F1F /* symtabint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = symtabint.h; path = ../src/interpreter/symtabint.h; sourceTree = "<group>"; };
 		E274319721437B9500D68F1F /* transint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = transint.c; path = ../src/interpreter/transint.c; sourceTree = "<group>"; };
@@ -204,6 +218,45 @@
 		E27431A721437B9700D68F1F /* Listint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Listint.h; path = ../src/interpreter/Listint.h; sourceTree = "<group>"; };
 		E27431A821437B9700D68F1F /* memlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = memlib.h; path = ../src/interpreter/memlib.h; sourceTree = "<group>"; };
 		E285CC9B2141B5ED008A5C77 /* interpreter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = interpreter; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2A8A822214CB6530074FBB4 /* printf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = printf.c; path = ../src/interpreter/vm/printf.c; sourceTree = "<group>"; };
+		E2A8A823214CB6540074FBB4 /* printf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = printf.h; path = ../src/interpreter/vm/printf.h; sourceTree = "<group>"; };
+		E2A8A825214CBAA20074FBB4 /* useful.def */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = useful.def; path = ../src/interpreter/useful.def; sourceTree = "<group>"; };
+		E2BD2AD2214A660D002E5E36 /* stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stack.h; path = ../src/interpreter/vm/stack.h; sourceTree = "<group>"; };
+		E2BD2AD3214A660D002E5E36 /* initialize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = initialize.h; path = ../src/interpreter/vm/initialize.h; sourceTree = "<group>"; };
+		E2BD2AD4214A660D002E5E36 /* jump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jump.h; path = ../src/interpreter/vm/jump.h; sourceTree = "<group>"; };
+		E2BD2AD5214A660E002E5E36 /* initialize.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = initialize.c; path = ../src/interpreter/vm/initialize.c; sourceTree = "<group>"; };
+		E2BD2AD6214A660E002E5E36 /* allocate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = allocate.c; path = ../src/interpreter/vm/allocate.c; sourceTree = "<group>"; };
+		E2BD2AD7214A660E002E5E36 /* allocate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = allocate.h; path = ../src/interpreter/vm/allocate.h; sourceTree = "<group>"; };
+		E2BD2AD8214A660E002E5E36 /* pop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pop.h; path = ../src/interpreter/vm/pop.h; sourceTree = "<group>"; };
+		E2BD2AD9214A660E002E5E36 /* vm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vm.h; path = ../src/interpreter/vm/vm.h; sourceTree = "<group>"; };
+		E2BD2ADA214A660E002E5E36 /* enter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = enter.h; path = ../src/interpreter/vm/enter.h; sourceTree = "<group>"; };
+		E2BD2ADB214A660E002E5E36 /* operator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = operator.h; path = ../src/interpreter/vm/operator.h; sourceTree = "<group>"; };
+		E2BD2ADC214A660E002E5E36 /* pop.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pop.c; path = ../src/interpreter/vm/pop.c; sourceTree = "<group>"; };
+		E2BD2ADD214A660E002E5E36 /* fetch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fetch.c; path = ../src/interpreter/vm/fetch.c; sourceTree = "<group>"; };
+		E2BD2ADE214A660E002E5E36 /* memorylib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = memorylib.h; path = ../src/interpreter/vm/memorylib.h; sourceTree = "<group>"; };
+		E2BD2ADF214A660E002E5E36 /* memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = memory.c; path = ../src/interpreter/vm/memory.c; sourceTree = "<group>"; };
+		E2BD2AE0214A660E002E5E36 /* push.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = push.c; path = ../src/interpreter/vm/push.c; sourceTree = "<group>"; };
+		E2BD2AE1214A660F002E5E36 /* status.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = status.c; path = ../src/interpreter/vm/status.c; sourceTree = "<group>"; };
+		E2BD2AE2214A660F002E5E36 /* instructionlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = instructionlib.h; path = ../src/interpreter/vm/instructionlib.h; sourceTree = "<group>"; };
+		E2BD2AE3214A660F002E5E36 /* call.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = call.c; path = ../src/interpreter/vm/call.c; sourceTree = "<group>"; };
+		E2BD2AE4214A660F002E5E36 /* status.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = status.h; path = ../src/interpreter/vm/status.h; sourceTree = "<group>"; };
+		E2BD2AE5214A660F002E5E36 /* return.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = return.c; path = ../src/interpreter/vm/return.c; sourceTree = "<group>"; };
+		E2BD2AE6214A660F002E5E36 /* stacklib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stacklib.h; path = ../src/interpreter/vm/stacklib.h; sourceTree = "<group>"; };
+		E2BD2AE7214A660F002E5E36 /* jump.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jump.c; path = ../src/interpreter/vm/jump.c; sourceTree = "<group>"; };
+		E2BD2AE8214A660F002E5E36 /* vmlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vmlib.h; path = ../src/interpreter/vm/vmlib.h; sourceTree = "<group>"; };
+		E2BD2AE9214A660F002E5E36 /* operator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = operator.c; path = ../src/interpreter/vm/operator.c; sourceTree = "<group>"; };
+		E2BD2AEA214A660F002E5E36 /* enter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = enter.c; path = ../src/interpreter/vm/enter.c; sourceTree = "<group>"; };
+		E2BD2AEB214A660F002E5E36 /* memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = memory.h; path = ../src/interpreter/vm/memory.h; sourceTree = "<group>"; };
+		E2BD2AEC214A660F002E5E36 /* store.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = store.c; path = ../src/interpreter/vm/store.c; sourceTree = "<group>"; };
+		E2BD2AED214A660F002E5E36 /* return.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = return.h; path = ../src/interpreter/vm/return.h; sourceTree = "<group>"; };
+		E2BD2AEE214A6610002E5E36 /* vm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vm.c; path = ../src/interpreter/vm/vm.c; sourceTree = "<group>"; };
+		E2BD2AEF214A6610002E5E36 /* stack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = stack.c; path = ../src/interpreter/vm/stack.c; sourceTree = "<group>"; };
+		E2BD2AF0214A6610002E5E36 /* call.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = call.h; path = ../src/interpreter/vm/call.h; sourceTree = "<group>"; };
+		E2BD2AF1214A6610002E5E36 /* fetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fetch.h; path = ../src/interpreter/vm/fetch.h; sourceTree = "<group>"; };
+		E2BD2AF2214A6610002E5E36 /* push.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = push.h; path = ../src/interpreter/vm/push.h; sourceTree = "<group>"; };
+		E2BD2AF3214A6610002E5E36 /* store.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = store.h; path = ../src/interpreter/vm/store.h; sourceTree = "<group>"; };
+		E2BD2B05214B3D71002E5E36 /* change.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = change.c; path = ../src/interpreter/vm/change.c; sourceTree = "<group>"; };
+		E2BD2B06214B3D71002E5E36 /* change.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = change.h; path = ../src/interpreter/vm/change.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -369,6 +422,45 @@
 		E285CC9C2141B5ED008A5C77 /* interpreter */ = {
 			isa = PBXGroup;
 			children = (
+				E2A8A825214CBAA20074FBB4 /* useful.def */,
+				E2A8A822214CB6530074FBB4 /* printf.c */,
+				E2A8A823214CB6540074FBB4 /* printf.h */,
+				E2BD2B05214B3D71002E5E36 /* change.c */,
+				E2BD2B06214B3D71002E5E36 /* change.h */,
+				E2BD2AD6214A660E002E5E36 /* allocate.c */,
+				E2BD2AD7214A660E002E5E36 /* allocate.h */,
+				E2BD2AE3214A660F002E5E36 /* call.c */,
+				E2BD2AF0214A6610002E5E36 /* call.h */,
+				E2BD2AEA214A660F002E5E36 /* enter.c */,
+				E2BD2ADA214A660E002E5E36 /* enter.h */,
+				E2BD2ADD214A660E002E5E36 /* fetch.c */,
+				E2BD2AF1214A6610002E5E36 /* fetch.h */,
+				E2BD2AD5214A660E002E5E36 /* initialize.c */,
+				E2BD2AD3214A660D002E5E36 /* initialize.h */,
+				E2BD2AE2214A660F002E5E36 /* instructionlib.h */,
+				E2BD2AE7214A660F002E5E36 /* jump.c */,
+				E2BD2AD4214A660D002E5E36 /* jump.h */,
+				E2BD2ADF214A660E002E5E36 /* memory.c */,
+				E2BD2AEB214A660F002E5E36 /* memory.h */,
+				E2BD2ADE214A660E002E5E36 /* memorylib.h */,
+				E2BD2AE9214A660F002E5E36 /* operator.c */,
+				E2BD2ADB214A660E002E5E36 /* operator.h */,
+				E2BD2ADC214A660E002E5E36 /* pop.c */,
+				E2BD2AD8214A660E002E5E36 /* pop.h */,
+				E2BD2AE0214A660E002E5E36 /* push.c */,
+				E2BD2AF2214A6610002E5E36 /* push.h */,
+				E2BD2AE5214A660F002E5E36 /* return.c */,
+				E2BD2AED214A660F002E5E36 /* return.h */,
+				E2BD2AEF214A6610002E5E36 /* stack.c */,
+				E2BD2AD2214A660D002E5E36 /* stack.h */,
+				E2BD2AE6214A660F002E5E36 /* stacklib.h */,
+				E2BD2AE1214A660F002E5E36 /* status.c */,
+				E2BD2AE4214A660F002E5E36 /* status.h */,
+				E2BD2AEC214A660F002E5E36 /* store.c */,
+				E2BD2AF3214A6610002E5E36 /* store.h */,
+				E2BD2AEE214A6610002E5E36 /* vm.c */,
+				E2BD2AD9214A660E002E5E36 /* vm.h */,
+				E2BD2AE8214A660F002E5E36 /* vmlib.h */,
 				E27431A221437B9600D68F1F /* commandint.c */,
 				E27431A321437B9600D68F1F /* commandint.h */,
 				E27431A021437B9600D68F1F /* dataint.h */,
@@ -392,8 +484,6 @@
 				E274319721437B9500D68F1F /* transint.c */,
 				E274318F21437B9500D68F1F /* transint.h */,
 				E274319D21437B9600D68F1F /* typeint.h */,
-				E274319421437B9500D68F1F /* vm.c */,
-				E274319221437B9500D68F1F /* vm.h */,
 			);
 			name = interpreter;
 			sourceTree = "<group>";
@@ -657,16 +747,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2BD2AF4214A6610002E5E36 /* initialize.c in Sources */,
 				E27431AA21437B9700D68F1F /* interpreter.y in Sources */,
 				E27431B121437B9700D68F1F /* commandint.c in Sources */,
+				E2BD2AFB214A6610002E5E36 /* call.c in Sources */,
+				E2A8A824214CB6540074FBB4 /* printf.c in Sources */,
 				E27431AF21437B9700D68F1F /* Listint.c in Sources */,
-				E27431AB21437B9700D68F1F /* vm.c in Sources */,
+				E2BD2B07214B3D71002E5E36 /* change.c in Sources */,
+				E2BD2B02214A6610002E5E36 /* stack.c in Sources */,
 				E27431B221437B9700D68F1F /* reglib.c in Sources */,
+				E2BD2AFF214A6610002E5E36 /* enter.c in Sources */,
+				E2BD2AF6214A6610002E5E36 /* pop.c in Sources */,
+				E2BD2AFE214A6610002E5E36 /* operator.c in Sources */,
+				E2BD2AF7214A6610002E5E36 /* fetch.c in Sources */,
+				E2BD2AF9214A6610002E5E36 /* push.c in Sources */,
+				E2BD2AF8214A6610002E5E36 /* memory.c in Sources */,
 				E27431AD21437B9700D68F1F /* transint.c in Sources */,
 				E27431AE21437B9700D68F1F /* memlib.c in Sources */,
 				E27431B421437B9700D68F1F /* main.c in Sources */,
+				E2BD2AF5214A6610002E5E36 /* allocate.c in Sources */,
+				E2BD2B01214A6610002E5E36 /* vm.c in Sources */,
+				E2BD2B00214A6610002E5E36 /* store.c in Sources */,
+				E2BD2AFA214A6610002E5E36 /* status.c in Sources */,
+				E2BD2AFD214A6610002E5E36 /* jump.c in Sources */,
 				E27431A921437B9700D68F1F /* debuglib.c in Sources */,
 				E27431AC21437B9700D68F1F /* interpreter.l in Sources */,
+				E2BD2AFC214A6610002E5E36 /* return.c in Sources */,
 				E27431B021437B9700D68F1F /* symtabint.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

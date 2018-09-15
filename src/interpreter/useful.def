@@ -1,0 +1,92 @@
+#ifndef MCROWS_DEFS
+#define MCROWS_DEFS
+
+#include <string.h>
+
+/*MACROS and definitions*/
+
+#define SWITCH_CMD(incmd,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,rr,ss,t,u,v,w,x,y) \
+switch(incmd){\
+case ALLOC: a; break;\
+case ENTERR: b; break;\
+case PUSHS: c; break;\
+case CALL: d; break;\
+case POPI: e; break;\
+case PUSHGA: f; break;\
+case PUSHA: g; break;\
+case FETCHI: h; break;\
+case FETCHR: i; break;\
+case STOREI: j; break;\
+case STORER: k; break;\
+case PUSHCI: l; break;\
+case PUSHCR: m; break;\
+case SETRVI: n; break;\
+case SETRVR: o; break;\
+case RETURNF: p; break;\
+case RETURN: q; break;\
+case LTI: r; break;\
+case LTR: s; break;\
+case LEI: rr; break;\
+case LER: ss; break;\
+case JUMP: t; break;\
+case JUMPZ: u; break;\
+case MULI: v; break;\
+case MULR: w; break;\
+case ADDI: x; break;\
+case ADDR: y; break;\
+default: break;\
+}
+
+typedef enum _command_names command_names;
+enum _command_names {
+    ALLOC,ENTERR,PUSHS,CALL,POPI,PUSHGA,PUSHA,FETCHI,\
+    FETCHR,STOREI,STORER,PUSHCI,PUSHCR, SETRVI,SETRVR, \
+    RETURNF,RETURN, LTI,LTR,LEI, LER, JUMP,JUMPZ, MULI, MULR, \
+    ADDI, ADDR
+};
+
+const static char * command_name_strings[] = {
+    "alloc", "enter", "pushs", "call", "popI", "pushga", "pusha", "fetchI", \
+    "fetchR", "storeI", "storeR","pushcI", "pushcR", "setrvI", "setrvR", \
+    "returnf", "return", "ltI", "ltR", "leI","leR", "jump", "jumpz", "mulI", "mulR",
+    "addI", "addR"
+};
+
+
+#define FORCMD(instring, info,tempstring) for(int a =0; a < sizeof(cmdinf)/sizeof(command_names); a++){\
+	if(strcmp(instring, info[a].command_name_string) == 0){\
+		tempstring = info[a].cmd_name;\
+/*		dbprint(LISTC, "found something... ", 1, STR, command_name_strings[tempstring]);*/\
+/*		dbprint(LISTC, "also in the form of ...... ", 1, STR, info[a].command_name_string);*/\
+		break; \
+	}\
+}
+
+
+
+
+
+#define check_str_length_bf_input(input)  ((int)strlen(string_buf_ptr)+(int)strlen(input) < MAX_STR_CONST ? 1 : 0 )
+
+
+#define SWITCH(intype,forint,forfloat,forstr,fordef) \
+		switch(intype){ \
+			case INT: \
+						forint; break; \
+			case FLOAT: \
+						forfloat; break; \
+			case STR: \
+			case CHAR:	 \
+		 				forstr; break; \
+			case REFINT: \
+			case REFFLOAT: \
+			case REFSTR: \
+			case LONG: \
+			default: \
+						fordef; break; \
+		 }
+
+
+
+
+#endif

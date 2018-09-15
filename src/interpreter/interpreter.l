@@ -41,7 +41,6 @@ extern int current_char;
 //      result = YY_NULL; \
 //    }
 
-#define check_str_length_bf_input(input)  ((int)strlen(string_buf_ptr)+(int)strlen(input) < MAX_STR_CONST ? 1 : 0 )
 #define ABSORB_CHARS	{ while(((c = input()) != '\"') && (c != EOF)){ \
 			if(c == '\n') current_char = 0; \
 			++current_char; \

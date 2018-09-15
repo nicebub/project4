@@ -1,23 +1,6 @@
 #ifndef _DEBUGLIB_H
 #define _DEBUGLIB_H
 
-#define SWITCH(intype,forint,forfloat,forstr,fordef) \
-		switch(intype){ \
-			case INT: \
-						forint; break; \
-			case FLOAT: \
-						forfloat; break; \
-			case STR: \
-			case CHAR:	 \
-		 				forstr; break; \
-			case REFINT: \
-			case REFFLOAT: \
-			case REFSTR: \
-			case LONG: \
-			default: \
-						fordef; break; \
-		 }
-
 #define DBPRINT(in_value, intype, fmt) {\
 		 fmt; \
 		in_value = va_arg(arglist,intype); \

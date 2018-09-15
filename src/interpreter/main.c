@@ -33,7 +33,7 @@ that the file opened on the command line arguments ends in a '.c'.  Which also b
 #include "main.h"
 #include "transint.h"
 #include "interpreter.l.h"
-#include "vm.h"
+#include "vm/vm.h"
 #include "memlib.h"
 #include <string.h>
 #include <libgen.h>

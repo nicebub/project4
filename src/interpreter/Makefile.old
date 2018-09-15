@@ -39,11 +39,11 @@ FLOP = -v -p -p -b -B --header-file=$(LEX_HEADER_FILE)
 BISOP = -vtd
 #LIBS = -lfl -lm
 #LIBS = -ll -lm
-LIBS = -L./ -lreglib -ldebuglib -lmemlib -ltrans -lcommand -llist -linterpreter -lvmlib
+LIBS = -L./ -Lvm -lreglib -ldebuglib -lmemlib -ltrans -lcommand -llist -linterpreter -lvmlib
 
 
 #all: interpreter memlib reglib as_sample listc_driver debuglib transint_driver commandint_driver lex_driver yacc_driver
-all: interpreter listc_driver debuglib transint_driver commandint_driver lex_driver yacc_driver vm_driver memlib reglib
+all: interpreter listc_driver debuglib transint_driver commandint_driver lex_driver yacc_driver memlib reglib
 
 
 
@@ -52,7 +52,7 @@ as_sample: as_sample.asm as_sample.s a.out
 a.out: as_sample.s
 	rm a.out || as -g as_sample.s
 
-libs: libmemlib.dylib libdebuglib.dylib libreglib.dylib liblist.dylib libtrans.dylib libcommand.dylib libinterpreter.dylib libvmlib.dylib
+libs: libmemlib.dylib libdebuglib.dylib libreglib.dylib liblist.dylib libtrans.dylib libcommand.dylib libinterpreter.dylib vm/libvmlib.dylib
 
 LIB_CFLAGS = -dynamic -shared -fpic
 
@@ -91,9 +91,9 @@ libcommand.dylib: commandint.c commandint.h libmemlib.dylib libdebuglib.dylib li
 	$(CC) $(CFLAGS) $(CMD_CFLAGS) $(LIB_CFLAGS) $(CMD_LIB) commandint.c -o libcommand.dylib 
 
 #VMLIB_CFLAGS = -D VMDEBUG
-VMLIB_LIB = -L./ -ldebuglib -lmemlib
-libvmlib.dylib: vm.c vm.h libmemlib.dylib libdebuglib.dylib
-	$(CC) $(CFLAGS) $(VMLIB_CFLAGS) $(LIB_CFLAGS) $(VMLIB_LIB) vm.c -o libvmlib.dylib 
+#VMLIB_LIB = -L./ -ldebuglib -lmemlib
+vm/libvmlib.dylib: 
+	$(MAKE) -f Makefile.old -C vm libvmlib.dylib
 
 
 #LISTC_CFLAGS = -D LISTDEBUG
@@ -103,9 +103,9 @@ listc_driver: Listint_main.c libdebuglib.dylib libmemlib.dylib liblist.dylib
 
 #VM_CFLAGS = -fsyntax-only -D DEBUGON
 #VM_CFLAGS = -E -D DEBUGON
-VM_LIB = -L./ -ldebuglib -lmemlib -lvmlib
-vm_driver: vm.c vm.h libdebuglib.dylib libmemlib.dylib libvmlib.dylib
-	$(CC) $(CFLAGS) $(VM_CFLAGS) $(VM_LIB) -o vm_driver vm_main.c
+#VM_LIB = -L./ -ldebuglib -lmemlib -lvmlib
+#vm_driver: vm.c vm.h libdebuglib.dylib libmemlib.dylib libvmlib.dylib
+#	$(CC) $(CFLAGS) $(VM_CFLAGS) $(VM_LIB) -o vm_driver vm_main.c
 
 #Listint.o: Listint.c
 #	$(CC) $(CFLAGS) -c Listint.c
@@ -177,7 +177,35 @@ SRCS  = lex.yy.c \
 	debuglib.c \
 	memlib.c \
 	reglib.c \
-	vm.c
+	vm/vm.c
+
+AOBJS  = lex.yy.o \
+	interpreter.tab.o \
+	Listint.c  \
+	commandint.c \
+	transint.c \
+	debuglib.c \
+	memlib.c \
+	reglib.c \
+	vm/memory.c\
+	vm/vm.c\
+	vm/enter.c\
+	vm/allocate.c\
+	vm/call.c\
+	vm/change.c\
+	vm/fetch.c\
+	vm/store.c\
+	vm/jump.c\
+	vm/push.c\
+	vm/stack.c\
+	vm/pop.c\
+	vm/initialize.c\
+	vm/operator.c\
+	vm/return.c\
+	vm/status.c\
+	vm/printf.c
+	
+
 
 OBJS  = lex.yy.o  \
 	interpreter.tab.o \
@@ -187,7 +215,6 @@ OBJS  = lex.yy.o  \
 	debuglib.c \
 	memlib.c \
 	reglib.c \
-	vm.c
 	
 LIBRARYS = libreglib.dylib \
 	libmemlib.dylib \
@@ -196,25 +223,30 @@ LIBRARYS = libreglib.dylib \
 	liblist.dylib \
 	libtrans.dylib \
 	libinterpreter.dylib \
-	libvmlib.dylib
+	vm/libvmlib.dylib
 
 
 sample$(NUM) : sample$(NUM).c
 	$(MYUCC) sample$(NUM).c
 
-clean : cleanmore
+clean : cleanmore clean_vmlib
 	rm *.o lex.yy.c lex.yy.h lex.yy.tables lex.backup interpreter.tab.* interpreter.output interpreter example core test *.out *.s; rm -rf *.dSYM *.dylib debug.output memlib reglib;
 
 cleanmore:
-	rm listc_driver vm_driver *.dylib; rm -rf  *.dylib.dSYM
+	rm listc_driver *.dylib; rm -rf  *.dylib.dSYM
+
+clean_vmlib:
+	$(MAKE) -f Makefile.old -C vm clean
+	
 
 drivers: listc_driver
-		
+	
+	
+MAIN_CFLAGS = -D VMLIBDEBUG		
 interpreter : $(OBJS) $(MAIN)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(OBJS) $(MAIN) 
-#MAIN_CFLAGS = -D MAINDEBUG
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(AOBJS) $(MAIN) 
 #interpreter : $(MAIN) $(LIBRARYS)
-#	$(CC) $(CFLAGS) $(MAIN_CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(LIBS) $(MAIN) 
+#	$(CC) $(CFLAGS) $(MAIN_CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(LIBS) $(MAIN)
 
 example: $(OBJS) $(MAIN) symtab.o example.c List.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(LIBS) $(OBJS) example.c
@@ -237,20 +269,35 @@ depend:
 	mv Makefile.new Makefile.old
 
 #=====DO NOT DELETE THIS LINE=====
-lex.yy.o: lex.yy.c debuglib.h Listint.h exprint.h typeint.h dataint.h \
-  symtabint.h interpreter.l.h interpreter.tab.h transint.h memlib.h
-interpreter.tab.o: interpreter.tab.c debuglib.h Listint.h exprint.h \
-  typeint.h dataint.h symtabint.h interpreter.l.h interpreter.tab.h \
-  transint.h
-main.o: main.c debuglib.h Listint.h exprint.h typeint.h dataint.h \
-  symtabint.h interpreter.l.h interpreter.tab.h transint.h commandint.h \
-  main.h memlib.h
-Listint.o: Listint.c debuglib.h Listint.h exprint.h typeint.h memlib.h
+lex.yy.o: lex.yy.c debuglib.h Listint.h exprint.h typeint.h useful.def \
+  dataint.h symtabint.h interpreter.l.h transint.h memlib.h \
+  interpreter.tab.h
+interpreter.tab.o: interpreter.tab.c interpreter.y.h dataint.h \
+  symtabint.h Listint.h exprint.h typeint.h useful.def interpreter.l.h \
+  transint.h debuglib.h memlib.h
+main.o: main.c debuglib.h Listint.h exprint.h typeint.h useful.def \
+  dataint.h symtabint.h interpreter.l.h transint.h interpreter.y.h \
+  interpreter.tab.h commandint.h main.h vm/vm.h vm/vmlib.h \
+  vm/memorylib.h vm/store.h vm/../memlib.h vm/pop.h vm/stack.h \
+  vm/memory.h vm/fetch.h vm/push.h vm/instructionlib.h vm/call.h \
+  vm/stacklib.h vm/operator.h vm/return.h vm/jump.h vm/status.h \
+  vm/initialize.h memlib.h
+Listint.o: Listint.c debuglib.h Listint.h exprint.h typeint.h useful.def \
+  memlib.h
 commandint.o: commandint.c commandint.h memlib.h debuglib.h Listint.h \
-  exprint.h typeint.h
-transint.o: transint.c transint.h Listint.h exprint.h typeint.h memlib.h \
-  debuglib.h
-debuglib.o: debuglib.c debuglib.h Listint.h exprint.h typeint.h memlib.h
-memlib.o: memlib.c memlib.h debuglib.h Listint.h exprint.h typeint.h
+  exprint.h typeint.h useful.def
+transint.o: transint.c transint.h Listint.h exprint.h typeint.h \
+  useful.def memlib.h debuglib.h
+debuglib.o: debuglib.c debuglib.h Listint.h exprint.h typeint.h \
+  useful.def
+memlib.o: memlib.c memlib.h debuglib.h Listint.h exprint.h typeint.h \
+  useful.def
 reglib.o: reglib.c reglib.h memlib.h debuglib.h Listint.h exprint.h \
-  typeint.h
+  typeint.h useful.def
+vm.o: vm/vm.c vm/vm.h vm/vmlib.h vm/memorylib.h vm/store.h \
+  vm/../typeint.h vm/../useful.def vm/../memlib.h vm/../debuglib.h \
+  vm/../Listint.h vm/../exprint.h vm/pop.h vm/stack.h vm/memory.h \
+  vm/fetch.h vm/push.h vm/instructionlib.h vm/call.h vm/stacklib.h \
+  vm/operator.h vm/return.h vm/jump.h vm/status.h vm/initialize.h \
+  vm/change.h vm/../interpreter.y.h vm/../dataint.h vm/../symtabint.h \
+  vm/../interpreter.l.h vm/../transint.h

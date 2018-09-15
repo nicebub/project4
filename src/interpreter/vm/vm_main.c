@@ -1,6 +1,8 @@
 #include "vm.h"
-#include "memlib.h"
-#include "debuglib.h"
+//#include "stacklib.h"
+//#include "push.h"
+#include "../memlib.h"
+#include "../debuglib.h"
 
 int main(int argc, const char* argv[]){
 	initialize_machine();

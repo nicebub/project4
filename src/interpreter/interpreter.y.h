@@ -12,7 +12,9 @@
 
 typedef data YYSTYPE;
 #define YYSTYPE_IS_DECLARED 1
+#ifndef MAX_FUNCTIONS
 #define MAX_FUNCTIONS 30
+#endif
 
 #define ADD_TO_TRANS_ARRAY(inlist) if(translation_unit_amount >= MAX_FUNCTIONS){ \
 					error(PARSER, "too many functions declared", ""); \

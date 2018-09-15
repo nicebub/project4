@@ -48,14 +48,6 @@ struct command_st cmdinf[] = {
     { ADDR, 	"addR" }
 };
 
-#define FORCMD(instring, info,tempstring) for(int a =0; a < sizeof(cmdinf)/sizeof(command_names); a++){\
-	if(strcmp(instring, info[a].command_name_string) == 0){\
-		tempstring = info[a].cmd_name;\
-/*		dbprint(LISTC, "found something... ", 1, STR, command_name_strings[tempstring]);*/\
-/*		dbprint(LISTC, "also in the form of ...... ", 1, STR, info[a].command_name_string);*/\
-		break; \
-	}\
-}
 
 List * mklist(char * inVal){
 	List* temp;

@@ -1,0 +1,214 @@
+# Used for project1 by Scott Lorberbaum
+#
+# This makefile includes an entry "depend" which will automatically
+# generate complete include file dependencies (including nested
+# includes.  To update dependencies, simply update the SRCS variable
+# (and OBJS) and type "make depend"
+#
+DYLD_FALLBACK_LIBRARY_PATH=../
+TARGETDIR = .
+#
+# Use gcc for Motif compilations.
+#CC = /usr/local/bin/gcc-8
+CC = /usr/bin/gcc
+LD = /usr/bin/ld
+#CC= x86_64-apple-darwin17.7.0-gcc-8
+#BISON = /usr/local/opt/bison/bin/bison
+#BISON = /usr/bin/bison
+#FLEX = /usr/local/opt/flex/bin/flex
+#FLEX = /usr/bin/flex
+
+LD_FLAGS = -arch x86_64 -macosx_version_min 10.13
+
+
+#CFLAGS = -g  -O0 -ggdb -I/usr/local/opt/bison/include
+CFLAGS = -mmacosx-version-min=10.13 -g  -O0 -ggdb -D DEBUGON
+
+#CFLAGS = -g -O0 -D DEBUGON
+#CFLAGS = -g -O0 -D DEBUGOFF
+
+IFLAGS = -I/usr/local/opt/bison/include
+
+#LDFLAGS =  -L/usr/local/opt/bison/lib -lc -L/usr/local/opt/flex/lib
+#LDFLAGS =  -g -L/usr/local/opt/bison/lib -lc 
+#LEX_HEADER_FILE = lex.yy.h
+#FLOP = -v -p -p -b -B --header-file=$(LEX_HEADER_FILE)
+#BISOP = -vtd
+#LIBS = -lfl -lm
+#LIBS = -ll -lm
+#LIBS = -L./ -lreglib -ldebuglib -lmemlib -ltrans -lcommand -llist -linterpreter -lvmlib
+
+
+all: vm_driver
+
+
+libs: ../libmemlib.dylib ../libdebuglib.dylib libvmlib.dylib
+
+
+LIB_CFLAGS = -dynamic -shared -fpic
+DEBUG_CFLAGS = -D VMLIBDEBUG
+LIBMEM_LIBS = -L../ -ldebuglib
+../libmemlib.dylib: 
+	$(MAKE) -f Makefile.old -C ../ libmemlib.dylib
+
+#LIBDEB_CFLAGS = -D DEBUG
+../libdebuglib.dylib: 
+	$(MAKE) -f Makefile.old -C ../ libdebuglib.dylib
+
+stack.o: stack.c stack.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c stack.c -o stack.o 
+
+push.o: push.c push.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c push.c -o push.o
+
+store.o: store.c store.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c store.c -o store.o
+
+memory.o: memory.c memory.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c memory.c -o memory.o
+
+call.o: call.c call.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c call.c -o call.o
+			
+pop.o: pop.c pop.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c pop.c -o pop.o
+	
+operator.o: operator.c operator.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c operator.c -o operator.o
+
+fetch.o: fetch.c fetch.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c fetch.c -o fetch.o
+
+status.o: status.c status.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c status.c -o status.o
+	
+init.o: initialize.c initialize.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c initialize.c -o init.o
+
+vm.o: vm.c vm.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c vm.c -o vm.o 
+
+enter.o: enter.c enter.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c enter.c -o enter.o 
+
+return.o: return.c return.h	
+	$(CC) $(CFLAGS) $(DEBUG_CFLAGS) -fpic -dynamic -c return.c -o return.o 
+	
+jump.o: jump.c jump.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c jump.c -o jump.o 
+
+change.o: change.c change.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c change.c -o change.o 
+
+printf.o: printf.c printf.h
+	$(CC) $(CFLAGS) -fpic -dynamic -c printf.c -o printf.o 
+	
+	
+	
+OBJS = vm.o\
+	push.o\
+	stack.o\
+	store.o\
+	memory.o\
+	call.o\
+	pop.o\
+	operator.o\
+	fetch.o \
+	status.o\
+	init.o \
+	return.o\
+	jump.o\
+	change.o\
+	printf.o
+
+
+SRCS  = ../debuglib.c \
+	../memlib.c \
+	vm.c\
+	push.c\
+	stack.c\
+	store.c\
+	memory.c\
+	call.c\
+	pop.c\
+	operator.c\
+	fetch.c\
+	status.c\
+	initialize.c\
+	return.c\
+	jump.c\
+	change.c\
+	printf.c
+
+VMLIB_CFLAGS = -D VMDEBUG
+VMLIB_LIB =-L./  -L../ -ldebuglib -lmemlib
+#libvmlib.dylib: vm.o push.o stack.o store.o memory.o call.o pop.o operator.o fetch.o status.o init.o return.o jump.o change.o ../libmemlib.dylib ../libdebuglib.dylib
+libvmlib.dylib:  $(OBJS) ../libmemlib.dylib ../libdebuglib.dylib
+	$(CC) $(CFLAGS) $(VMLIB_CFLAGS) $(LIB_CFLAGS) $(VMLIB_LIB) $(OBJS) -o libvmlib.dylib 
+
+#VM_CFLAGS = -fsyntax-only -D DEBUGON
+#VM_CFLAGS = -E -D DEBUGON
+VM_LIB = -L../ -L./ -ldebuglib -lmemlib -lvmlib
+vm_driver: ../libdebuglib.dylib ../libmemlib.dylib libvmlib.dylib
+	$(CC) $(CFLAGS) $(VM_CFLAGS) $(VM_LIB) -o vm_driver vm_main.c
+	
+	
+clean : cleanmore
+	rm *.o core *.out *.s; rm -rf *.dSYM *.dylib;
+
+cleanmore:
+	rm vm_driver *.dylib; rm -rf  *.dylib.dSYM
+
+
+#	if (/bin/test -w $@) then (rm $@) else (:) fi
+#
+# make depend
+#
+# The depend switch varies (unfortunately) for different C compilers.
+#        -Em is used by DEC,
+#	 -M by Sun
+#DEPEND = -Em
+#DEPEND = -M
+DEPEND = -MM
+depend:
+	sed -e "/^#=====DO NOT DELETE THIS LINE=====/q" Makefile.old > Makefile.new
+	$(CC) $(CFLAGS) $(DEPEND) $(SRCS) >> Makefile.new
+#	gcc $(CFLAGS) $(DEPEND) $(SRCS) >> Makefile.new
+	mv Makefile.new Makefile.old
+
+#=====DO NOT DELETE THIS LINE=====
+debuglib.o: ../debuglib.c ../debuglib.h ../Listint.h ../exprint.h \
+  ../typeint.h ../useful.def
+memlib.o: ../memlib.c ../memlib.h ../debuglib.h ../Listint.h ../exprint.h \
+  ../typeint.h ../useful.def
+vm.o: vm.c vm.h vmlib.h memorylib.h store.h ../typeint.h ../useful.def \
+  ../memlib.h ../debuglib.h ../Listint.h ../exprint.h pop.h stack.h \
+  memory.h fetch.h push.h instructionlib.h call.h stacklib.h operator.h \
+  return.h jump.h status.h initialize.h change.h ../interpreter.y.h \
+  ../dataint.h ../symtabint.h ../interpreter.l.h ../transint.h
+push.o: push.c push.h ../typeint.h ../memlib.h ../debuglib.h ../Listint.h \
+  ../exprint.h ../useful.def stack.h
+stack.o: stack.c stack.h ../typeint.h
+store.o: store.c store.h ../typeint.h ../useful.def ../memlib.h \
+  ../debuglib.h ../Listint.h ../exprint.h pop.h stack.h memory.h
+memory.o: memory.c memory.h ../typeint.h
+call.o: call.c call.h ../memlib.h ../debuglib.h ../Listint.h ../exprint.h \
+  ../typeint.h ../useful.def stacklib.h push.h stack.h pop.h change.h \
+  memory.h store.h
+pop.o: pop.c pop.h ../typeint.h stack.h
+operator.o: operator.c operator.h ../typeint.h ../debuglib.h ../Listint.h \
+  ../exprint.h ../useful.def pop.h stack.h push.h ../memlib.h
+fetch.o: fetch.c fetch.h ../typeint.h pop.h stack.h push.h ../memlib.h \
+  ../debuglib.h ../Listint.h ../exprint.h ../useful.def memory.h
+status.o: status.c status.h ../debuglib.h ../Listint.h ../exprint.h \
+  ../typeint.h ../useful.def stack.h memory.h
+initialize.o: initialize.c initialize.h ../typeint.h ../memlib.h \
+  ../debuglib.h ../Listint.h ../exprint.h ../useful.def memory.h stack.h
+return.o: return.c return.h pop.h ../typeint.h stack.h store.h \
+  ../useful.def ../memlib.h ../debuglib.h ../Listint.h ../exprint.h \
+  memory.h call.h stacklib.h push.h change.h
+jump.o: jump.c jump.h pop.h ../typeint.h stack.h store.h ../useful.def \
+  ../memlib.h ../debuglib.h ../Listint.h ../exprint.h memory.h call.h \
+  stacklib.h push.h change.h
+change.o: change.c change.h stack.h ../typeint.h memory.h ../memlib.h \
+  ../debuglib.h ../Listint.h ../exprint.h ../useful.def
