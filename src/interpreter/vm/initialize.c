@@ -37,8 +37,8 @@ void initialize_machine(void){
 //		vm_memory.offset[j] = -1;
 //		vm_memory.leveldiff[j] = -1;
 	   for(int k = 0; k<SCOPE_SIZE;k++){
-	   	//vm_memory.yourmem[k][j] = NULL;
-	     //vm_memory.set[k][j] = 0;
+		   vm_memory.yourmem[k][j] = NULL;
+		   vm_memory.set[k][j] = 0;
 	     vm_memory.type[k][j] = GENERIC;
 		  if(hasrun == FALSE){
 			 vm_memory.current_set_offset[k] = 0;
