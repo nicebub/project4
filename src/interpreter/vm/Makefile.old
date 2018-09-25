@@ -9,8 +9,8 @@ DYLD_FALLBACK_LIBRARY_PATH=../
 TARGETDIR = .
 #
 # Use gcc for Motif compilations.
-#CC = /usr/local/bin/gcc-8
-CC = /usr/bin/gcc
+CC = /usr/local/bin/gcc-8
+#CC = /usr/bin/gcc
 LD = /usr/bin/ld
 #CC= x86_64-apple-darwin17.7.0-gcc-8
 #BISON = /usr/local/opt/bison/bin/bison
@@ -151,8 +151,10 @@ libvmlib.dylib:  $(OBJS) ../libmemlib.dylib ../libdebuglib.dylib
 VM_LIB = -L../ -L./ -ldebuglib -lmemlib -lvmlib
 vm_driver: ../libdebuglib.dylib ../libmemlib.dylib libvmlib.dylib
 	$(CC) $(CFLAGS) $(VM_CFLAGS) $(VM_LIB) -o vm_driver vm_main.c
-	
-	
+
+newmem: newmem_main.c newmemory.c newmemory.h
+	$(CC) $(CFLAGS) $(VM_CFLAGS) -o newmem newmem_main.c newmemory.c
+			
 clean : cleanmore
 	rm *.o core *.out *.s; rm -rf *.dSYM *.dylib;
 

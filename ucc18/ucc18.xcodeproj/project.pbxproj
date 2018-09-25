@@ -61,6 +61,8 @@
 		E2BD2B01214A6610002E5E36 /* vm.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AEE214A6610002E5E36 /* vm.c */; };
 		E2BD2B02214A6610002E5E36 /* stack.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AEF214A6610002E5E36 /* stack.c */; };
 		E2BD2B07214B3D71002E5E36 /* change.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2B05214B3D71002E5E36 /* change.c */; };
+		E2CB8F872150A20700E3A6DC /* newmemory.c in Sources */ = {isa = PBXBuildFile; fileRef = E2CB8F852150A20700E3A6DC /* newmemory.c */; };
+		E2CB8F882150A20700E3A6DC /* newmem_main.c in Sources */ = {isa = PBXBuildFile; fileRef = E2CB8F862150A20700E3A6DC /* newmem_main.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -138,6 +140,15 @@
 			runOnlyForDeploymentPostprocessing = 1;
 		};
 		E285CC992141B5ED008A5C77 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		E2CB8F7B2150A1C400E3A6DC /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -257,6 +268,10 @@
 		E2BD2AF3214A6610002E5E36 /* store.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = store.h; path = ../src/interpreter/vm/store.h; sourceTree = "<group>"; };
 		E2BD2B05214B3D71002E5E36 /* change.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = change.c; path = ../src/interpreter/vm/change.c; sourceTree = "<group>"; };
 		E2BD2B06214B3D71002E5E36 /* change.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = change.h; path = ../src/interpreter/vm/change.h; sourceTree = "<group>"; };
+		E2CB8F7D2150A1C400E3A6DC /* newmem_tester */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = newmem_tester; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2CB8F842150A20700E3A6DC /* newmemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = newmemory.h; path = ../../src/interpreter/vm/newmemory.h; sourceTree = "<group>"; };
+		E2CB8F852150A20700E3A6DC /* newmemory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = newmemory.c; path = ../../src/interpreter/vm/newmemory.c; sourceTree = "<group>"; };
+		E2CB8F862150A20700E3A6DC /* newmem_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = newmem_main.c; path = ../../src/interpreter/vm/newmem_main.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -296,6 +311,13 @@
 			files = (
 				E285CCCB2141BA65008A5C77 /* libl.a in Frameworks */,
 				E285CCCC2141BA65008A5C77 /* liby.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E2CB8F7A2150A1C400E3A6DC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -352,6 +374,7 @@
 				D2714FD520C21FF4009B6AE6 /* uccBedTests */,
 				D2714FE020C21FF4009B6AE6 /* uccBedUITests */,
 				E285CC9C2141B5ED008A5C77 /* interpreter */,
+				E2CB8F7E2150A1C400E3A6DC /* newmem_tester */,
 				D2CB13AC20ACFE26006987E5 /* Products */,
 				D283AFAA20ADF92200B07C08 /* Frameworks */,
 			);
@@ -365,6 +388,7 @@
 				D2714FD220C21FF4009B6AE6 /* uccBedTests.xctest */,
 				D2714FDD20C21FF4009B6AE6 /* uccBedUITests.xctest */,
 				E285CC9B2141B5ED008A5C77 /* interpreter */,
+				E2CB8F7D2150A1C400E3A6DC /* newmem_tester */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -486,6 +510,16 @@
 				E274319D21437B9600D68F1F /* typeint.h */,
 			);
 			name = interpreter;
+			sourceTree = "<group>";
+		};
+		E2CB8F7E2150A1C400E3A6DC /* newmem_tester */ = {
+			isa = PBXGroup;
+			children = (
+				E2CB8F862150A20700E3A6DC /* newmem_main.c */,
+				E2CB8F852150A20700E3A6DC /* newmemory.c */,
+				E2CB8F842150A20700E3A6DC /* newmemory.h */,
+			);
+			path = newmem_tester;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -620,6 +654,23 @@
 			productReference = E285CC9B2141B5ED008A5C77 /* interpreter */;
 			productType = "com.apple.product-type.tool";
 		};
+		E2CB8F7C2150A1C400E3A6DC /* newmem_tester */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E2CB8F832150A1C400E3A6DC /* Build configuration list for PBXNativeTarget "newmem_tester" */;
+			buildPhases = (
+				E2CB8F792150A1C400E3A6DC /* Sources */,
+				E2CB8F7A2150A1C400E3A6DC /* Frameworks */,
+				E2CB8F7B2150A1C400E3A6DC /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = newmem_tester;
+			productName = newmem_tester;
+			productReference = E2CB8F7D2150A1C400E3A6DC /* newmem_tester */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -627,7 +678,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0940;
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = "Laurel Tree Computing";
 				TargetAttributes = {
 					D2714FC020C21FEF009B6AE6 = {
@@ -652,6 +703,9 @@
 					E285CC9A2141B5ED008A5C77 = {
 						CreatedOnToolsVersion = 9.4.1;
 					};
+					E2CB8F7C2150A1C400E3A6DC = {
+						CreatedOnToolsVersion = 9.4.1;
+					};
 				};
 			};
 			buildConfigurationList = D2CB13A620ACFE26006987E5 /* Build configuration list for PBXProject "ucc18" */;
@@ -673,6 +727,7 @@
 				D2714FD120C21FF4009B6AE6 /* uccBedTests */,
 				D2714FDC20C21FF4009B6AE6 /* uccBedUITests */,
 				E285CC9A2141B5ED008A5C77 /* interpreter */,
+				E2CB8F7C2150A1C400E3A6DC /* newmem_tester */,
 			);
 		};
 /* End PBXProject section */
@@ -774,6 +829,15 @@
 				E27431AC21437B9700D68F1F /* interpreter.l in Sources */,
 				E2BD2AFC214A6610002E5E36 /* return.c in Sources */,
 				E27431B021437B9700D68F1F /* symtabint.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E2CB8F792150A1C400E3A6DC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E2CB8F872150A20700E3A6DC /* newmemory.c in Sources */,
+				E2CB8F882150A20700E3A6DC /* newmem_main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1120,6 +1184,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				YACCFLAGS = "-vtd";
 				YACC_GENERATE_DEBUGGING_DIRECTIVES = YES;
 			};
@@ -1193,6 +1258,30 @@
 			};
 			name = Release;
 		};
+		E2CB8F812150A1C400E3A6DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 78XPJAU3A2;
+				GCC_NO_COMMON_BLOCKS = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		E2CB8F822150A1C400E3A6DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 78XPJAU3A2;
+				GCC_NO_COMMON_BLOCKS = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1255,6 +1344,15 @@
 			buildConfigurations = (
 				E285CCA02141B5ED008A5C77 /* Debug */,
 				E285CCA12141B5ED008A5C77 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E2CB8F832150A1C400E3A6DC /* Build configuration list for PBXNativeTarget "newmem_tester" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E2CB8F812150A1C400E3A6DC /* Debug */,
+				E2CB8F822150A1C400E3A6DC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
