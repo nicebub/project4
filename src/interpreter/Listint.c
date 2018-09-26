@@ -40,6 +40,10 @@ struct command_st cmdinf[] = {
     { LTR,	 "ltR" },
     { LEI,	 "leI" },
     { LER,	 "leR" },
+    { GTI,	 "gtI" },
+    { GTR,	 "gtR" },
+    { GEI,	 "geI" },
+    { GER,	 "geR" },
     { JUMP, 	"jump" },
     { JUMPZ, 	"jumpz" },
     { MULI, 	"mulI" },
@@ -51,7 +55,9 @@ struct command_st cmdinf[] = {
     { FLT,	"flt"  },
     { FLTB, 	"fltb" },
     { INTT, 	"int", },
-    { INTTB,	"intb" }
+    { INTTB,	"intb" },
+    { EQI,	 "eqI" },
+    { EQR,	 "eqR" }
 };
 
 

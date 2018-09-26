@@ -57,25 +57,26 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 	   SWITCH_CMD(currentcommand->name_enm,
 	   { /*alloc*/
 
-		  #ifdef DEBUG
-			 dbprint(VMLIBC,"FOUND AN ALLOC IN MACHINE",0);
-		  #endif
-		  for(int j=1;j<=currentcommand->paramlist->list->int_val[0];j++)
-			 push_onto_stack(&vm_memstack,"EMPTY" ,STR);
-		  int new_amount = *(int*)get_value_at_offset_n_frames_back(&vm_memstack,5,0)+currentcommand->paramlist->list->int_val[0];
-		  change_stack_value_at_offset_n_frames_back(&vm_memstack,5,0,&new_amount,INT);
+		  		#ifdef DEBUG
+		  		dbprint(VMLIBC,"FOUND AN ALLOC IN MACHINE",0);
+		  		#endif
+
+		  		for(int j=1;j<=currentcommand->paramlist->list->int_val[0];j++)
+				    push_onto_stack(&vm_memstack,"EMPTY" ,STR);
+		  		int new_amount = *(int*)get_value_at_offset_n_frames_back(&vm_memstack,5,0)+currentcommand->paramlist->list->int_val[0];
+		  		change_stack_value_at_offset_n_frames_back(&vm_memstack,5,0,&new_amount,INT);
 	   },
 	   {/*enter*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN ENTER IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN ENTER IN MACHINE",0);
 					#endif
 
 	   },
 	   {/*pushs*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN PUSHS IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN PUSHS IN MACHINE",0);
 					#endif
 		  			push_onto_stack(&vm_memstack,currentcommand->paramlist->list->val[0],STR);
 
@@ -83,13 +84,13 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 	   {/*call*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN CALL IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN CALL IN MACHINE",0);
 					#endif
 				   
 		  if(in_loop_call(&currentcommand,other_units,&commandnum,&current_unit, &c)==1){
 				#ifdef DEBUG
 			 	dbprint(VMLIBC,"Printing Stack",0);
-			 print_stack(&vm_memstack);
+			 	print_stack(&vm_memstack);
 				#endif
 			 	continue;
 		  }
@@ -97,42 +98,42 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 	   {/*popI*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN POPI IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN POPI IN MACHINE",0);
 					#endif
 	   },
 	   {/*pushga*/
-		  int g;
+		  			int g;
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN PUSHGA IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN PUSHGA IN MACHINE",0);
 					#endif
 		  
-		  g = get_address(&vm_memstack,currentcommand->paramlist->list->int_val[0],currentcommand->paramlist->list->int_val[1]);
-		  push(INT, &g);
+		  			g = get_address(&vm_memstack,currentcommand->paramlist->list->int_val[0],currentcommand->paramlist->list->int_val[1]);
+		  			push(INT, &g);
 	   },
 	   {/*pusha*/
-		  int g;
+		  			int g;
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN PUSHA IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN PUSHA IN MACHINE",0);
 					#endif
-		  g = get_address(&vm_memstack,0,currentcommand->paramlist->list->int_val[0]);
-		  push(INT,&g);
+		  			g = get_address(&vm_memstack,0,currentcommand->paramlist->list->int_val[0]);
+		  			push(INT,&g);
 	   },
 	   {/*fetchI*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN FETCHI IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN FETCHI IN MACHINE",0);
 					#endif
 
-				   fetch(INT);
+				   	fetch(INT);
 
 	   },
 	   {/*fetchR*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN FETCHR IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN FETCHR IN MACHINE",0);
 					#endif
 
-				   fetch(FLOAT);
+				   	fetch(FLOAT);
 	   },
 	   {/*storeI*/
 
@@ -155,25 +156,25 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 	   {/*pushcI*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN PUSHCI IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN PUSHCI IN MACHINE",0);
 					#endif
-		  		push_onto_stack(&vm_memstack,&currentcommand->paramlist->list->int_val[0],INT);
+		  			push_onto_stack(&vm_memstack,&currentcommand->paramlist->list->int_val[0],INT);
 
 				   
 	   },
 	   {/*pushcR*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN PUSHCR IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN PUSHCR IN MACHINE",0);
 					#endif
 
-		  push_onto_stack(&vm_memstack,&currentcommand->paramlist->list->float_val[0],FLOAT);
+		  			push_onto_stack(&vm_memstack,&currentcommand->paramlist->list->float_val[0],FLOAT);
 				   
 	   },
 	   {/*setrvI*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN SETRVI IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN SETRVI IN MACHINE",0);
 					#endif
 				   void * tempval;
 				   tempval = NULL;
@@ -194,7 +195,7 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 	   {/*returnf*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN RETURNF IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN RETURNF IN MACHINE",0);
 					#endif
 
 				   if(returnf(other_units,&c, &commandnum,&current_unit,&currentcommand)==1){
@@ -209,7 +210,7 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 	   {/*return*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN RETURN IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN RETURN IN MACHINE",0);
 					#endif
 		  			returnvalue = *(int*)pop_off_stack(&vm_memstack, &used_type7);
 		  			pop_activation_record(&vm_memstack,&used_type6);
@@ -217,40 +218,70 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 	   {/*ltI*/
 					
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN LTI IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN LTI IN MACHINE",0);
 					#endif
-				   operate('<',INT);
+				   	operate('<',INT);
 
 				   
 	   },
 	   {/*ltR*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN LTR IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN LTR IN MACHINE",0);
 					#endif
-				   operate('<',FLOAT);
+				   	operate('<',FLOAT);
 
 	   },
 	   {/* leI */
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN LEI IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN LEI IN MACHINE",0);
 					#endif
-				   relationship("<=",INT);
+				   	relationship("<=",INT);
 
 	   },
 	   {/* leR */
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN LER IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN LER IN MACHINE",0);
 					#endif
 
-				   relationship("<=",FLOAT);
+				   	relationship("<=",FLOAT);
+
+	   },
+        {/* gtI */
+			#ifdef DEBUG
+		  	dbprint(VMLIBC,"FOUND AN GTI IN MACHINE",0);
+			#endif
+
+		  operate('>',INT);
+
+	   },
+	   { /* gtR */
+			#ifdef DEBUG
+		  	dbprint(VMLIBC,"FOUND AN GTR IN MACHINE",0);
+			#endif
+
+		  operate('>',FLOAT);
+
+	   },
+	   { /* geI */
+			#ifdef DEBUG
+		  	dbprint(VMLIBC,"FOUND AN GEI IN MACHINE",0);
+			#endif
+		  relationship(">=",INT);
+
+	   },
+	   {  /* geR */
+			#ifdef DEBUG
+		  	dbprint(VMLIBC,"FOUND AN GER IN MACHINE",0);
+			#endif
+		  relationship(">=",FLOAT);
 
 	   },
 	   {/*jump*/
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN JUMP IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN JUMP IN MACHINE",0);
 					#endif
 				   if(jump(FALSE,other_units,&currentcommand,&current_unit,&commandnum,&c)==1)
 					   continue;
@@ -268,31 +299,31 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 	   {/*mulI*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN MULI IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN MULI IN MACHINE",0);
 					#endif
 
-				   operate('*',INT);
+				   	operate('*',INT);
 	   },
 	   {/*mulR*/
 
 					#ifdef DEBUG
-				   dbprint(VMLIBC,"FOUND AN MULR IN MACHINE",0);
+				   	dbprint(VMLIBC,"FOUND AN MULR IN MACHINE",0);
 					#endif
-				   operate('*',FLOAT);
+				   	operate('*',FLOAT);
 	   },
 	   {/*addI*/
 
-				#ifdef DEBUG
-			   dbprint(VMLIBC,"FOUND AN ADDI IN MACHINE",0);
-				#endif
-				   operate('+',INT);
+					#ifdef DEBUG
+			   		dbprint(VMLIBC,"FOUND AN ADDI IN MACHINE",0);
+					#endif
+				   	operate('+',INT);
 	   },
 	   { /*addR*/
 
-				#ifdef DEBUG
-			   dbprint(VMLIBC,"FOUND AN ADDR IN MACHINE",0);
-				#endif
-				   operate('+',FLOAT);
+					#ifdef DEBUG
+			   		dbprint(VMLIBC,"FOUND AN ADDR IN MACHINE",0);
+					#endif
+				   	operate('+',FLOAT);
 	   },
 	   { /*subI */
 			#ifdef DEBUG
@@ -339,6 +370,14 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 			#endif
 		  int invalue = (int)*(float*)get_cell_value(&vm_memstack.stack[vm_memstack.stacksize-2]);
 		  change_stack_value_at_offset(&vm_memstack, (int)vm_memstack.stacksize-2, &invalue, INT);
+
+	   },
+	   { /* eqI */
+		  relationship("==",INT);
+
+	   },
+	   { /* eqR */
+		  relationship("==",FLOAT);
 
 	   })
 	   commandnum += 1;

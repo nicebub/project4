@@ -8,7 +8,7 @@
 #include "push.h"
 
 #include "memory.h"
-
+#include "../useful.def"
 
 extern typecg used_type5, used_type6, used_type7;
 

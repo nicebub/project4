@@ -556,7 +556,7 @@ int release(void * mem, typecg intype, int tag){
 	}
 }
 int releaseobj(void * obj, typecg intype){
-	int tag;
+//	int tag;
 	int otag;
 	int_m * temp;
 	float_m * tempfloat;

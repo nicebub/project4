@@ -450,6 +450,10 @@ void gen_command(commandlisttype * inList){
 	   {/* LTR */},
 	   {/* LEI*/},
 	   {/* LER */},
+	   {/* GTI*/},
+	   {/* GTR */},
+	   {/* GEI*/},
+	   {/* GER */},
 	   {/* JUMP */},
 	   /* JUMPZ */,
 	   /* MULI */,
@@ -488,6 +492,12 @@ void gen_command(commandlisttype * inList){
 	},
 	{ /* intb */
 				    
+	},
+	{ /* eqI */
+	    
+	},
+     { /* eqR */
+	    
 	})
 
 	}
