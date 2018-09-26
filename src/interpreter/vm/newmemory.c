@@ -46,7 +46,7 @@ void set_cell_value(memory_cell *incell,void * v, typecg t, size_t s){
 			 incell->m.s.num = *(int*)v;
 			 break;
 		  case FLOAT:
-			 incell->m.s.real = *(double*)v;
+			 incell->m.s.real = *(float*)v;
 			 break;
 		  case CHAR:
 			 incell->m.s.character = *(char*)v;
@@ -135,8 +135,16 @@ void push_onto_stack(memstack *instack, void * value, typecg intype){
 		  instack->sp++;
 }
 
-void change_stack_value(memstack *instack, int offset, void* value, typecg intype){
-    set_cell_value(&instack->stack[offset], value, intype, 1);
+void change_stack_value_at_offset(memstack *instack, int offset, void* value, typecg intype){
+    set_cell_value((instack->bp+offset), value, intype, 1);
+}
+void change_stack_value_at_offset_n_frames_back(memstack *instack, int offset, int n, void* value, typecg intype){
+    memory_cell *temp;
+    temp = instack->bp;
+    for(int i=n;i>0;i--){
+	   temp = (temp+2)->m.s.address;
+    }
+    set_cell_value((temp+offset), value, intype, 1);
 }
 
 

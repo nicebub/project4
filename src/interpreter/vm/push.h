@@ -3,9 +3,6 @@
 
 #include "../typeint.h"
 #include "../memlib.h"
-
-#include "stack.h"
-
 #include <stdlib.h>
 #include <string.h>
 

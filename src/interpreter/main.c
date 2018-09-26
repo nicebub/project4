@@ -47,9 +47,10 @@ extern trans_u_list * All_T_Units;
 const  char MAIN_STRING[]="main";
 
 int main(int argc, char **argv){
-	int offset_counter;
-	int othercounter;
-	int param_offset;
+//	int offset_counter;
+//	int othercounter;
+//	int param_offset;
+    int returnvalue;
 	translation_unit * current_unit, *main_unit;
 
 
@@ -61,9 +62,9 @@ int main(int argc, char **argv){
 
 
 	founderror=FALSE;
-	othercounter=1;
+//	othercounter=1;
 	globalcount=0;
-	param_offset=0;
+//	param_offset=0;
 	infile = NULL;
 	filename = NULL;
 	filename = "main.c";
@@ -94,22 +95,10 @@ int main(int argc, char **argv){
     dbprint(MAINC,"the strlen of new filename : ", 2, STR, filename, INT, strlen(filename));
 	#endif
 
-/*	mysymtab = createTree(100);
-	if(mysymtab == NULL){
-//		free(filename);
-		filename=NULL;
-		filename = "main.c";
-		error("Unable to construct symbol table\n","");
-		return -1;
-	}*/
 
-	offset_counter=5;
-/*	if(yytables_fload(openfilea("lex.yy.tables")) == 0){
-		error("can't open lex.yy.tables","");
-		return -1;
-	}*/
+	//offset_counter=5;
 
-	do{
+    do{
 	#ifdef DEBUG
 	    dbprint(MAINC,"STARTING TO PARSE MACHINE FILE",0);
 	#endif
@@ -128,10 +117,6 @@ int main(int argc, char **argv){
 	    fclose(infile);
     infile=NULL;
     
-/*	yytables_destroy();
-	yylex_destroy();*/
-//	free(filename);
-    
 	if(All_T_Units == NULL) return -1;
 	main_unit = All_T_Units->list;
 	while(strcmp(main_unit->name,"main") != 0 && main_unit->next_trans_unit != NULL){
@@ -148,11 +133,11 @@ int main(int argc, char **argv){
     dbprint(MAINC,"DONE WITH TRANSLATION UNIT ARRAY",0);
 #endif
     
-    run_virtual_machine(main_unit,trans_array,translation_unit_amount);
+    returnvalue = run_virtual_machine(main_unit,trans_array,translation_unit_amount);
     
     filename=NULL;
 
 	mem_cleanup();
-	return 0;
+	return returnvalue;
 }
 #define MAINFUNC

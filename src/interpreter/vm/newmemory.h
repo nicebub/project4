@@ -84,7 +84,8 @@ void delete_stack(memstack *instack);
 boolcg stack_isempty(memstack *instack);
 size_t get_stack_size(memstack *instack);
 
-void change_stack_value(memstack *instack, int offset, void* value, typecg intype);
+void change_stack_value_at_offset(memstack *instack, int offset, void* value, typecg intype);
+void change_stack_value_at_offset_n_frames_back(memstack *instack, int offset, int n,void* value, typecg intype);
 
 
 void init_activation_record(activationrecord *inrecord);

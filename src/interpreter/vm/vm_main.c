@@ -1,6 +1,5 @@
 #include "vm.h"
-//#include "stacklib.h"
-//#include "push.h"
+
 #include "../memlib.h"
 #include "../debuglib.h"
 
@@ -43,7 +42,7 @@ int main(int argc, const char* argv[]){
 	showstack();
 	push(FLOAT, (float[]) { 346.89 } );
 	showstack();
-	while(vm_stack.stacksize!=3){
+	while(vm_memstack.stacksize!=3){
 		pop(&intype, 3);
 	}
 
@@ -56,7 +55,7 @@ int main(int argc, const char* argv[]){
 	showstack();
 //	void * address_bar = vm_stack.top[0];
 	push(LONG, (unsigned long* [] ) { firstint } );
-	push(LONG, (unsigned long* [] ) { vm_stack.top[0] } );
+//	push(LONG, (unsigned long* [] ) { vm_memstack.top[0] } );
 	showstack();
 	mem_cleanup();
 	return 0;

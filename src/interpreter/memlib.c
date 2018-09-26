@@ -569,7 +569,7 @@ int releaseobj(void * obj, typecg intype){
 		switch(intype){
 			case INT:
 						temp = (int_m*) obj;
-						tag = temp->tag;
+					//	tag = temp->tag;
 						otag = temp->o_tag;
 #ifdef DEBUG
 						dbprint(MEMLIBC,"found tag ", 1, INT, tag);
@@ -612,7 +612,7 @@ int releaseobj(void * obj, typecg intype){
 						return 0;
 			case FLOAT:
 						tempfloat = (float_m*) obj;
-						tag = tempfloat->tag;
+					//	tag = tempfloat->tag;
 						otag = tempfloat->o_tag;
 						if(mem_manager.objref[otag] > 0 && &mem_manager.objbucket[otag] != NULL){
 							if(mem_manager.objref[otag] == 1){ 
@@ -653,7 +653,7 @@ int releaseobj(void * obj, typecg intype){
 			case STR:
 			case CHAR:
 						tempstr = (str_m*) obj;
-						tag = tempstr->tag;
+					//	tag = tempstr->tag;
 						otag = tempstr->o_tag;
 						if(mem_manager.objref[otag] > 0 && &mem_manager.objbucket[otag] != NULL){
 							if(mem_manager.objref[otag] == 1){ 

@@ -31,18 +31,15 @@ void mprintf(int count){
 
 				    p_array[p_size] = pop(&used_type5,3);
 					p_size++;
-					vm_memory.used_stack[vm_memory.current_scope] -= 1;
 				}
 
 				infmt = pop(&used_type6,4);
-//				printf("%s",infmt);
 				s3w(infmt, p_array,p_size);
 
 		}
 		else if(count == 1){
 
 			 infmt = pop(&used_type5,3);
-			 vm_memory.used_stack[vm_memory.current_scope] -= 1;
 			 printf("%s", infmt);
 	 	}
    
@@ -50,8 +47,8 @@ void mprintf(int count){
 
 
 char * s3w(char * infmt, void ** p_array, int p_size){
-	char * piece1;
-	char * piece2;
+//	char * piece1;
+//	char * piece2;
 	char * piece3;
 	char *val_place;
 	char   buffer[MAX_STR_CONST];
@@ -70,22 +67,14 @@ char * s3w(char * infmt, void ** p_array, int p_size){
 		p3buffer[y] = ' ';
 	}
 
-	piece1 = piece2 = piece3 = NULL;
+//    piece1 = piece2 = NULL;
+    piece3 = NULL;
 	val_place = NULL;
 	
 
 	if(infmt !=NULL && p_size >0){
 
 		currentchar = &infmt[0];
-
-
-		
-/*		p3buffer[];
-
-
-		currentchar = piece2;
-		currentchar++;
-*/
 		for(int r=0;r<p_size;r++){
 			while(*currentchar != '%'){
 
@@ -97,8 +86,8 @@ char * s3w(char * infmt, void ** p_array, int p_size){
 			buffer[p1_length] = '\0';
 			printf("%s",buffer);
 
-			piece1 = currentchar -1;
-			piece2 = currentchar;
+//			piece1 = currentchar -1;
+//			piece2 = currentchar;
 			currentchar++;
 			
 
@@ -109,10 +98,9 @@ char * s3w(char * infmt, void ** p_array, int p_size){
 						break;
 
 				case 'f':
-						sprintf(valbuffer,"%f",*(float*) p_array[r]);
+						sprintf(valbuffer,"%f",(float)*(float*) p_array[r]);
 						break;
-			
-			
+					
 			
 				case 's':
 						sprintf(valbuffer,"%s",(char*)p_array[r]);
@@ -135,14 +123,6 @@ char * s3w(char * infmt, void ** p_array, int p_size){
 	    buffer[p1_length] = '\0';
 	    printf("%s",buffer);
 		return NULL;
-				//cut string into 3
-				//swutch on middle part
-				//substitute new string
-				//print whole string
-		
-		
-		
-		
 	}
 	return NULL;
 }

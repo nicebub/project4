@@ -14,7 +14,7 @@
 
 
 void showstack(void){
-	dbprint(VMLIBC,"-------------------------------------", 0);
+/*	dbprint(VMLIBC,"-------------------------------------", 0);
 	dbprint(VMLIBC, "---stacksize----", 1, INT, vm_stack.stacksize);
 	for(int i=vm_stack.stacksize-1; i >= 0;i--){
 		dbprint(VMLIBC, "---showstack iteration----", 1, INT, i, STR, "-----");
@@ -24,11 +24,11 @@ void showstack(void){
 			dbprint(VMLIBC,"--",1, STR,(void*)vm_stack.top[i]), \
 			dbprint(VMLIBC,"--",1, LONG,(unsigned long*)vm_stack.top[i]))
 			dbprint(VMLIBC,"-------------------------------------",0);
-	}
+	}*/
 }
 
 void showmemory(void){
-    dbprint(VMLIBC,"-------------------------------------", 0);
+/*    dbprint(VMLIBC,"-------------------------------------", 0);
     dbprint(VMLIBC, "---memory----", 0);
     for(int i=0;i<vm_memory.total_scopes; i++){
 	   dbprint(VMLIBC, "---showmemory scope ----", 1, INT, i);
@@ -48,5 +48,6 @@ void showmemory(void){
 
 		  }
 	   }
-    }
+    }*/
 }
+

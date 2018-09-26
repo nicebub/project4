@@ -20,35 +20,32 @@ void fetch(typecg intype){
     first = NULL;
     second = NULL;
     third = NULL;
-    first = (int*) pop(&used_type5, 1);
+    first = (int*) pop_off_stack(&vm_memstack,&used_type7);
 #ifdef DEBUG
     dbprint(VMLIBC,"WHAT IS THE FIRST ELEMENT POPPED ",1, INT, first);
 #endif
-    if(*first == -420){
+/*    if(*first == -420){
 	   switch(intype){
 		  case INT:
-			 second = pop(&used_type6,2);
-			 third = pop(&used_type7,4);
-			 push(intype, vm_memory.yourmem[vm_memory.current_scope - (*third)][(*(int*)second)-5]);
-#ifdef DEBUG
-			 dbprint(VMLIBC,"memory in fetch: ", 1, INT, *(int*)vm_memory.yourmem[vm_memory.current_scope - (*third)][(*(int*)second)-5]);
-#endif
+			 second = pop_off_stack(&vm_memstack);
+			 third = pop_off_stack(&vm_memstack);
+		//	 push(intype, vm_memory.yourmem[vm_memory.current_scope - (*third)][(*(int*)second)-5]);
+			#ifdef DEBUG
+			 #endif
 			 	break;
 		  case FLOAT:
-			 second = pop(&used_type6,3);
-			 third = pop(&used_type7,4);
-			 push(intype, vm_memory.yourmem[vm_memory.current_scope - (*third)][(*(int*)second)-5]);
-#ifdef DEBUG
-			 dbprint(VMLIBC,"memory in fetch: ", 1, INT, *(int*)vm_memory.yourmem[vm_memory.current_scope - (*third)][(*(int*)second)-5]);
-#endif
+			 second = pop_off_stack(&vm_memstack);
+			 third = pop_off_stack(&vm_memstack);
+	//		 push(intype, vm_memory.yourmem[vm_memory.current_scope - (*third)][(*(int*)second)-5]);
+			#ifdef DEBUG
+			#endif
 			 	break;
 		  default: break;
 	   }
-    }
-    else{
-	   push(intype, vm_memory.yourmem[vm_memory.current_scope][(*first)-5]);
+    }*/
+//    else{
+	   push_onto_stack(&vm_memstack,get_value_at_offset(&vm_memstack,*(int*)first),intype);
 #ifdef DEBUG
-	   dbprint(VMLIBC,"memory in fetch: ", 1, INT, *(int*)vm_memory.yourmem[vm_memory.current_scope][(*(int*)first)-5]);
 #endif
-    }
+//    }
 }

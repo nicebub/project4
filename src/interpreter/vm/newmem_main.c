@@ -30,7 +30,7 @@ int main(void){
     init_memory_cell(&temp);
     push_onto_stack(&mstack,&(int){32}, INT);
     push_onto_stack(&mstack,"hi",STR);
-    push_onto_stack(&mstack,&(double){5.4},FLOAT);
+    push_onto_stack(&mstack,&(float){5.4},FLOAT);
     void * mval = &(int[]){1,5,3,2};
     push_onto_stack(&mstack,&mval,REFINT);
     push_onto_stack(&mstack,mval,REFINT);
@@ -41,7 +41,7 @@ int main(void){
     printer
     pop_off_stack(&mstack);
     printer
-    change_stack_value(&mstack,1, "hello", STR);
+    change_stack_value_at_offset(&mstack,1,"hello", STR);
     printer
     activationrecord inrecord;
     setup_record("link",5,"control","mycommand",11,"25");
@@ -71,6 +71,9 @@ int main(void){
 		 get_value_at_offset_n_frames_back(&mstack,3,2));
     printf("value at offset 1 frame back: %s\n",
 		 get_value_at_offset_n_frames_back(&mstack,0,1));
+    printer
+    printf("changing a stack value 1 frame down, offset 2\n");
+    change_stack_value_at_offset_n_frames_back(&mstack,3,1,&(int){420},INT);
     printer
     pop_activation_record(&mstack);
     printer

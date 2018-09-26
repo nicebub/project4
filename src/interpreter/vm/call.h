@@ -16,6 +16,7 @@
 #include "stacklib.h"
 #include "store.h"
 #include "printf.h"
+#include "scanf.h"
 
 
 extern typecg used_type5, used_type6;

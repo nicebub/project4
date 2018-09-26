@@ -81,7 +81,7 @@ char* genlabelu(char* name, int labelnum){
 	for(a=0;a<(strlen(name));a++)
 		tempstr[a]=name[a];
 	tempstr= tempstr-1;
-	name = name - 1;
+//	name = name - 1;
 //	tempstr = (char*)strcat(tempstr,buf);
 	return tempstr;
 }
@@ -114,9 +114,9 @@ void gen_instr_S(char* name, char* inS){
 void gen_label(char* name){
 	char * trunc_name;
 	trunc_name = NULL;
-	trunc_name = name;
+//	trunc_name = name;
 	if(strcmp("_main1", name) == 0){
-		trunc_name = cut_str(name);
+	//	trunc_name = cut_str(name);
 	}
 //	fprintf(infile, "%s:					##  LABEL\n", trunc_name);
 //	fprintf(infile, "\n", name);
@@ -252,7 +252,7 @@ void gen_command(commandlisttype * inList){
 	
 	if(inList !=NULL){
 		length = inList->length;
-		name = inList->name;
+	//	name = inList->name;
 		paramlist = inList->paramlist;
 	    SWITCH_CMD(inList->name_enm,
     {/* ALLOC */
@@ -467,7 +467,28 @@ void gen_command(commandlisttype * inList){
 				}
 				
     },
-	{/* ADDR */})
+	{/* ADDR */
+	    
+	},
+    {/* SUBI */
+	   
+    },
+    {/*SUBR*/
+	   
+    },
+    { /* flt */
+
+	},
+    {/* fltb */
+	   
+    },
+				
+    { /* int */
+				    
+	},
+	{ /* intb */
+				    
+	})
 
 	}
 }

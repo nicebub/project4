@@ -134,8 +134,8 @@ void dbprint(int which,const char * s1,int count, ...){
 	int  intvalue;
 	double floatvalue;
 	void * charvalue;
-	intvalue = -1;
-	floatvalue =-1.1;
+	//intvalue = -1;
+	//floatvalue =-1.1;
 	charvalue = NULL;
 	typecg intype;
     program = (char*)which_strings[which];

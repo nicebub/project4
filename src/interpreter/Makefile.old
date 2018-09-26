@@ -8,8 +8,8 @@
 TARGETDIR = .
 #
 # Use gcc for Motif compilations.
-#CC = /usr/local/bin/gcc-8
-CC = /usr/bin/gcc
+CC = /usr/local/bin/gcc-8
+#CC = /usr/bin/gcc
 LD = /usr/bin/ld
 #CC= x86_64-apple-darwin17.7.0-gcc-8
 #BISON = /usr/local/opt/bison/bin/bison
@@ -189,21 +189,21 @@ AOBJS  = lex.yy.o \
 	reglib.c \
 	vm/memory.c\
 	vm/vm.c\
-	vm/enter.c\
-	vm/allocate.c\
 	vm/call.c\
-	vm/change.c\
 	vm/fetch.c\
 	vm/store.c\
 	vm/jump.c\
 	vm/push.c\
-	vm/stack.c\
 	vm/pop.c\
 	vm/initialize.c\
 	vm/operator.c\
 	vm/return.c\
 	vm/status.c\
 	vm/printf.c
+#	vm/enter.c\
+#	vm/allocate.c\
+#	vm/change.c\
+#	vm/stack.c\
 	
 
 
@@ -243,10 +243,10 @@ drivers: listc_driver
 	
 	
 MAIN_CFLAGS = -D VMLIBDEBUG		
-interpreter : $(OBJS) $(MAIN)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(AOBJS) $(MAIN) 
-#interpreter : $(MAIN) $(LIBRARYS)
-#	$(CC) $(CFLAGS) $(MAIN_CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(LIBS) $(MAIN)
+#interpreter : $(OBJS) $(MAIN)
+#	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(AOBJS) $(MAIN) 
+interpreter : $(MAIN) $(LIBRARYS)
+	$(CC) $(CFLAGS) $(MAIN_CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(LIBS) $(MAIN)
 
 example: $(OBJS) $(MAIN) symtab.o example.c List.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(LIBS) $(OBJS) example.c
@@ -270,34 +270,36 @@ depend:
 
 #=====DO NOT DELETE THIS LINE=====
 lex.yy.o: lex.yy.c debuglib.h Listint.h exprint.h typeint.h useful.def \
-  dataint.h symtabint.h interpreter.l.h transint.h memlib.h \
-  interpreter.tab.h
+ dataint.h symtabint.h interpreter.l.h transint.h memlib.h \
+ interpreter.tab.h
 interpreter.tab.o: interpreter.tab.c interpreter.y.h dataint.h \
-  symtabint.h Listint.h exprint.h typeint.h useful.def interpreter.l.h \
-  transint.h debuglib.h memlib.h
+ symtabint.h Listint.h exprint.h typeint.h useful.def interpreter.l.h \
+ transint.h debuglib.h memlib.h
 main.o: main.c debuglib.h Listint.h exprint.h typeint.h useful.def \
-  dataint.h symtabint.h interpreter.l.h transint.h interpreter.y.h \
-  interpreter.tab.h commandint.h main.h vm/vm.h vm/vmlib.h \
-  vm/memorylib.h vm/store.h vm/../memlib.h vm/pop.h vm/stack.h \
-  vm/memory.h vm/fetch.h vm/push.h vm/instructionlib.h vm/call.h \
-  vm/stacklib.h vm/operator.h vm/return.h vm/jump.h vm/status.h \
-  vm/initialize.h memlib.h
+ dataint.h symtabint.h interpreter.l.h transint.h interpreter.y.h \
+ interpreter.tab.h commandint.h main.h vm/vm.h vm/vmlib.h vm/memorylib.h \
+ vm/memory.h vm/store.h vm/../typeint.h vm/../useful.def vm/../memlib.h \
+ vm/../debuglib.h vm/../typeint.h vm/../Listint.h vm/pop.h vm/fetch.h \
+ vm/push.h vm/instructionlib.h vm/call.h vm/stacklib.h vm/printf.h \
+ vm/scanf.h vm/operator.h vm/../debuglib.h vm/return.h vm/jump.h \
+ vm/status.h vm/initialize.h memlib.h
 Listint.o: Listint.c debuglib.h Listint.h exprint.h typeint.h useful.def \
-  memlib.h
+ memlib.h
 commandint.o: commandint.c commandint.h memlib.h debuglib.h Listint.h \
-  exprint.h typeint.h useful.def
+ exprint.h typeint.h useful.def
 transint.o: transint.c transint.h Listint.h exprint.h typeint.h \
-  useful.def memlib.h debuglib.h
+ useful.def memlib.h debuglib.h
 debuglib.o: debuglib.c debuglib.h Listint.h exprint.h typeint.h \
-  useful.def
+ useful.def
 memlib.o: memlib.c memlib.h debuglib.h Listint.h exprint.h typeint.h \
-  useful.def
+ useful.def
 reglib.o: reglib.c reglib.h memlib.h debuglib.h Listint.h exprint.h \
-  typeint.h useful.def
-vm.o: vm/vm.c vm/vm.h vm/vmlib.h vm/memorylib.h vm/store.h \
-  vm/../typeint.h vm/../useful.def vm/../memlib.h vm/../debuglib.h \
-  vm/../Listint.h vm/../exprint.h vm/pop.h vm/stack.h vm/memory.h \
-  vm/fetch.h vm/push.h vm/instructionlib.h vm/call.h vm/stacklib.h \
-  vm/operator.h vm/return.h vm/jump.h vm/status.h vm/initialize.h \
-  vm/change.h vm/../interpreter.y.h vm/../dataint.h vm/../symtabint.h \
-  vm/../interpreter.l.h vm/../transint.h
+ typeint.h useful.def
+vm.o: vm/vm.c vm/vm.h vm/vmlib.h vm/memorylib.h vm/memory.h vm/store.h \
+ vm/../typeint.h vm/../useful.def vm/../memlib.h vm/../debuglib.h \
+ vm/../Listint.h vm/../exprint.h vm/../typeint.h vm/../useful.def \
+ vm/pop.h vm/fetch.h vm/push.h vm/instructionlib.h vm/call.h \
+ vm/stacklib.h vm/printf.h vm/scanf.h vm/operator.h vm/../debuglib.h \
+ vm/return.h vm/jump.h vm/status.h vm/initialize.h vm/../Listint.h \
+ vm/../interpreter.y.h vm/../dataint.h vm/../symtabint.h \
+ vm/../interpreter.l.h vm/../transint.h

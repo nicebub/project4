@@ -5,8 +5,6 @@
 #include "../memlib.h"
 
 #include "memory.h"
-#include "stack.h"
-
 
 extern typecg *used_type1;
 extern typecg *used_type2;

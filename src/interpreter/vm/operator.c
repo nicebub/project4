@@ -2,12 +2,13 @@
 
 #define OPERATOR(x,op,y) x op y
 
-#define SWITCH_OP(whichtemp,operator) switch(operator){\
+#define SWITCH_OP(whichtemp,operator,contp1,contp2) switch(operator){\
 						case '+':\
-							*  whichtemp ## 1 =  OPERATOR((*  whichtemp ## 1), + ,( *  whichtemp ## 2)) ;\
+/*							printf("adding: %f and %f\n",  *whichtemp ## 1, * whichtemp ## 2);*/\
+							*  whichtemp ## 1 =  OPERATOR((*  whichtemp ## 1), + ,(*  whichtemp ## 2)) ;\
     							break;\
 						case '-':\
-							*  whichtemp ## 1 =  OPERATOR((*  whichtemp ## 1), - ,( *  whichtemp ## 2)) ;\
+							*  whichtemp ## 1 =  OPERATOR((*  whichtemp ## 2), - ,( *  whichtemp ## 1)) ;\
 							break;\
 						case '*':\
 							* whichtemp ## 1 =  OPERATOR((* whichtemp ## 1), * ,(* whichtemp ## 2)) ;\
@@ -28,10 +29,22 @@
 			 }\
 
     
-#define SWITCH_OP2(intype,tempin, used_typnum,operator) {\
-	tempin ## 1 = pop(&used_type ## used_typnum,1);\
-	tempin ## 2 = pop(&used_type ## used_typnum,2);\
-    	SWITCH_OP(tempin,operator)\
+#define SWITCH_OP2(intype,tempin, used_typnum,operator,contp1,contp2) {\
+	void * temp1 = pop_off_stack(&vm_memstack,&used_type ## used_typnum); \
+/*	printf("temp1 as float: %f\n",*(float*)temp1);*/\
+/*	printf("temp1 as float: %f\n",(float)*(float*)temp1);*/\
+	if(used_type ## used_typnum == INT) \
+		*tempin ## 1 =  (int)*(int*)temp1;\
+	else \
+		*tempin ## 1 =  (float)*(float*)temp1;\
+	void * temp2 = pop_off_stack(&vm_memstack,&used_type ## used_typnum); \
+/*	printf("temp2 as float: %f\n",*(float*)temp2);*/\
+/*	printf("temp2 as float: %f\n",(float)*(float*)temp2);*/\
+	if(used_type ## used_typnum == INT) \
+		*tempin ## 2 =  (int)*(int*)temp2;\
+	else \
+		*tempin ## 2 =  (float)*(float*)temp2;\
+    	SWITCH_OP(tempin,operator,contp1,contp2)\
 	push(intype,tempin ## 1);\
 	return tempin ## 1;\
 }
@@ -70,8 +83,12 @@ void *operate(char operator, typecg intype){
     tempfl2 = NULL;
     
     SWITCH(intype,\
-	   SWITCH_OP2(INT,tempin,5,operator),\
-		 SWITCH_OP2(FLOAT,tempfl,5,operator),return NULL,return NULL)
+		 REQUESTMEM(tempin1,int, INT)\
+		 REQUESTMEM(tempin2,int, INT)\
+	   SWITCH_OP2(INT,tempin,5,operator,int,float),\
+		 REQUESTMEM(tempfl1,float, FLOAT)\
+		 REQUESTMEM(tempfl2,float, FLOAT)
+		 SWITCH_OP2(FLOAT,tempfl,5,operator,float,int),return NULL,return NULL)
 }
 #undef SWITCH_OP
 #undef SWITCH_OP2

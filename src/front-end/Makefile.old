@@ -21,7 +21,7 @@ MYUCC = "./ucc"
 
 #CFLAGS = -g  -ggdb -I/usr/local/opt/bison@2.7/include -D DEBUGON
 #CFLAGS = -g  -ggdb -D DEBUGOFF
-CFLAGS = -g  -ggdb -D DEBUGON
+#CFLAGS = -g  -ggdb -D DEBUGON
 
 #CFLAGS = -g
 

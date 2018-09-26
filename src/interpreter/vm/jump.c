@@ -19,7 +19,7 @@ commandlisttype * currentcommandt;
 current_unitt = NULL;
 currentcommandt = NULL;
 conditional = NULL;
-current_unitt = *current_unit;
+//current_unitt = *current_unit;
 currentcommandt = *currentcommand;
 switch(z){
 	case TRUE: {

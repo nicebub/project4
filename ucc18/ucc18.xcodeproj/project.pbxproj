@@ -30,6 +30,8 @@
 		D283AFA720ADF5BA00B07C08 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = D2CB13C320AD00A7006987E5 /* main.c */; };
 		D283AFA820ADF5BF00B07C08 /* symtab.c in Sources */ = {isa = PBXBuildFile; fileRef = D2CB13BF20AD00A6006987E5 /* symtab.c */; };
 		D283AFA920ADF5C200B07C08 /* trans.c in Sources */ = {isa = PBXBuildFile; fileRef = D2CB13CA20AD00A7006987E5 /* trans.c */; };
+		E2636438215AEA49007973F6 /* pop.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2ADC214A660E002E5E36 /* pop.c */; };
+		E2636439215AEA4D007973F6 /* push.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AE0214A660E002E5E36 /* push.c */; };
 		E27431A921437B9700D68F1F /* debuglib.c in Sources */ = {isa = PBXBuildFile; fileRef = E274319021437B9500D68F1F /* debuglib.c */; };
 		E27431AA21437B9700D68F1F /* interpreter.y in Sources */ = {isa = PBXBuildFile; fileRef = E274319321437B9500D68F1F /* interpreter.y */; };
 		E27431AC21437B9700D68F1F /* interpreter.l in Sources */ = {isa = PBXBuildFile; fileRef = E274319521437B9500D68F1F /* interpreter.l */; };
@@ -46,23 +48,18 @@
 		E285CCCC2141BA65008A5C77 /* liby.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D283AFB120ADF97A00B07C08 /* liby.a */; };
 		E2A8A824214CB6540074FBB4 /* printf.c in Sources */ = {isa = PBXBuildFile; fileRef = E2A8A822214CB6530074FBB4 /* printf.c */; };
 		E2BD2AF4214A6610002E5E36 /* initialize.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AD5214A660E002E5E36 /* initialize.c */; };
-		E2BD2AF5214A6610002E5E36 /* allocate.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AD6214A660E002E5E36 /* allocate.c */; };
-		E2BD2AF6214A6610002E5E36 /* pop.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2ADC214A660E002E5E36 /* pop.c */; };
 		E2BD2AF7214A6610002E5E36 /* fetch.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2ADD214A660E002E5E36 /* fetch.c */; };
 		E2BD2AF8214A6610002E5E36 /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2ADF214A660E002E5E36 /* memory.c */; };
-		E2BD2AF9214A6610002E5E36 /* push.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AE0214A660E002E5E36 /* push.c */; };
 		E2BD2AFA214A6610002E5E36 /* status.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AE1214A660F002E5E36 /* status.c */; };
 		E2BD2AFB214A6610002E5E36 /* call.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AE3214A660F002E5E36 /* call.c */; };
 		E2BD2AFC214A6610002E5E36 /* return.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AE5214A660F002E5E36 /* return.c */; };
 		E2BD2AFD214A6610002E5E36 /* jump.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AE7214A660F002E5E36 /* jump.c */; };
 		E2BD2AFE214A6610002E5E36 /* operator.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AE9214A660F002E5E36 /* operator.c */; };
-		E2BD2AFF214A6610002E5E36 /* enter.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AEA214A660F002E5E36 /* enter.c */; };
 		E2BD2B00214A6610002E5E36 /* store.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AEC214A660F002E5E36 /* store.c */; };
 		E2BD2B01214A6610002E5E36 /* vm.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AEE214A6610002E5E36 /* vm.c */; };
-		E2BD2B02214A6610002E5E36 /* stack.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2AEF214A6610002E5E36 /* stack.c */; };
-		E2BD2B07214B3D71002E5E36 /* change.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2B05214B3D71002E5E36 /* change.c */; };
 		E2CB8F872150A20700E3A6DC /* newmemory.c in Sources */ = {isa = PBXBuildFile; fileRef = E2CB8F852150A20700E3A6DC /* newmemory.c */; };
 		E2CB8F882150A20700E3A6DC /* newmem_main.c in Sources */ = {isa = PBXBuildFile; fileRef = E2CB8F862150A20700E3A6DC /* newmem_main.c */; };
+		E2DBC8F1215BFACE00EE52A4 /* scanf.c in Sources */ = {isa = PBXBuildFile; fileRef = E2DBC8F0215BFACE00EE52A4 /* scanf.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -272,6 +269,8 @@
 		E2CB8F842150A20700E3A6DC /* newmemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = newmemory.h; path = ../../src/interpreter/vm/newmemory.h; sourceTree = "<group>"; };
 		E2CB8F852150A20700E3A6DC /* newmemory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = newmemory.c; path = ../../src/interpreter/vm/newmemory.c; sourceTree = "<group>"; };
 		E2CB8F862150A20700E3A6DC /* newmem_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = newmem_main.c; path = ../../src/interpreter/vm/newmem_main.c; sourceTree = "<group>"; };
+		E2DBC8EF215BFACE00EE52A4 /* scanf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scanf.h; path = ../src/interpreter/vm/scanf.h; sourceTree = "<group>"; };
+		E2DBC8F0215BFACE00EE52A4 /* scanf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = scanf.c; path = ../src/interpreter/vm/scanf.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -422,31 +421,18 @@
 			path = ucc18;
 			sourceTree = "<group>";
 		};
-		E285CC952141B09B008A5C77 /* Object Files */ = {
+		E2636437215AD819007973F6 /* vm */ = {
 			isa = PBXGroup;
 			children = (
-				D2CB13D220AD0218006987E5 /* command.o */,
-				D2CB13D020AD0218006987E5 /* lex.yy.o */,
-				D2CB13D620AD0219006987E5 /* List.o */,
-				D2CB13CB20AD0217006987E5 /* symtab.o */,
-				D2CB13CE20AD0218006987E5 /* trans.o */,
-				D2CB13D120AD0218006987E5 /* ucc.tab.o */,
-			);
-			path = "Object Files";
-			sourceTree = "<group>";
-		};
-		E285CC962141B0C5008A5C77 /* dSYM files */ = {
-			isa = PBXGroup;
-			children = (
-				D2CB13D420AD0218006987E5 /* ucc.dSYM */,
-			);
-			path = "dSYM files";
-			sourceTree = "<group>";
-		};
-		E285CC9C2141B5ED008A5C77 /* interpreter */ = {
-			isa = PBXGroup;
-			children = (
-				E2A8A825214CBAA20074FBB4 /* useful.def */,
+				E2DBC8F0215BFACE00EE52A4 /* scanf.c */,
+				E2DBC8EF215BFACE00EE52A4 /* scanf.h */,
+				E2BD2AE1214A660F002E5E36 /* status.c */,
+				E2BD2AE4214A660F002E5E36 /* status.h */,
+				E2BD2AEC214A660F002E5E36 /* store.c */,
+				E2BD2AF3214A6610002E5E36 /* store.h */,
+				E2BD2AEE214A6610002E5E36 /* vm.c */,
+				E2BD2AD9214A660E002E5E36 /* vm.h */,
+				E2BD2AE8214A660F002E5E36 /* vmlib.h */,
 				E2A8A822214CB6530074FBB4 /* printf.c */,
 				E2A8A823214CB6540074FBB4 /* printf.h */,
 				E2BD2B05214B3D71002E5E36 /* change.c */,
@@ -478,13 +464,36 @@
 				E2BD2AEF214A6610002E5E36 /* stack.c */,
 				E2BD2AD2214A660D002E5E36 /* stack.h */,
 				E2BD2AE6214A660F002E5E36 /* stacklib.h */,
-				E2BD2AE1214A660F002E5E36 /* status.c */,
-				E2BD2AE4214A660F002E5E36 /* status.h */,
-				E2BD2AEC214A660F002E5E36 /* store.c */,
-				E2BD2AF3214A6610002E5E36 /* store.h */,
-				E2BD2AEE214A6610002E5E36 /* vm.c */,
-				E2BD2AD9214A660E002E5E36 /* vm.h */,
-				E2BD2AE8214A660F002E5E36 /* vmlib.h */,
+			);
+			name = vm;
+			sourceTree = "<group>";
+		};
+		E285CC952141B09B008A5C77 /* Object Files */ = {
+			isa = PBXGroup;
+			children = (
+				D2CB13D220AD0218006987E5 /* command.o */,
+				D2CB13D020AD0218006987E5 /* lex.yy.o */,
+				D2CB13D620AD0219006987E5 /* List.o */,
+				D2CB13CB20AD0217006987E5 /* symtab.o */,
+				D2CB13CE20AD0218006987E5 /* trans.o */,
+				D2CB13D120AD0218006987E5 /* ucc.tab.o */,
+			);
+			path = "Object Files";
+			sourceTree = "<group>";
+		};
+		E285CC962141B0C5008A5C77 /* dSYM files */ = {
+			isa = PBXGroup;
+			children = (
+				D2CB13D420AD0218006987E5 /* ucc.dSYM */,
+			);
+			path = "dSYM files";
+			sourceTree = "<group>";
+		};
+		E285CC9C2141B5ED008A5C77 /* interpreter */ = {
+			isa = PBXGroup;
+			children = (
+				E2636437215AD819007973F6 /* vm */,
+				E2A8A825214CBAA20074FBB4 /* useful.def */,
 				E27431A221437B9600D68F1F /* commandint.c */,
 				E27431A321437B9600D68F1F /* commandint.h */,
 				E27431A021437B9600D68F1F /* dataint.h */,
@@ -804,29 +813,26 @@
 			files = (
 				E2BD2AF4214A6610002E5E36 /* initialize.c in Sources */,
 				E27431AA21437B9700D68F1F /* interpreter.y in Sources */,
+				E2636438215AEA49007973F6 /* pop.c in Sources */,
 				E27431B121437B9700D68F1F /* commandint.c in Sources */,
 				E2BD2AFB214A6610002E5E36 /* call.c in Sources */,
 				E2A8A824214CB6540074FBB4 /* printf.c in Sources */,
 				E27431AF21437B9700D68F1F /* Listint.c in Sources */,
-				E2BD2B07214B3D71002E5E36 /* change.c in Sources */,
-				E2BD2B02214A6610002E5E36 /* stack.c in Sources */,
 				E27431B221437B9700D68F1F /* reglib.c in Sources */,
-				E2BD2AFF214A6610002E5E36 /* enter.c in Sources */,
-				E2BD2AF6214A6610002E5E36 /* pop.c in Sources */,
 				E2BD2AFE214A6610002E5E36 /* operator.c in Sources */,
 				E2BD2AF7214A6610002E5E36 /* fetch.c in Sources */,
-				E2BD2AF9214A6610002E5E36 /* push.c in Sources */,
 				E2BD2AF8214A6610002E5E36 /* memory.c in Sources */,
+				E2636439215AEA4D007973F6 /* push.c in Sources */,
 				E27431AD21437B9700D68F1F /* transint.c in Sources */,
 				E27431AE21437B9700D68F1F /* memlib.c in Sources */,
 				E27431B421437B9700D68F1F /* main.c in Sources */,
-				E2BD2AF5214A6610002E5E36 /* allocate.c in Sources */,
 				E2BD2B01214A6610002E5E36 /* vm.c in Sources */,
 				E2BD2B00214A6610002E5E36 /* store.c in Sources */,
 				E2BD2AFA214A6610002E5E36 /* status.c in Sources */,
 				E2BD2AFD214A6610002E5E36 /* jump.c in Sources */,
 				E27431A921437B9700D68F1F /* debuglib.c in Sources */,
 				E27431AC21437B9700D68F1F /* interpreter.l in Sources */,
+				E2DBC8F1215BFACE00EE52A4 /* scanf.c in Sources */,
 				E2BD2AFC214A6610002E5E36 /* return.c in Sources */,
 				E27431B021437B9700D68F1F /* symtabint.c in Sources */,
 			);

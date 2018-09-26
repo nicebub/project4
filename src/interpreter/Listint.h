@@ -24,6 +24,7 @@ typedef struct _listnodeC listnodeC;
 struct _listnodeC{
 	char * val[2];
 	int	int_val[2];
+    float float_val[2];
 	typecg argtype[2];
 	listnodeC *nextnode;
 };
@@ -118,8 +119,8 @@ void deletecommandList(commandList* inList);
 void deleteTransList(trans_u_list* inList);
 
 List * mklist(char * inVal);
-ListC* mklistC(char * inVal[2]);
-ListC* mklistCi(int inVal[2]);
+ListC* mklistC(char * inVal[2],boolcg isfloat);
+ListC* mklistCi(int inVal[2],boolcg isfloat);
 ListP * mklistP(char* inName, typecg intype);
 ListE * mklistE(exprtype* expr);
 commandList* mkcommandList(char * inVal, ListC * inargs);

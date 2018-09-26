@@ -34,11 +34,11 @@ Code Generator Bison Parser File
 #include <stdio.h>
 #include <string.h>
 
-#define ARGS_CMD_PARSE(intype,newlist,invalue,if_nt ,...) {\
+#define ARGS_CMD_PARSE(intype,newlist,invalue,if_nt ,isfloat,...) {\
 intype vals[2];\
 vals[0] = (intype)invalue;\
 vals[1] = (intype)NULL;\
-newlist = mklistC##if_nt(vals);}
+newlist = mklistC##if_nt(vals,isfloat);}
 
 
 

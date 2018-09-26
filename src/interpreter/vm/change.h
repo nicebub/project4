@@ -1,7 +1,7 @@
 #ifndef CHANGE_H
 #define CHANGE_H
 
-#include "stack.h"
+//#include "stack.h"
 #include "memory.h"
 
 #include "../memlib.h"

@@ -63,9 +63,9 @@ int main(int argc, char ** argv){
 	
 	list1 = mklist("a");
 
-	list2 = mklistC(array);
+	list2 = mklistC(array,FALSE);
 
-	list3 = mklistCi(int_array);
+	list3 = mklistCi(int_array,FALSE);
 
 	type = INT;
 

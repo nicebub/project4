@@ -45,7 +45,13 @@ struct command_st cmdinf[] = {
     { MULI, 	"mulI" },
     { MULR, 	"mulR" },
     { ADDI, 	"addI" },
-    { ADDR, 	"addR" }
+    { ADDR, 	"addR" },
+    { SUBI, 	"subI" },
+    { SUBR, 	"subR" },
+    { FLT,	"flt"  },
+    { FLTB, 	"fltb" },
+    { INTT, 	"int", },
+    { INTTB,	"intb" }
 };
 
 
@@ -129,7 +135,7 @@ commandList * mkcommandList(char * inVal, ListC* inargs){
     return NULL;
 }
 
-ListC * mklistC(char * inVal[2]){
+ListC * mklistC(char * inVal[2],boolcg isfloat){
 	ListC* temp;
     temp = NULL;
 	if(inVal != NULL){
@@ -161,7 +167,7 @@ ListC * mklistC(char * inVal[2]){
     return NULL;
 }
 
-ListC * mklistCi(int inVal[2]){
+ListC * mklistCi(int inVal[2],boolcg isfloat){
 	ListC* temp;
     temp = NULL;
 	if(inVal != NULL){

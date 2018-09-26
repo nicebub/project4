@@ -13,11 +13,11 @@ int returnf(translation_unit ** other_units,int *c,int *commandnum, translation_
     currentcommandt = NULL;
 	unit_name = NULL;
 	cmdnum = NULL;
-//	int *returnval;
-	//returnval =  (int*) pop(&used_type5,3);
-	unit_name =  (char*)pop(&used_type6,1);
-	cmdnum = 	(int*) pop(&used_type7,2);
+
+    unit_name =  (char*) get_cell_value(vm_memstack.bp+1);
+	cmdnum = 	(int*) get_value_at_offset_n_frames_back(&vm_memstack,4,0);
 	int e;
+
 	for(e=0;e<MAX_FUNCTIONS && other_units[e] != NULL;e++){
 		if(strcmp(other_units[e]->name,unit_name) == 0){
 			break;
@@ -28,14 +28,14 @@ int returnf(translation_unit ** other_units,int *c,int *commandnum, translation_
 		commandnum = cmdnum;
 		current_unitt = other_units[e];
   		currentcommandt= current_unitt->commandlist->list;
+
 		for(int j=1;j<=*commandnum;j++)
 	    	currentcommandt = currentcommandt->nextcommand;
-/*	    for(int r=vm_memory.used_stack[vm_memory.current_scope]; r>0; r--){
-		   pop(&used_type5,1);
-	    }*/
-	    vm_memory.current_scope -=1;
-	    vm_memory.total_scopes -=1;
-	   *current_unit = current_unitt;
+
+	    pop_activation_record(&vm_memstack,&used_type5);
+
+
+	    *current_unit = current_unitt;
 	    *currentcommand = currentcommandt;
 		return 1;
 	}

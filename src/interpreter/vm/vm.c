@@ -13,9 +13,7 @@
 
 #include "vm.h"
 #include "vmlib.h"
-#include "change.h"
 #include "pop.h"
-//#include "push.h"
 
 #include "../memlib.h"
 #include "../debuglib.h"
@@ -27,52 +25,45 @@
 #include <string.h>
 
 
-void run_virtual_machine(translation_unit *main_unit,translation_unit **other_units,int unit_count){
+int run_virtual_machine(translation_unit *main_unit,translation_unit **other_units,int unit_count){
     translation_unit * current_unit;
     commandlisttype *currentcommand;
+    activationrecord startrecord;
     int commandnum, current_frame_size;
-    int c;
+    int c, returnvalue;
     current_unit=other_units[0];
     current_unit=main_unit;
     c=0;
     commandnum = 1;
     current_frame_size = 1;
     commandnum=current_frame_size;
-
+    returnvalue = 0;
     initialize_machine();
-    vm_memory.current_scope =1;
-    vm_memory.total_scopes +=1;
-
-#ifdef DEBUG
+	#ifdef DEBUG
     dbprint(VMLIBC,"Before use, here are the used_type1 and 3 ",
 		  2, STR, typecg_strings[*used_type1], STR, typecg_strings[*used_type3]);
-#endif
-//    push(*used_type1, (int[]) { 4 });
+	#endif
 
-    
- 
-//   push(*used_type3, last_unit->name);
-
-    //		SET SCOPE LEVEL 0
-    //	   GETMEMORY_FOR_GLOBALS(main_unit->commandlist->list->nextcommand->paramlist->list->int_val[0]);
-    // 		GET_first_function()
-    //		GET_first_command()
-    
-    
     currentcommand = main_unit->commandlist->list;
+    init_activation_record(&startrecord);
+    strcpy(startrecord.last_command_name,"main");
+    strcpy(startrecord.returnvalue,"0");
+    startrecord.alloc_amount = 1;
+    startrecord.last_command_instruction =5;
+    push_activation_record(&vm_memstack,startrecord);
     while(1){
-#ifdef DEBUG
-//	   dbprint(VMLIBC,"What command are we going to run ", 1 , STR, currentcommand->name);
-//	   dbprint(VMLIBC,"The command has enumeration type ", 1 , STR, command_name_strings[currentcommand->name_enm]);
-#endif
+	#ifdef DEBUG
+	#endif
 	   SWITCH_CMD(currentcommand->name_enm,
 	   { /*alloc*/
 
 		  #ifdef DEBUG
 			 dbprint(VMLIBC,"FOUND AN ALLOC IN MACHINE",0);
 		  #endif
-
-		  vm_memory.frame_size[vm_memory.current_scope] = currentcommand->paramlist->list->int_val[0];
+		  for(int j=1;j<=currentcommand->paramlist->list->int_val[0];j++)
+			 push_onto_stack(&vm_memstack,"EMPTY" ,STR);
+		  int new_amount = *(int*)get_value_at_offset_n_frames_back(&vm_memstack,5,0)+currentcommand->paramlist->list->int_val[0];
+		  change_stack_value_at_offset_n_frames_back(&vm_memstack,5,0,&new_amount,INT);
 	   },
 	   {/*enter*/
 
@@ -86,9 +77,7 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 					#ifdef DEBUG
 				   dbprint(VMLIBC,"FOUND AN PUSHS IN MACHINE",0);
 					#endif
-
-				   push(*used_type3,(void*)currentcommand->paramlist->list->val[0]);
-				   vm_memory.used_stack[vm_memory.current_scope] += 1;
+		  			push_onto_stack(&vm_memstack,currentcommand->paramlist->list->val[0],STR);
 
 	   },
 	   {/*call*/
@@ -99,10 +88,8 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 				   
 		  if(in_loop_call(&currentcommand,other_units,&commandnum,&current_unit, &c)==1){
 				#ifdef DEBUG
-			 	dbprint(VMLIBC,"Printing Memory",0);
-			 	showmemory();
 			 	dbprint(VMLIBC,"Printing Stack",0);
-			 	showstack();
+			 print_stack(&vm_memstack);
 				#endif
 			 	continue;
 		  }
@@ -114,36 +101,21 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 					#endif
 	   },
 	   {/*pushga*/
-
+		  int g;
 					#ifdef DEBUG
 				   dbprint(VMLIBC,"FOUND AN PUSHGA IN MACHINE",0);
 					#endif
-		  //int address;
-		  //int newscope;
-		  //int offset;
-		  //newscope = vm_memory.current_scope - currentcommand->paramlist->list->int_val[0];
-		  //offset = currentcommand->paramlist->list->int_val[1];
-		  //address=0;
-		//  for(int e=0;)
-		  //address = newscope*10+offset;
-//				   push(*used_type1,(void*)&currentcommand->paramlist->list->int_val[0]);
-				   push(*used_type1,(void*)&currentcommand->paramlist->list->int_val[1]);
-//				   push(*used_type1,(int[]){ -420 });
-				   vm_memory.used_stack[vm_memory.current_scope] += 3;
-
+		  
+		  g = get_address(&vm_memstack,currentcommand->paramlist->list->int_val[0],currentcommand->paramlist->list->int_val[1]);
+		  push(INT, &g);
 	   },
 	   {/*pusha*/
-
+		  int g;
 					#ifdef DEBUG
 				   dbprint(VMLIBC,"FOUND AN PUSHA IN MACHINE",0);
 					#endif
-
-		  int overall;
-		  overall = 0;
-				   push(*used_type1,
-				    (void*)&currentcommand->paramlist->list->int_val[0]);
-				   vm_memory.used_stack[vm_memory.current_scope] += 1;
-
+		  g = get_address(&vm_memstack,0,currentcommand->paramlist->list->int_val[0]);
+		  push(INT,&g);
 	   },
 	   {/*fetchI*/
 
@@ -168,8 +140,7 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 					dbprint(VMLIBC,"FOUND AN STOREI IN MACHINE",0);
 					#endif
 
-					in_loop_store();
-				   vm_memory.used_stack[vm_memory.current_scope] -= 2;
+					in_loop_store(INT);
 
 
 	   },
@@ -178,9 +149,7 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 					#ifdef DEBUG
 				   dbprint(VMLIBC,"FOUND AN STORER IN MACHINE",0);
 					#endif
-
-				   store(pop(&used_type7,0),FLOAT,vm_memory.current_scope,(int*)pop(&used_type5,1));
-				   vm_memory.used_stack[vm_memory.current_scope] -= 2;
+		  			in_loop_store(FLOAT);
 
 	   },
 	   {/*pushcI*/
@@ -188,9 +157,7 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 					#ifdef DEBUG
 				   dbprint(VMLIBC,"FOUND AN PUSHCI IN MACHINE",0);
 					#endif
-
-				   push(*used_type1,(void*)&currentcommand->paramlist->list->int_val[0]);
-				   vm_memory.used_stack[vm_memory.current_scope] += 1;
+		  		push_onto_stack(&vm_memstack,&currentcommand->paramlist->list->int_val[0],INT);
 
 				   
 	   },
@@ -200,9 +167,7 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 				   dbprint(VMLIBC,"FOUND AN PUSHCR IN MACHINE",0);
 					#endif
 
-				   push(*used_type1,(void*)&currentcommand->paramlist->list->int_val[0]);
-				   vm_memory.used_stack[vm_memory.current_scope] += 1;
-
+		  push_onto_stack(&vm_memstack,&currentcommand->paramlist->list->float_val[0],FLOAT);
 				   
 	   },
 	   {/*setrvI*/
@@ -213,8 +178,7 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 				   void * tempval;
 				   tempval = NULL;
 				   tempval = pop(&used_type6,3);
-				   vm_memory.used_stack[vm_memory.current_scope] -= 1;
-				   change_stack_value(used_type6, tempval,vm_memory.current_bp[vm_memory.current_scope]);
+		  			change_stack_value_at_offset_n_frames_back(&vm_memstack,0,0,tempval,INT);
 	   },
 	   {/*setrvR*/
 
@@ -224,8 +188,7 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 		  			void * tempval;
 		  			tempval = NULL;
 		  			tempval = pop(&used_type6,3);
-		  			vm_memory.used_stack[vm_memory.current_scope] -= 1;
-		  			change_stack_value(used_type6, tempval,vm_memory.current_bp[vm_memory.current_scope]);
+		  			change_stack_value_at_offset_n_frames_back(&vm_memstack,0,0,tempval,FLOAT);
 
 	   },
 	   {/*returnf*/
@@ -236,10 +199,8 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 
 				   if(returnf(other_units,&c, &commandnum,&current_unit,&currentcommand)==1){
 						#ifdef DEBUG
-					  dbprint(VMLIBC,"Printing Memory",0);
-					  showmemory();
 					  dbprint(VMLIBC,"Printing Stack",0);
-					  showstack();
+					  print_stack(&vm_memstack);
 					   #endif
 
 					  continue;
@@ -250,7 +211,8 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 					#ifdef DEBUG
 				   dbprint(VMLIBC,"FOUND AN RETURN IN MACHINE",0);
 					#endif
-
+		  			returnvalue = *(int*)pop_off_stack(&vm_memstack, &used_type7);
+		  			pop_activation_record(&vm_memstack,&used_type6);
 	   },
 	   {/*ltI*/
 					
@@ -258,7 +220,6 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 				   dbprint(VMLIBC,"FOUND AN LTI IN MACHINE",0);
 					#endif
 				   operate('<',INT);
-				   vm_memory.used_stack[vm_memory.current_scope] -= 1;
 
 				   
 	   },
@@ -268,7 +229,6 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 				   dbprint(VMLIBC,"FOUND AN LTR IN MACHINE",0);
 					#endif
 				   operate('<',FLOAT);
-				   vm_memory.used_stack[vm_memory.current_scope] -= 1;
 
 	   },
 	   {/* leI */
@@ -277,7 +237,6 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 				   dbprint(VMLIBC,"FOUND AN LEI IN MACHINE",0);
 					#endif
 				   relationship("<=",INT);
-				   vm_memory.used_stack[vm_memory.current_scope] -= 1;
 
 	   },
 	   {/* leR */
@@ -287,7 +246,6 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 					#endif
 
 				   relationship("<=",FLOAT);
-				   vm_memory.used_stack[vm_memory.current_scope] -= 1;
 
 	   },
 	   {/*jump*/
@@ -306,7 +264,6 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 
 				   if(jump(TRUE,other_units,&currentcommand,&current_unit,&commandnum,&c)==1)
 					   continue;
-				   vm_memory.used_stack[vm_memory.current_scope] -= 1;
 	   },
 	   {/*mulI*/
 
@@ -315,7 +272,6 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 					#endif
 
 				   operate('*',INT);
-				   vm_memory.used_stack[vm_memory.current_scope] -= 1;
 	   },
 	   {/*mulR*/
 
@@ -323,7 +279,6 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 				   dbprint(VMLIBC,"FOUND AN MULR IN MACHINE",0);
 					#endif
 				   operate('*',FLOAT);
-				   vm_memory.used_stack[vm_memory.current_scope] -= 1;
 	   },
 	   {/*addI*/
 
@@ -331,7 +286,6 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 			   dbprint(VMLIBC,"FOUND AN ADDI IN MACHINE",0);
 				#endif
 				   operate('+',INT);
-				   vm_memory.used_stack[vm_memory.current_scope] -= 1;
 	   },
 	   { /*addR*/
 
@@ -339,15 +293,59 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 			   dbprint(VMLIBC,"FOUND AN ADDR IN MACHINE",0);
 				#endif
 				   operate('+',FLOAT);
-				   vm_memory.used_stack[vm_memory.current_scope] -= 1;
+	   },
+	   { /*subI */
+			#ifdef DEBUG
+		  dbprint(VMLIBC,"FOUND AN SUBI IN MACHINE",0);
+			#endif
+		  operate('-',INT);
+
+	   },
+	   {/* subR */
+			#ifdef DEBUG
+		  dbprint(VMLIBC,"FOUND AN SUBR IN MACHINE",0);
+			#endif
+		  operate('-',FLOAT);
+
+	   },
+	   { /* flt */
+		#ifdef DEBUG
+		  dbprint(VMLIBC,"FOUND AN FLT IN MACHINE",0);
+		#endif
+		  float invalue = (float)*(int*)get_cell_value(&vm_memstack.stack[vm_memstack.stacksize-1]);
+//		  printf("float value found for flt: %f\n",invalue);
+		  change_stack_value_at_offset(&vm_memstack, (int)vm_memstack.stacksize-1, &invalue, FLOAT);
+	   },
+	   { /* fltb */
+		#ifdef DEBUG
+		  dbprint(VMLIBC,"FOUND AN FLTB IN MACHINE",0);
+		#endif
+		  float invalue = (float)*(int*)get_cell_value(&vm_memstack.stack[vm_memstack.stacksize-2]);
+	//	  printf("float value found for flt: %f\n",invalue);
+		  change_stack_value_at_offset(&vm_memstack, (int)vm_memstack.stacksize-2, &invalue, FLOAT);
+
+	   },
+	   { /* int */
+			#ifdef DEBUG
+		  dbprint(VMLIBC,"FOUND AN INT IN MACHINE",0);
+			#endif
+		  int invalue = (int)*(float*)get_cell_value(&vm_memstack.stack[vm_memstack.stacksize-1]);
+		  change_stack_value_at_offset(&vm_memstack, (int)vm_memstack.stacksize-1, &invalue, INT);
+
+	   },
+	   { /* intb */
+			#ifdef DEBUG
+		  dbprint(VMLIBC,"FOUND AN INTB IN MACHINE",0);
+			#endif
+		  int invalue = (int)*(float*)get_cell_value(&vm_memstack.stack[vm_memstack.stacksize-2]);
+		  change_stack_value_at_offset(&vm_memstack, (int)vm_memstack.stacksize-2, &invalue, INT);
+
 	   })
 	   commandnum += 1;
 	   	currentcommand = currentcommand->nextcommand;
 	   #ifdef DEBUG
-	   dbprint(VMLIBC,"Printing Memory",0);
-	   showmemory();
 	   dbprint(VMLIBC,"Printing Stack",0);
-	   showstack();
+	   print_stack(&vm_memstack);
 	   #endif
 	   if(currentcommand == NULL){
 		  current_unit = other_units[c+1];
@@ -361,6 +359,7 @@ void run_virtual_machine(translation_unit *main_unit,translation_unit **other_un
 		  }
 	   }
     }
+    return returnvalue;
     //	RETURN -- end
 }
 
