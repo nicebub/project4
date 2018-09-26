@@ -189,9 +189,9 @@ memlib.o: ../memlib.c ../memlib.h ../debuglib.h ../Listint.h ../exprint.h \
 vm.o: vm.c vm.h vmlib.h memorylib.h memory.h store.h ../typeint.h \
  ../useful.def ../memlib.h ../debuglib.h ../Listint.h ../exprint.h \
  ../typeint.h ../useful.def pop.h fetch.h push.h instructionlib.h call.h \
- stacklib.h change.h printf.h operator.h ../debuglib.h return.h jump.h \
- status.h stack.h initialize.h ../Listint.h ../interpreter.y.h \
- ../dataint.h ../symtabint.h ../interpreter.l.h ../transint.h
+ stacklib.h printf.h scanf.h operator.h ../debuglib.h return.h jump.h \
+ status.h initialize.h ../Listint.h ../interpreter.y.h ../dataint.h \
+ ../symtabint.h ../interpreter.l.h ../transint.h
 push.o: push.c push.h ../typeint.h ../memlib.h ../debuglib.h ../Listint.h \
  ../exprint.h ../typeint.h ../useful.def memory.h store.h ../useful.def \
  pop.h memorylib.h fetch.h
@@ -203,7 +203,7 @@ memory.o: memory.c memory.h store.h ../typeint.h ../useful.def \
  ../useful.def pop.h memorylib.h fetch.h push.h
 call.o: call.c call.h ../memlib.h ../debuglib.h ../Listint.h ../exprint.h \
  ../typeint.h ../useful.def stacklib.h push.h ../typeint.h pop.h \
- memorylib.h memory.h store.h ../useful.def fetch.h change.h printf.h
+ memorylib.h memory.h store.h ../useful.def fetch.h printf.h scanf.h
 pop.o: pop.c pop.h ../typeint.h memorylib.h memory.h store.h \
  ../useful.def ../memlib.h ../debuglib.h ../Listint.h ../exprint.h \
  ../typeint.h ../useful.def fetch.h push.h
@@ -214,19 +214,22 @@ fetch.o: fetch.c fetch.h ../typeint.h pop.h memorylib.h memory.h store.h \
  ../useful.def ../memlib.h ../debuglib.h ../Listint.h ../exprint.h \
  ../typeint.h ../useful.def push.h
 status.o: status.c status.h ../debuglib.h ../Listint.h ../exprint.h \
- ../typeint.h ../useful.def stack.h ../typeint.h memory.h store.h \
- ../useful.def ../memlib.h ../debuglib.h pop.h memorylib.h fetch.h push.h
+ ../typeint.h ../useful.def memory.h store.h ../typeint.h ../useful.def \
+ ../memlib.h ../debuglib.h pop.h memorylib.h fetch.h push.h
 initialize.o: initialize.c initialize.h ../typeint.h ../memlib.h \
  ../debuglib.h ../Listint.h ../exprint.h ../typeint.h ../useful.def \
  memory.h store.h ../useful.def pop.h memorylib.h fetch.h push.h
 return.o: return.c return.h pop.h ../typeint.h memorylib.h memory.h \
  store.h ../useful.def ../memlib.h ../debuglib.h ../Listint.h \
  ../exprint.h ../typeint.h ../useful.def fetch.h push.h call.h stacklib.h \
- change.h printf.h
+ printf.h scanf.h
 jump.o: jump.c jump.h pop.h ../typeint.h memorylib.h memory.h store.h \
  ../useful.def ../memlib.h ../debuglib.h ../Listint.h ../exprint.h \
- ../typeint.h ../useful.def fetch.h push.h call.h stacklib.h change.h \
- printf.h
+ ../typeint.h ../useful.def fetch.h push.h call.h stacklib.h printf.h \
+ scanf.h
 printf.o: printf.c printf.h stacklib.h push.h ../typeint.h ../memlib.h \
  ../debuglib.h ../Listint.h ../exprint.h ../typeint.h ../useful.def pop.h \
- memorylib.h memory.h store.h ../useful.def fetch.h change.h call.h
+ memorylib.h memory.h store.h ../useful.def fetch.h call.h scanf.h
+scanf.o: scanf.c scanf.h memory.h store.h ../typeint.h ../useful.def \
+ ../memlib.h ../debuglib.h ../Listint.h ../exprint.h ../typeint.h \
+ ../useful.def pop.h memorylib.h fetch.h push.h
