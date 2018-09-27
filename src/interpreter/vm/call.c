@@ -69,13 +69,13 @@ int in_loop_call(commandlisttype **currentcommand,translation_unit** other_units
 					*in_off = *in_off +1;
 				 }
 			    init_activation_record(&inrecord);
-			    inrecord.access_link = NULL;
+			    inrecord.access_link = &vm_memstack.stack[0];
 			    inrecord.alloc_amount = currentcommandt->paramlist->list->int_val[1];
 			    inrecord.last_command_instruction = *commandnum;
 			    strcpy(inrecord.last_command_name,current_unitt->name);
 			    strcpy(inrecord.returnvalue,"0.0");
 			    push_activation_record(&vm_memstack,inrecord);
-			    for(int g=0;g<inrecord.alloc_amount;g++)
+			    for(int g=inrecord.alloc_amount-1;g>=0;g--)
 				   push_onto_stack(&vm_memstack,tempvalue[g],temptype[g]);
 /*			    push(FLOAT,(float[]){ 0.0 });
 				 push(INT,(int[]) { *commandnum });

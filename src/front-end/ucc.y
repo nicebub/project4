@@ -1364,10 +1364,12 @@ func_call_with_params: name_and_params rpar{$$.numeric =$1.numeric; $$.lval = FA
 						}
 						if(founderror==FALSE){
 							if(strcmp("scanf",$1.funcent->name)==0){
-								gen_call("$scanf",((Funcb*)($1.funcent->binding))->actual_num);
+//								gen_call("$scanf",((Funcb*)($1.funcent->binding))->actual_num);
+								gen_call("$scanf",$1.params);
 							}
 							else if(strcmp("printf", $1.funcent->name)==0){
-								gen_call("$printf",((Funcb*)($1.funcent->binding))->actual_num);
+//								gen_call("$printf",((Funcb*)($1.funcent->binding))->actual_num);
+								gen_call("$printf",$1.params);
 							}
 							else{
 								if( ((Funcb*)($1.funcent->binding))->label==0) ((Funcb*)($1.funcent->binding))->label=getlabel();
@@ -1443,6 +1445,7 @@ name_and_params:
                         else
                             $$.numeric=FALSE;
                         $$.funcent=$3.funcent;
+						$$.params = 1;
                     }
                     else{
                         if($4->lval==TRUE && $4->numeric==TRUE){
@@ -1526,26 +1529,26 @@ name_and_params:
             //ListE * tempLE;
             //int a;
             Funcb* tempB;
-                                if($1.funcent==NULL){
-                                        error("function undelcared, please declare functions before using them","");
-					error("3","");
-				}
-                                else {
-					$$.funcent = $1.funcent;
-                                        tempE2 = (Entry*) malloc(sizeof(Entry));
-                                        tempE2->name = (char*) $1.funcent->name;
-					tempB=lookup((char*)$1.funcent->name,mysymtab);
-                                        if( (tempE=lookupB((char*)$1.funcent->name,mysymtab))!=NULL){
-                                                if(tempE->self != FUNC){
-                                                        error("function undeclared, please declare functions before using them", "");
-							error("4","");
+            if($1.funcent==NULL){
+            	error("function undelcared, please declare functions before using them","");
+			   error("3","");
+			}
+            else {
+				$$.funcent = $1.funcent;
+                tempE2 = (Entry*) malloc(sizeof(Entry));
+                tempE2->name = (char*) $1.funcent->name;
+				tempB=lookup((char*)$1.funcent->name,mysymtab);
+                if( (tempE=lookupB((char*)$1.funcent->name,mysymtab))!=NULL){
+                	if(tempE->self != FUNC){
+                    	error("function undeclared, please declare functions before using them", "");
+						error("4","");
+					}
+                    else{
+                    	if(tempB->num_param ==0){
 						}
-                                                else{
-                                 			if(tempB->num_param ==0){
-							}
-                                                        else if(tempB->num_param == -1){
-                                                                $$.ttype = tempB->param_type[$1.params];
-                                                                if($$.ttype==INT || $$.ttype ==FLOAT) $$.numeric=TRUE; else $$.numeric=FALSE;
+ 					    else if(tempB->num_param == -1){
+                        	$$.ttype = tempB->param_type[$1.params];
+                            if($$.ttype==INT || $$.ttype ==FLOAT) $$.numeric=TRUE; else $$.numeric=FALSE;
 								$$.params = $1.params +1;
 								$$.funcent=$1.funcent;
 								if($4->lval==TRUE && $4->numeric==TRUE && strcmp("scanf",$$.funcent->name)!=0){
@@ -1557,48 +1560,59 @@ name_and_params:
 										}
 									}
 								}
-                                                        }
-                                                        else if($$.params < tempB->num_param){
-                                                                if($4->type != tempB->param_type[$1.params]){
-                                                                    #ifdef DEBUG
-                                                                    fprintf(stderr,"Function mismatch before warning: FUNCTION NAME: %s\n",$1.name);
-                                                                    #endif
+								
+						}
+                        else if($$.params < tempB->num_param){
+                        	if($4->type != tempB->param_type[$1.params]){
+                            	#ifdef DEBUG
+                                fprintf(stderr,"Function mismatch before warning: FUNCTION NAME: %s\n",$1.name);
+                                #endif
 
-                                                                	warning("Parameter type is different in declaration and in function call","");
-									if(founderror==FALSE){
-										if($4->lval==TRUE){
-											switch($4->type){
-												case INT:	gen_instr("fetchI"); break;
-												case FLOAT:	gen_instr("fetchR"); break;
-                                                default:    break;
-											}
+                                warning("Parameter type is different in declaration and in function call","");
+								if(founderror==FALSE){
+									if($4->lval==TRUE){
+										switch($4->type){
+											case INT:	gen_instr("fetchI"); break;
+											case FLOAT:	gen_instr("fetchR"); break;
+                                            default:    break;
 										}
-										if(tempB->param_type[$1.params]==FLOAT){
-											if(founderror==FALSE) gen_instr("flt");
-										}
-										else if(tempB->param_type[$1.params]==INT){
-											if(founderror==FALSE) gen_instr("int");
+									}
+									if(tempB->param_type[$1.params]==FLOAT){
+										gen_instr("flt");
+									}
+									else if(tempB->param_type[$1.params]==INT){
+										gen_instr("int");
+									}
+								}
+							}
+							else{
+								if(founderror==FALSE){
+									if($4->lval==TRUE){
+										switch($4->type){
+											case INT:	gen_instr("fetchI"); break;
+											case FLOAT:	gen_instr("fetchR"); break;
+                                            default:    break;
 										}
 									}
 								}
-								else{
-								}
-                                                                $$.ttype=tempB->param_type[$1.params];
-                                                                if($$.ttype==INT || $$.ttype==FLOAT) $$.numeric =TRUE; else $$.numeric=FALSE;
-								$$.params=$1.params +1;
-								$$.funcent=$1.funcent;
-                                                        }
-							else{
-								error("Too many parameters given for function in function call.","");
-							}
-                                                }
-                                        }
-                                        else
-                                                error("Function is undeclared","");
-                                        free(tempE2); tempE2=NULL;
 
-                                }
-                        }
+							}
+                            $$.ttype=tempB->param_type[$1.params];
+                            if($$.ttype==INT || $$.ttype==FLOAT) $$.numeric =TRUE; else $$.numeric=FALSE;
+							$$.params=$1.params +1;
+							$$.funcent=$1.funcent;
+                      }
+					  else{
+					  	error("Too many parameters given for function in function call.","");
+					  }
+				  }
+			   }
+			   else
+               	error("Function is undeclared","");
+               free(tempE2); tempE2=NULL;
+
+		   }
+	   }
 
 	//| Ident lpar expr error { yyerrok; error("(unexpected token token before rpar)","");}
 	//| Ident lpar name_and_params comma expr error { yyerrok; error("(unexpected token token before rpar)","");}

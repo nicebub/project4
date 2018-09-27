@@ -50,6 +50,7 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
     strcpy(startrecord.returnvalue,"0");
     startrecord.alloc_amount = 1;
     startrecord.last_command_instruction =5;
+	startrecord.access_link = vm_memstack.bp;
     push_activation_record(&vm_memstack,startrecord);
     while(1){
 	#ifdef DEBUG

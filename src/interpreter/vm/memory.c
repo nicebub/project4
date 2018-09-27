@@ -249,9 +249,9 @@ void init_activation_record(activationrecord *inrecord){
 
 int get_address(memstack *instack, int leveldiff, int offset){
     memory_cell *temp;
-    temp = instack->bp;;
+    temp = instack->bp;
     for(int i=leveldiff;i>0;i--){
-	   temp = (temp+2)->m.s.address;
+	   temp = (temp+3)->m.s.address;
     }
     for(int b=(int)instack->stacksize-1;b>=0;b--)
 	   if(&instack->stack[b] == temp){
