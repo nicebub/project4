@@ -61,12 +61,10 @@ void set_cell_value(memory_cell *incell,void * v, typecg t, size_t s){
 }
 
 void* get_cell_value(memory_cell *incell){
-//    printf("type to search: %s\n",typecg_strings[incell->m.type]);
     switch(incell->m.type){
 	   case INT:
 		  return &incell->m.s.num;
 	   case FLOAT:
-//		  printf("found a float to return as the cell value: %f\n",incell->m.s.real);
 		  return &incell->m.s.real;
 	   case CHAR:
 		  return &incell->m.s.character;
@@ -130,10 +128,8 @@ void* pop_off_stack(memstack *instack, typecg *intype){
 		  break;
 	   case FLOAT:
 		  value = malloc(sizeof(float));
-//		  printf("popping of a float %f\n",(float)*(float*)get_cell_value(instack->sp-1));
 		  *(float*)value = (float)*(float*)(get_cell_value(instack->sp-1));
 		  *intype = FLOAT;
-//		  printf("popping of a float %f\n",*(float*)value);
 		  break;
 	  default:
 		  value = NULL;
@@ -190,14 +186,6 @@ size_t get_stack_size(memstack *instack){
     return instack->stacksize;
 }
 
-/*struct _activationrecord {
- char	last_command_name[MAX_STR_CONST];
- char	returnvalue[MAX_SIZE];
- char	* control_link;
- char	* access_link;
- int		last_command_instruction;
- int		alloc_amount;
- };*/
 
 void push_activation_record(memstack *instack, activationrecord inrecord){
     memory_cell *temp = instack->sp;
@@ -210,15 +198,12 @@ void push_activation_record(memstack *instack, activationrecord inrecord){
     instack->bp = temp;
 }
 void * pop_activation_record(memstack *instack, typecg * outtype){
-    //  activationrecord *temp;
-    //    memory_cell * tempcell;
     memory_cell newbase;
     memory_cell * returncell;
     init_memory_cell(&newbase);
     returncell = instack->bp;
     *outtype = returncell->m.type;
     set_cell_value(&newbase,(instack->bp+2)->m.s.address,get_cell_type((instack->bp+2)),get_cell_size((instack->bp+2)));
-   // memory_cell *tempcell = instack->bp;
     int max = *(int*)get_value_at_offset_n_frames_back(&vm_memstack,5,0);
     for(int e=1;e<6+max;e++)
 	   pop_off_stack(instack,&used_type5);

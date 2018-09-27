@@ -94,7 +94,7 @@
 				"$(DERIVED_FILE_DIR)/interpreter.tab.c",
 				"$(DERIVED_FILE_DIR)/interpreterc.tab.h",
 			);
-			script = "# $(BISON)\ncd ${INPUT_FILE_DIR}\n/usr/bin/bison -vtd ${INPUT_FILE_NAME}\ncp ${INPUT_FILE_NAME} ${DERIVED_FILE_DIR}\ncd ${DERIVED_FILE_DIR}\n/usr/bin/bison -vtd ${INPUT_FILE_NAME}";
+			script = "# $(BISON)\ncd ${INPUT_FILE_DIR}\n/usr/bin/bison -vtd ${INPUT_FILE_NAME}\ncp ${INPUT_FILE_NAME} ${DERIVED_FILE_DIR}\ncd ${DERIVED_FILE_DIR}\n/usr/bin/bison -vtd ${INPUT_FILE_NAME}\n";
 		};
 		E285CCA32141B674008A5C77 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -105,7 +105,7 @@
 				"$(DERIVED_FILE_DIR)/lex.yy.c",
 				"$(DERIVED_FILE_DIR)/lex.yy.h",
 			);
-			script = "# $(LEX)\ncd ${INPUT_FILE_DIR}\n/usr/bin/flex -d -vv -p -p -b -B --header-file=lex.yy.h ${INPUT_FILE_NAME}\ncp ${INPUT_FILE_NAME} ${DERIVED_FILE_DIR}\ncd ${DERIVED_FILE_DIR}\n/usr/bin/flex ${INPUT_FILE_NAME}";
+			script = "# $(LEX)\ncd ${INPUT_FILE_DIR}\n/usr/bin/flex -d -vv -p -p -b -B --header-file=lex.yy.h ${INPUT_FILE_NAME}\ncp ${INPUT_FILE_NAME} ${DERIVED_FILE_DIR}\ncd ${DERIVED_FILE_DIR}\n/usr/bin/flex ${INPUT_FILE_NAME}\n";
 		};
 /* End PBXBuildRule section */
 
@@ -1112,7 +1112,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1173,7 +1173,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1229,10 +1229,12 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_STATIC_ANALYZER_MODE = shallow;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 78XPJAU3A2;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GENERATE_TEXT_BASED_STUBS = NO;
 				OTHER_CFLAGS = (
 					"-g",
 					"-ggdb",
@@ -1253,11 +1255,13 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_STATIC_ANALYZER_MODE = shallow;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 78XPJAU3A2;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_ENABLE_PASCAL_STRINGS = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GENERATE_TEXT_BASED_STUBS = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;

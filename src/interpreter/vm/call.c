@@ -54,7 +54,6 @@ int in_loop_call(commandlisttype **currentcommand,translation_unit** other_units
 				void * tempvalue[10];
 			    typecg temptype[10];
 				int * in_off;
-			//	typecg intype;
 				in_off = NULL;
 			    for(int g=0;g<10;g++){
 				   tempvalue[g] = NULL;
@@ -69,7 +68,7 @@ int in_loop_call(commandlisttype **currentcommand,translation_unit** other_units
 					*in_off = *in_off +1;
 				 }
 			    init_activation_record(&inrecord);
-			    inrecord.access_link = &vm_memstack.stack[0];
+			    inrecord.access_link = (char*)&vm_memstack.stack[0];
 			    inrecord.alloc_amount = currentcommandt->paramlist->list->int_val[1];
 			    inrecord.last_command_instruction = *commandnum;
 			    strcpy(inrecord.last_command_name,current_unitt->name);
@@ -77,10 +76,6 @@ int in_loop_call(commandlisttype **currentcommand,translation_unit** other_units
 			    push_activation_record(&vm_memstack,inrecord);
 			    for(int g=inrecord.alloc_amount-1;g>=0;g--)
 				   push_onto_stack(&vm_memstack,tempvalue[g],temptype[g]);
-/*			    push(FLOAT,(float[]){ 0.0 });
-				 push(INT,(int[]) { *commandnum });
-				 push(STR,current_unitt->name);
-*/
 				 current_unitt = other_units[d];
 				 currentcommandt = current_unitt->commandlist->list;
 			    *currentcommand = currentcommandt;

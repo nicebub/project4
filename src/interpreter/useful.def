@@ -5,7 +5,7 @@
 
 /*MACROS and definitions*/
 
-#define SWITCH_CMD(incmd,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,rr,ss,rA,sA,rrA,ssA,t,u,v,w,x,y,z,zz,zza,zzb,zzc,zzd,zze,zzf) \
+#define SWITCH_CMD(incmd,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,rr,ss,rA,sA,rrA,ssA,t,u,v,w,vV,wW,x,y,z,zz,zza,zzb,zzc,zzd,zze,zzf,zzg,zzh,zzi,zzj) \
 switch(incmd){\
 case ALLOC: a; break;\
 case ENTERR: b; break;\
@@ -36,6 +36,8 @@ case JUMP: t; break;\
 case JUMPZ: u; break;\
 case MULI: v; break;\
 case MULR: w; break;\
+case DIVI: vV; break;\
+case DIVR: wW; break;\
 case ADDI: x; break;\
 case ADDR: y; break;\
 case SUBI: z; break;\
@@ -46,6 +48,10 @@ case INTT: zzc; break;\
 case INTTB: zzd; break;\
 case EQI: zze; break;\
 case EQR: zzf; break;\
+case NEI: zzg; break;\
+case NER: zzh; break;\
+case NEGI: zzi; break;\
+case NEGR: zzj; break;\
 default: break;\
 }
 
@@ -54,16 +60,16 @@ enum _command_names {
     ALLOC,ENTERR,PUSHS,CALL,POPI,PUSHGA,PUSHA,FETCHI,\
     FETCHR,STOREI,STORER,PUSHCI,PUSHCR, SETRVI,SETRVR, \
     RETURNF,RETURN, LTI,LTR,LEI, LER, GTI, GTR, GEI, GER, \
-	JUMP,JUMPZ, MULI, MULR, ADDI, ADDR, SUBI, SUBR, FLT,\
-	FLTB, INTT, INTTB, EQI, EQR
+	JUMP,JUMPZ, MULI, MULR, DIVI, DIVR, ADDI, ADDR, SUBI, \
+	SUBR, FLT, FLTB, INTT, INTTB, EQI, EQR, NEI, NER, NEGI, NEGR
 };
 
 const static char * command_name_strings[] = {
     "alloc", "enter", "pushs", "call", "popI", "pushga", "pusha", "fetchI", \
     "fetchR", "storeI", "storeR","pushcI", "pushcR", "setrvI", "setrvR", \
     "returnf", "return", "ltI", "ltR", "leI", "leR", "gtI", "gtR", "geI", "geR", \
-	"jump", "jumpz", "mulI", "mulR", "addI", "addR", "subI", "subR", "flt", \
-	"fltb", "int", "intb", "eqI", "eqR"
+	"jump", "jumpz", "mulI", "mulR", "divI", "divR" ,"addI", "addR", "subI", \
+	"subR", "flt", "fltb", "int", "intb", "eqI", "eqR", "neI", "neR", "negI", "negR"
 };
 
 

@@ -458,6 +458,8 @@ void gen_command(commandlisttype * inList){
 	   /* JUMPZ */,
 	   /* MULI */,
 	   /* MULR */,
+	   /* DIVI */,
+	   /* DIVR */,
 	{  /* ADDI */
 				#ifdef DEBUG
 				dbprint(TRANSC, "found an addI", 0);
@@ -497,6 +499,18 @@ void gen_command(commandlisttype * inList){
 	    
 	},
      { /* eqR */
+	    
+	},
+	{ /* neI */
+	    
+	},
+     { /* neR */
+	    
+	},
+	{ /* negI */
+	    
+	},
+     { /* negR */
 	    
 	})
 

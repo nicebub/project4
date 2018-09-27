@@ -1,6 +1,5 @@
 #include "pop.h"
 
-//extern memstack vm_memstack;
 void* pop(typecg *intype, int number){
 	if(number == -1 || vm_memstack.stacksize == 0){
 		return NULL;

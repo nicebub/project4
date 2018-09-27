@@ -21,7 +21,6 @@ if(count > 0){
 
     currentchar = (char*)infmt;
     currentchar++;
-//    printf("currentchar %s\n",currentchar);
     switch(*currentchar){
 	   case 'd':
 		  REQUESTMEM(newval,int,INT)

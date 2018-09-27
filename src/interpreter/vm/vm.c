@@ -31,6 +31,7 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
     activationrecord startrecord;
     int commandnum, current_frame_size;
     int c, returnvalue;
+    boolcg has_return_value;
     current_unit=other_units[0];
     current_unit=main_unit;
     c=0;
@@ -38,6 +39,7 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
     current_frame_size = 1;
     commandnum=current_frame_size;
     returnvalue = 0;
+    has_return_value = FALSE;
     initialize_machine();
 	#ifdef DEBUG
     dbprint(VMLIBC,"Before use, here are the used_type1 and 3 ",
@@ -50,7 +52,7 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
     strcpy(startrecord.returnvalue,"0");
     startrecord.alloc_amount = 1;
     startrecord.last_command_instruction =5;
-	startrecord.access_link = vm_memstack.bp;
+	startrecord.access_link = (char*)vm_memstack.bp;
     push_activation_record(&vm_memstack,startrecord);
     while(1){
 	#ifdef DEBUG
@@ -180,7 +182,8 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 				   void * tempval;
 				   tempval = NULL;
 				   tempval = pop(&used_type6,3);
-		  			change_stack_value_at_offset_n_frames_back(&vm_memstack,0,0,tempval,INT);
+				   change_stack_value_at_offset_n_frames_back(&vm_memstack,0,0,tempval,INT);
+				   has_return_value = TRUE;
 	   },
 	   {/*setrvR*/
 
@@ -191,7 +194,7 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 		  			tempval = NULL;
 		  			tempval = pop(&used_type6,3);
 		  			change_stack_value_at_offset_n_frames_back(&vm_memstack,0,0,tempval,FLOAT);
-
+		  			has_return_value = TRUE;
 	   },
 	   {/*returnf*/
 
@@ -204,7 +207,9 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 					  dbprint(VMLIBC,"Printing Stack",0);
 					  print_stack(&vm_memstack);
 					   #endif
-
+					   if(has_return_value == FALSE)
+						  	pop_off_stack(&vm_memstack,&used_type5);
+					  has_return_value = FALSE;
 					  continue;
 				   }
 	   },
@@ -213,7 +218,8 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 					#ifdef DEBUG
 				   	dbprint(VMLIBC,"FOUND AN RETURN IN MACHINE",0);
 					#endif
-		  			returnvalue = *(int*)pop_off_stack(&vm_memstack, &used_type7);
+		  			if(stack_isempty(&vm_memstack)==FALSE)
+					    returnvalue = *(int*)pop_off_stack(&vm_memstack, &used_type7);
 		  			pop_activation_record(&vm_memstack,&used_type6);
 	   },
 	   {/*ltI*/
@@ -312,6 +318,21 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 					#endif
 				   	operate('*',FLOAT);
 	   },
+	   {/*divI*/
+
+					#ifdef DEBUG
+				   	dbprint(VMLIBC,"FOUND AN DIVI IN MACHINE",0);
+					#endif
+
+				   	operate('/',INT);
+	   },
+	   {/*divR*/
+
+					#ifdef DEBUG
+				   	dbprint(VMLIBC,"FOUND AN DIVR IN MACHINE",0);
+					#endif
+				   	operate('/',FLOAT);
+	   },
 	   {/*addI*/
 
 					#ifdef DEBUG
@@ -374,11 +395,52 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 
 	   },
 	   { /* eqI */
-		  relationship("==",INT);
+					#ifdef DEBUG
+		   			dbprint(VMLIBC,"FOUND AN EQI IN MACHINE",0);
+					#endif
+			  		relationship("==",INT);
 
 	   },
 	   { /* eqR */
-		  relationship("==",FLOAT);
+					#ifdef DEBUG
+		   			dbprint(VMLIBC,"FOUND AN EQR IN MACHINE",0);
+					#endif
+			  		relationship("==",FLOAT);
+
+	   },
+	   { /* neI */
+					#ifdef DEBUG
+  		 			dbprint(VMLIBC,"FOUND AN NEI IN MACHINE",0);
+					#endif
+		 			relationship("!=",INT);
+
+	   },
+	   { /* neR */
+					#ifdef DEBUG
+					dbprint(VMLIBC,"FOUND AN NER IN MACHINE",0);
+					#endif
+					relationship("!=",FLOAT);
+
+	   },
+	   { /* negI */
+					#ifdef DEBUG
+		   			dbprint(VMLIBC,"FOUND AN NEGI IN MACHINE",0);
+					#endif
+					int *value;
+					REQUESTMEM(value, int, INT)
+					*value =	*(int*)pop_off_stack(&vm_memstack,&used_type6);
+					*value = -(*value);
+					push_onto_stack(&vm_memstack, value, INT);
+	   },
+	   { /* negR */
+					#ifdef DEBUG
+		   			dbprint(VMLIBC,"FOUND AN NEGR IN MACHINE",0);
+					#endif
+					float *value;
+					REQUESTMEM(value, float, FLOAT)
+					*value =	*(float*)pop_off_stack(&vm_memstack,&used_type6);
+					*value = -(*value);
+					push_onto_stack(&vm_memstack, value, FLOAT);
 
 	   })
 	   commandnum += 1;

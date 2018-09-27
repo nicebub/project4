@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/interpreter/vm/call.c"
-            timestampString = "559675568.084214"
+            timestampString = "559760402.533191"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "119"
-            endingLineNumber = "119">
+            startingLineNumber = "92"
+            endingLineNumber = "92">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -24,11 +24,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/interpreter/vm/vm.c"
-            timestampString = "559729403.869787"
+            timestampString = "559781079.058404"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "350"
-            endingLineNumber = "350"
+            startingLineNumber = "356"
+            endingLineNumber = "356"
             landmarkName = "run_virtual_machine"
             landmarkType = "9">
          </BreakpointContent>
@@ -56,7 +56,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/interpreter/vm/return.c"
-            timestampString = "559638452.196517"
+            timestampString = "559781079.059028"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "26"
@@ -72,7 +72,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/interpreter/vm/return.c"
-            timestampString = "559638452.196738"
+            timestampString = "559781079.059113"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "44"
@@ -104,7 +104,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/interpreter/vm/call.c"
-            timestampString = "559675568.084794"
+            timestampString = "559760402.533756"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "46"
@@ -187,7 +187,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "217"
             endingLineNumber = "217"
-            landmarkName = "pop_activation_record"
+            landmarkName = "get_value_at_offset_n_frames_back"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -202,9 +202,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "257"
-            endingLineNumber = "257"
-            landmarkName = "get_address"
-            landmarkType = "9">
+            endingLineNumber = "257">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -214,7 +212,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/interpreter/vm/return.c"
-            timestampString = "559638452.1981879"
+            timestampString = "559781079.059288"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "18"
@@ -230,11 +228,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/interpreter/vm/vm.c"
-            timestampString = "559729403.870102"
+            timestampString = "559781079.059343"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "386"
-            endingLineNumber = "386"
+            startingLineNumber = "392"
+            endingLineNumber = "392"
             landmarkName = "run_virtual_machine"
             landmarkType = "9">
          </BreakpointContent>

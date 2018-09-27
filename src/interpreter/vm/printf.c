@@ -47,8 +47,6 @@ void mprintf(int count){
 
 
 char * s3w(char * infmt, void ** p_array, int p_size){
-//	char * piece1;
-//	char * piece2;
 	char * piece3;
 	char *val_place;
 	char   buffer[MAX_STR_CONST];
@@ -67,7 +65,6 @@ char * s3w(char * infmt, void ** p_array, int p_size){
 		p3buffer[y] = ' ';
 	}
 
-//    piece1 = piece2 = NULL;
     piece3 = NULL;
 	val_place = NULL;
 	
@@ -85,9 +82,6 @@ char * s3w(char * infmt, void ** p_array, int p_size){
 			}
 			buffer[p1_length] = '\0';
 			printf("%s",buffer);
-
-//			piece1 = currentchar -1;
-//			piece2 = currentchar;
 			currentchar++;
 			
 

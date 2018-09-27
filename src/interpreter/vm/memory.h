@@ -38,7 +38,6 @@ typedef union memcell memory_cell;
 
 typedef struct _memstack memstack;
 struct _memstack {
-//    alignme a;
      memory_cell stack[STACK_SIZE];
 	memory_cell	* bp;
 	memory_cell	* sp;
