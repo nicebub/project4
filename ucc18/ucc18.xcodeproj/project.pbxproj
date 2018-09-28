@@ -1035,7 +1035,7 @@
 				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
 				GENERATE_MASTER_OBJECT_FILE = NO;
 				GENERATE_PROFILING_CODE = YES;
-				HEADER_SEARCH_PATHS = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/usr/include;
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CFLAGS = (
 					"-g",
@@ -1063,7 +1063,7 @@
 				GCC_USE_STANDARD_INCLUDE_SEARCHING = YES;
 				GENERATE_MASTER_OBJECT_FILE = NO;
 				GENERATE_PROFILING_CODE = YES;
-				HEADER_SEARCH_PATHS = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/usr/include;
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CFLAGS = (
 					"-g",

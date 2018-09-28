@@ -65,7 +65,7 @@ int run_virtual_machine(translation_unit *main_unit,translation_unit **other_uni
 		  		#endif
 
 		  		for(int j=1;j<=currentcommand->paramlist->list->int_val[0];j++)
-				    push_onto_stack(&vm_memstack,"EMPTY" ,STR);
+				    push_onto_stack(&vm_memstack,&(int[]){0} ,INT);
 		  		int new_amount = *(int*)get_value_at_offset_n_frames_back(&vm_memstack,5,0)+currentcommand->paramlist->list->int_val[0];
 		  		change_stack_value_at_offset_n_frames_back(&vm_memstack,5,0,&new_amount,INT);
 	   },

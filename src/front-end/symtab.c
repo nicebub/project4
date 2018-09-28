@@ -542,8 +542,10 @@ Entry * lookupB(const char * name, Symtab *symtab){
 			}
 		}
 		else{
-			free(temp->name);
+			//free(temp->name);
+		    temp->name = NULL;
 			free(temp);
+		    temp = NULL;
 			return NULL;
 		}
 

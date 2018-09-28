@@ -73,7 +73,7 @@ char * s3w(char * infmt, void ** p_array, int p_size){
 
 		currentchar = &infmt[0];
 		for(int r=0;r<p_size;r++){
-			while(*currentchar != '%'){
+			while(currentchar != NULL && *currentchar != '%' && *currentchar != '\0'){
 
 				buffer[p1_length]= *currentchar;
 				p1_length++;
@@ -99,7 +99,9 @@ char * s3w(char * infmt, void ** p_array, int p_size){
 				case 's':
 						sprintf(valbuffer,"%s",(char*)p_array[r]);
 						break;
-			
+				default:
+						printf("This format of printf is not supported yet.\n");
+						break;
 			}
 			
 			printf("%s", valbuffer);

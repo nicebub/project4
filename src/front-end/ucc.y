@@ -213,8 +213,14 @@ func: funcheader {
 												if(templist!=NULL){
 													tempnode= (listnodeP*)templist->list;
 												#ifdef DEBUG
-												fprintf(stderr,"in funcheader before funcbody, param val and type is ");
-												fprintf(stderr,"%s %s\n",tempnode->val,(char*)tempnode->ttype);
+												if(tempnode->ttype != VOID){
+												    fprintf(stderr,"in funcheader before funcbody, param val and type is ");
+				//								    fprintf(stderr,"%s %s\n",tempnode->val,(char*)tempnode->ttype);
+												}
+												else{
+												    fprintf(stderr,"in funcheader before funcbody type is ");
+												    fprintf(stderr,"%s\n",(char*)tempnode->ttype);
+												}
 												#endif
 												}
 												if(templist!=NULL){
