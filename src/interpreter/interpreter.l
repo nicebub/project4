@@ -33,7 +33,6 @@ char *string_buf_ptr;
 
 extern int Line_Number;
 extern int current_char;
-//#include "symtabint.h"
 
 //#define YY_INPUT(buf,result,max_size)  {\
 //   result = GetNextChar(buf, max_size); \

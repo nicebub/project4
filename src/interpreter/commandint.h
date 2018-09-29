@@ -1,8 +1,12 @@
 #ifndef _MYCOMMANDCGH
 #define _MYCOMMANDCGH
-#include <stdio.h>
 
-//extern FILE *yyin;
+#include "memlib.h"
+#include "debuglib.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 extern FILE *infile;
 extern char* filename;
 FILE* checkargs(int argc, char** argv);

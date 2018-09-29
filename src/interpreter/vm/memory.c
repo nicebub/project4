@@ -201,10 +201,11 @@ void * pop_activation_record(memstack *instack, typecg * outtype){
     memory_cell newbase;
     memory_cell * returncell;
     init_memory_cell(&newbase);
+    int max;
     returncell = instack->bp;
     *outtype = returncell->m.type;
     set_cell_value(&newbase,(instack->bp+2)->m.s.address,get_cell_type((instack->bp+2)),get_cell_size((instack->bp+2)));
-    int max = *(int*)get_value_at_offset_n_frames_back(&vm_memstack,5,0);
+    memcpy(&max,(int*)get_value_at_offset_n_frames_back(&vm_memstack,5,0),sizeof(int));
     for(int e=1;e<6+max;e++)
 	   pop_off_stack(instack,&used_type5);
     instack->bp = newbase.m.s.address;

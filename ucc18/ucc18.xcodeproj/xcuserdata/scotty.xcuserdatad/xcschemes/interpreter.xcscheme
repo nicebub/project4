@@ -68,7 +68,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/scotty/Programming/project4/test_files/mysample3.asm"
+            argument = "/Users/scotty/Programming/project4/test_files/asm/sample5b.asm"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

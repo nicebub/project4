@@ -26,7 +26,7 @@ Code Generator Bison Parser File
 #include "typeint.h"
 #include "Listint.h"
 #include "dataint.h"
-#include "transint.h"
+//#include "transint.h"
 #include "memlib.h"
 
 //#include "symtabint.h"
@@ -89,7 +89,7 @@ starter: zlines_eof {
 } 
 	| zlines {
 		if(founderror == FALSE){
-			gen_section_text();
+		//	gen_section_text();
 		}		
 	  } 
 		
@@ -104,7 +104,7 @@ starter: zlines_eof {
 				dbprint(PARSER,"-----------------------",0);
 				#endif
 
-				gen_end_prog();
+			//	gen_end_prog();
 								
 			}
 	}
@@ -216,19 +216,19 @@ func: Ident lines commandlist {
 			
 				if(founderror == FALSE){
 
-				check_and_gen_if_main((char*)$1);
+			//	check_and_gen_if_main((char*)$1);
 
-				gen_label(genlabelu($1, getlabel() ));
+			//	gen_label(genlabelu($1, getlabel() ));
 
-				gen_func_prolog();
+			//	gen_func_prolog();
 
-				gen_set_stack(); 
+			//	gen_set_stack(); 
 
-				gen_run_commands($3);
+			//	gen_run_commands($3);
 
-				gen_reverse_stack();
+			//	gen_reverse_stack();
 				
-				gen_func_epilog();
+			//	gen_func_epilog();
 			}
 		}
 		

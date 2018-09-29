@@ -19,37 +19,10 @@ that the file opened on the command line arguments ends in a '.c'.  Which also b
 #if !defined(DEBUGON) && defined(DEBUG)
 #undef DEBUG
 #endif
-
-#include "debuglib.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include "dataint.h"
-#define YYSTYPE data
-#include "interpreter.y.h"
-#include "interpreter.tab.h"
-#include "symtabint.h"
-#include "Listint.h"
-#include "commandint.h"
 #include "main.h"
-#include "transint.h"
-#include "interpreter.l.h"
-#include "vm/vm.h"
-#include "memlib.h"
-#include <string.h>
-#include <libgen.h>
-//extern int yytables_fload(FILE *);
-//extern int yytables_destroy();
-//extern int yylex_destroy();
-//extern int yy_delete_buffer();
-extern FILE* yyin_temp;
-extern FILE *yyin;
-extern trans_u_list * All_T_Units;
-const  char MAIN_STRING[]="main";
+
 
 int main(int argc, char **argv){
-//	int offset_counter;
-//	int othercounter;
-//	int param_offset;
     int returnvalue;
 	translation_unit * current_unit, *main_unit;
 
@@ -57,32 +30,26 @@ int main(int argc, char **argv){
 	init_debug("debuglib.c");
 	init_trans_array();
 	init_mem_man();
-	initializelabel();
-
-
 
 	founderror=FALSE;
-//	othercounter=1;
-	globalcount=0;
-//	param_offset=0;
+
 	infile = NULL;
 	filename = NULL;
-	filename = "main.c";
 	All_T_Units = NULL;
 	current_unit = NULL;
 	main_unit = NULL;
+
+	filename = "main.c";
 	
 	if((yyin_temp = checkargs(argc,argv)) == NULL){
 		#ifdef DEBUG
-			//filename = "input_filename.c";
-			dbprint(MAINC,"Improper or no arguments given to compiler: Example filename -- ", 1, STR, filename);
+		dbprint(MAINC,"Improper or no arguments given to compiler: Example filename -- ", 1, STR, filename);
 		#endif
 		return -1;
 	}
 	if(yyin_temp == NULL) return -1;
 	yyin = yyin_temp;
     REQUESTMEM(filename, char, STR, *strlen(basename(argv[1]))+1)
-//	filename = requestmem(strlen(argv[1])+1,STR, &tag);
 	#ifdef DEBUG
     unsigned long *templen;
     templen = NULL;
@@ -94,9 +61,6 @@ int main(int argc, char **argv){
 	#ifdef DEBUG
     dbprint(MAINC,"the strlen of new filename : ", 2, STR, filename, INT, strlen(filename));
 	#endif
-
-
-	//offset_counter=5;
 
     do{
 	#ifdef DEBUG

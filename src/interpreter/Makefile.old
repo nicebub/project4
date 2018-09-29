@@ -12,10 +12,10 @@ CC = /usr/local/bin/gcc-8
 #CC = /usr/bin/gcc
 LD = /usr/bin/ld
 #CC= x86_64-apple-darwin17.7.0-gcc-8
-#BISON = /usr/local/opt/bison/bin/bison
-BISON = /usr/bin/bison
-#FLEX = /usr/local/opt/flex/bin/flex
-FLEX = /usr/bin/flex
+BISON = /usr/local/opt/bison/bin/bison
+#BISON = /usr/bin/bison
+FLEX = /usr/local/opt/flex/bin/flex
+#FLEX = /usr/bin/flex
 
 
 
@@ -43,7 +43,10 @@ LIBS = -L./ -Lvm -lreglib -ldebuglib -lmemlib -ltrans -lcommand -llist -linterpr
 
 
 #all: interpreter memlib reglib as_sample listc_driver debuglib transint_driver commandint_driver lex_driver yacc_driver
-all: interpreter listc_driver debuglib transint_driver commandint_driver lex_driver yacc_driver memlib reglib
+all: interpreter
+		
+
+notall: listc_driver debuglib transint_driver commandint_driver lex_driver yacc_driver memlib reglib
 
 
 
@@ -111,8 +114,8 @@ listc_driver: Listint_main.c libdebuglib.dylib libmemlib.dylib liblist.dylib
 #	$(CC) $(CFLAGS) -c Listint.c
 
 
-#debuglib.o: debuglib.c debuglib.h
-#	$(CC) $(CFLAGS) -c debuglib.c 
+debuglib.o: debuglib.c debuglib.h
+	$(CC) $(CFLAGS) -c debuglib.c 
 
 		
 debuglib:	
@@ -145,7 +148,7 @@ memlib: libmemlib.dylib memlib_main.c
 	$(CC) $(CFLAGS) $(MEMLIB_CFLAGS) $(MEMLIB_LIB) -o memlib memlib_main.c 
 
 
-#memlib.o: memlib.c memlib.h
+memlib.o: memlib.c memlib.h
 #	$(CC) $(CFLAGS) -c memlib.c 
 
 REGLIB_CFLAGS = -D DEBUGON
@@ -211,10 +214,10 @@ OBJS  = lex.yy.o  \
 	interpreter.tab.o \
 	Listint.o \
 	commandint.o \
-	transint.o \
-	debuglib.c \
-	memlib.c \
-	reglib.c \
+	debuglib.o \
+	memlib.o 
+#	transint.o \
+#	reglib.c \
 	
 LIBRARYS = libreglib.dylib \
 	libmemlib.dylib \
@@ -241,12 +244,13 @@ clean_vmlib:
 
 drivers: listc_driver
 	
-	
+MLIBS = vm/libvmlib.dylib
+
 MAIN_CFLAGS = -D VMLIBDEBUG		
-#interpreter : $(OBJS) $(MAIN)
-#	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(AOBJS) $(MAIN) 
-interpreter : $(MAIN) $(LIBRARYS)
-	$(CC) $(CFLAGS) $(MAIN_CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(LIBS) $(MAIN)
+interpreter : $(OBJS) $(MAIN) $(MLIBS)
+	$(CC) $(CFLAGS) $(MAIN_CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(OBJS) $(MLIBS) $(MAIN) 
+#interpreter : $(MAIN) $(LIBRARYS)
+#	$(CC) $(CFLAGS) $(MAIN_CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(IFLAGS) $(LIBS) $(MAIN)
 
 example: $(OBJS) $(MAIN) symtab.o example.c List.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGETDIR)/$@ $(LIBS) $(OBJS) example.c
