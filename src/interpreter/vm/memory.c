@@ -1,4 +1,5 @@
 #include "memory.h"
+#include "store.h"
 
 memstack vm_memstack;
 

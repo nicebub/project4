@@ -12,17 +12,6 @@
 
 
 #include "vm.h"
-#include "vmlib.h"
-#include "pop.h"
-
-#include "../memlib.h"
-#include "../debuglib.h"
-#include "../Listint.h"
-#include "../interpreter.y.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
 
 
 int run_virtual_machine(translation_unit *main_unit,translation_unit **other_units,int unit_count){

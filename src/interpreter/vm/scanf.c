@@ -1,7 +1,7 @@
 #include "scanf.h"
 
 
-void mscanf(int count){
+inline void mscanf(int count){
 #ifdef DEBUG
 dbprint(VMLIBC,"THIS IS A SCANF",0);
 #endif

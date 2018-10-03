@@ -4,7 +4,7 @@
 typecg used_type7;
 
 
-int returnf(translation_unit ** other_units,int *c,int *commandnum, translation_unit** current_unit,commandlisttype** currentcommand){
+inline int returnf(translation_unit ** other_units,int *c,int *commandnum, translation_unit** current_unit,commandlisttype** currentcommand){
 	char * unit_name;
 	int * cmdnum;
     translation_unit * current_unitt;

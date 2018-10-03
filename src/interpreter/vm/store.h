@@ -3,7 +3,7 @@
 
 
 #include "../typeint.h"
-#include "../useful.def"
+//#include "../useful.def"
 #include "../memlib.h"
 #include "pop.h"
 

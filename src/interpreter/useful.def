@@ -1,4 +1,4 @@
-#ifndef MCROWS_DEFS
+#if !defined(MCROWS_DEFS)
 #define MCROWS_DEFS
 
 #include <string.h>
@@ -71,6 +71,13 @@ const static char * command_name_strings[] = {
 	"jump", "jumpz", "mulI", "mulR", "divI", "divR" ,"addI", "addR", "subI", \
 	"subR", "flt", "fltb", "int", "intb", "eqI", "eqR", "neI", "neR", "negI", "negR"
 };
+
+struct command_st {
+    command_names cmd_name;
+    char* command_name_string;
+};
+
+
 
 
 #define FORCMD(instring, info,tempstring) for(int a =0; a < sizeof(cmdinf)/sizeof(command_names); a++){\

@@ -12,7 +12,7 @@
 
 #include "jump.h"
 
-int jump(boolcg z, translation_unit ** other_units, commandlisttype ** currentcommand, translation_unit ** current_unit, int * commandnum, int * c){
+inline int jump(boolcg z, translation_unit ** other_units, commandlisttype ** currentcommand, translation_unit ** current_unit, int * commandnum, int * c){
 int * conditional;
 translation_unit * current_unitt;
 commandlisttype * currentcommandt;

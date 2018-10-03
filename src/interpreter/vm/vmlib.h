@@ -4,7 +4,6 @@
 #include "memorylib.h"
 #include "instructionlib.h"
 #include "stacklib.h"
-#include "status.h"
 #include "initialize.h"
 
 

@@ -1,7 +1,6 @@
 #include "push.h"
-#include "memory.h"
 
-void push(typecg inType, void* value, ...){
+inline void push(typecg inType, void* value, ...){
 			void *temp;
 			temp = NULL;
     SWITCH(inType,

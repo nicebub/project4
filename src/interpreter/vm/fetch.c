@@ -13,7 +13,7 @@
 #include "fetch.h"
 
 
-void fetch(typecg intype){
+inline void fetch(typecg intype){
     int * first;
     int *second;
     int *third;

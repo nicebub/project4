@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "store.h"
 #include "../typeint.h"
 
 #define STACK_SIZE 40000

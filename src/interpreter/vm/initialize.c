@@ -17,7 +17,7 @@ typecg *used_type2;
 typecg *used_type3;
 
 
-void initialize_machine(void){
+inline void initialize_machine(void){
 
     used_type1 = requestmem(sizeof(typecg),GENERIC,&tag);
     *used_type1 = INT;

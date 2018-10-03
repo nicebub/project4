@@ -1,18 +1,8 @@
 #ifndef _MYLISTCG_H
 #define _MYLISTCG_H
-//#include "typeint.h"
 #include "exprint.h"
 #include "useful.def"
 extern int tag;
-
-
-struct command_st {
-    command_names cmd_name;
-    char* command_name_string;
-};
-
-extern struct command_st cmdinf[];
-
 
 typedef struct _listnodeE listnodeE;
 struct _listnodeE{

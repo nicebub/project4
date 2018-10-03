@@ -1,6 +1,6 @@
 #include "pop.h"
 
-void* pop(typecg *intype, int number){
+inline void* pop(typecg *intype, int number){
 	if(number == -1 || vm_memstack.stacksize == 0){
 		return NULL;
 	}
