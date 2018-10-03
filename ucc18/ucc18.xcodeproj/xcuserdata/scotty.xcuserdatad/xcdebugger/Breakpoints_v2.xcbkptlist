@@ -184,12 +184,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/interpreter/vm/memory.c"
-            timestampString = "559894300.931848"
+            timestampString = "560301735.037398"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "218"
             endingLineNumber = "218"
-            landmarkName = "get_value_at_offset_n_frames_back"
+            landmarkName = "get_value_at_offset"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -200,11 +200,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/interpreter/vm/memory.c"
-            timestampString = "559894300.932407"
+            timestampString = "560301735.0377311"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "248"
-            endingLineNumber = "248">
+            endingLineNumber = "248"
+            landmarkName = "get_address"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -246,7 +248,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/interpreter/vm/memory.c"
-            timestampString = "559894300.9327641"
+            timestampString = "560301735.037816"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "131"

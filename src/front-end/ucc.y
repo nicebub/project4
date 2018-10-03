@@ -358,10 +358,10 @@ funcheader: voidt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof
 				$$->name ="";
 				$$->returntype=VOID;
 				//(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
-				ListP * tempLP = (ListP *)$$->paramlist;
-				tempLP = (ListP*) malloc(sizeof(ListP));
-				tempP= (ListP*)($$->paramlist);
-				tempP->listsize = 0;
+				ListP * tempLP;
+				tempLP = (ListP*) mklistP((char*)strdup("error"), VOID);
+				tempP= (ListP*)tempLP;
+				$$->paramlist= tempLP;
 				error("(expecting lpar before rpar in function)","");
 			}
 	| intt error rpar { ListP* tempP; yyerrok;
@@ -369,10 +369,10 @@ funcheader: voidt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof
 				$$->name ="";
 				$$->returntype=INT;
 				//(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
-				ListP * tempLP = (ListP *)$$->paramlist;
-				tempLP = (ListP*) malloc(sizeof(ListP));
-				tempP= (ListP*)($$->paramlist);
-				tempP->listsize = 0;
+				ListP * tempLP;
+				tempLP = (ListP*) mklistP((char*)strdup("error"), VOID);
+				tempP= (ListP*)tempLP;
+				$$->paramlist= tempLP;
 				error("(expecting lpar before rpar in function)","");
 			}
 	| floatt error rpar { ListP* tempP; yyerrok;
@@ -380,10 +380,10 @@ funcheader: voidt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof
 				$$->name ="";
 				$$->returntype=FLOAT;
 				//(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
-				ListP * tempLP = (ListP *)$$->paramlist;
-				tempLP = (ListP*) malloc(sizeof(ListP));
-				tempP= (ListP*)($$->paramlist);
-				tempP->listsize = 0;
+				ListP * tempLP;
+				tempLP = (ListP*) mklistP((char*)strdup("error"), VOID);
+				tempP= (ListP*)tempLP;
+				$$->paramlist= tempLP;
 				error("(expecting lpar before rpar in function)","");
 			}
 	| voidt Ident lpar error rpar  {ListP* tempP; yyerrok;
@@ -394,10 +394,10 @@ funcheader: voidt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof
 				ListP * tempLP1 = (ListP *)$$->paramlist;
 				tempLP1 = NULL;
 				//(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
-				ListP * tempLP = (ListP *)$$->paramlist;
-				tempLP = (ListP*) malloc(sizeof(ListP));
-				tempP= (ListP*)($$->paramlist);
-				tempP->listsize = 0;
+				ListP * tempLP;
+				tempLP = (ListP*) mklistP((char*)strdup("error"), VOID);
+				tempP= (ListP*)tempLP;
+				$$->paramlist= tempLP;
 				error("(unexpected token after lpar and before rpar in function)","");
 			}
 	| floatt Ident lpar error rpar { ListP* tempP; yyerrok;
@@ -408,10 +408,10 @@ funcheader: voidt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof
 				ListP * tempLP1 = (ListP *)$$->paramlist;
 				tempLP1 = NULL;
 				//(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
-				ListP * tempLP = (ListP *)$$->paramlist;
-				tempLP = (ListP*) malloc(sizeof(ListP));
-				tempP= (ListP*)($$->paramlist);
-				tempP->listsize = 0;
+				ListP * tempLP;
+				tempLP = (ListP*) mklistP((char*)strdup("error"), VOID);
+				tempP= (ListP*)tempLP;
+				$$->paramlist= tempLP;
 				error("(unexpected token after lpar and before rpar in function)","");
 			}
 	| intt Ident lpar error rpar {ListP* tempP; yyerrok;
@@ -422,10 +422,10 @@ funcheader: voidt Ident lpar paramdef rpar {	$$ = (funcheadertype*)malloc(sizeof
 				ListP * tempLP1 = (ListP *)$$->paramlist;
 				tempLP1 = NULL;
 				//(ListP*)($$->paramlist) = (ListP*) malloc(sizeof(ListP));
-				ListP * tempLP = (ListP *)$$->paramlist;
-				tempLP = (ListP*) malloc(sizeof(ListP));
-				tempP= (ListP*)($$->paramlist);
-				tempP->listsize = 0;
+				ListP * tempLP;
+				tempLP = (ListP*) mklistP((char*)strdup("error"), VOID);
+				tempP= (ListP*)tempLP;
+				$$->paramlist= tempLP;
 				error("(unexpected token after lpar and before rpar in function)","");
 			}
 ;
@@ -1399,8 +1399,10 @@ name_and_params:
 		if(lookupB($1,mysymtab)==NULL) fprintf(stderr,"it was null\n");
 		else fprintf(stderr,"wasn't null\n");
 		#endif
-		$$.name = $$.funcent->name;
-		if(founderror==FALSE) gen_instr_I("enter",1);
+		if ($$.funcent != NULL){
+			$$.name = $$.funcent->name;
+			if(founderror==FALSE) gen_instr_I("enter",1);
+		}
 	}
 	expr {
         Entry *tempE, *tempE2;
